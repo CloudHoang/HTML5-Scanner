@@ -575,8 +575,13 @@
           fps: 20,
           qrbox: { width: 240, height: 240 },
           aspectRatio: 1.0,
-          disableFlip: false,
-          formatsToSupport: [
+          disableFlip: false
+        };
+
+        // Only add formats if they're available
+        if (window.Html5QrcodeSupportedFormats) {
+          console.log('Html5QrcodeSupportedFormats available, adding format list');
+          config.formatsToSupport = [
             window.Html5QrcodeSupportedFormats.CODE_128,
             window.Html5QrcodeSupportedFormats.EAN_13,
             window.Html5QrcodeSupportedFormats.QR_CODE,
@@ -588,14 +593,16 @@
             window.Html5QrcodeSupportedFormats.PDF_417,
             window.Html5QrcodeSupportedFormats.AZTEC,
             window.Html5QrcodeSupportedFormats.DATA_MATRIX
-          ]
-        };
+          ];
+        } else {
+          console.warn('Html5QrcodeSupportedFormats not available, using default formats');
+        }
 
         const cameraConstraints = {
           facingMode: { ideal: 'environment' }
         };
 
-        console.log('Config created, calling scanner.start()');
+        console.log('Config created, calling scanner.start()', config);
         
         // Add timeout for initialization
         let initTimeout = setTimeout(() => {
