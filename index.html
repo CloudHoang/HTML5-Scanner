@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Barcode Scanner for Power Apps</title>
+  <title>Kiosk Scanner - Power Apps Integration</title>
   <style>
     :root {
       color-scheme: dark;
@@ -36,45 +36,43 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(circle at top, rgba(34, 197, 94, 0.2), transparent 30%),
-        linear-gradient(135deg, #020617 0%, #111827 100%);
-    }
-
-    .app-shell {
-      width: min(100vw, 900px);
-      height: min(100vh, 700px);
-      max-height: 100vh;
-      padding: clamp(12px, 2vw, 20px);
+    .kiosk-container {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      width: 100%;
+      height: 100%;
+      gap: 0;
     }
 
-    .status-bar {
+    /* Scanner Banner - Top Section */
+    .scanner-banner {
+      display: flex;
+      flex-direction: column;
+      height: 220px;
+      background: linear-gradient(135deg, #020617 0%, #111827 100%);
+      border-bottom: 2px solid var(--accent);
+      padding: 12px;
+      gap: 8px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .scanner-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      padding: 8px 12px;
       background: var(--panel);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      z-index: 5;
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
 
-    .status-pill {
-      display: inline-flex;
+    .scanner-status {
+      display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: 0.01em;
     }
 
     .status-dot {
@@ -101,32 +99,26 @@
       box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.2);
     }
 
-    .hint-text {
+    .last-scan {
+      font-size: 0.85rem;
       color: var(--muted);
-      font-size: 0.82rem;
-      text-align: right;
     }
 
-    .camera-card {
+    .scanner-preview {
       position: relative;
-      flex: 1;
-      min-height: 0;
-      background: rgba(2, 6, 23, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 24px;
+      height: 140px;
+      background: #000;
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      isolation: isolate;
+      border: 1px solid var(--border);
     }
 
     #reader {
       width: 100%;
       height: 100%;
-      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000;
     }
 
     #reader video {
@@ -149,12 +141,11 @@
 
     .scanner-frame {
       position: relative;
-      width: min(72vw, 300px);
-      aspect-ratio: 1;
-      max-width: 320px;
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 16px;
-      box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.38);
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.3);
       background: transparent;
     }
 
@@ -162,9 +153,9 @@
     .scanner-frame::after {
       content: "";
       position: absolute;
-      width: 38px;
-      height: 38px;
-      border-color: rgba(255, 255, 255, 0.95);
+      width: 30px;
+      height: 30px;
+      border-color: rgba(255, 255, 255, 0.8);
       border-style: solid;
       border-width: 0;
     }
@@ -172,25 +163,25 @@
     .scanner-frame::before {
       top: -2px;
       left: -2px;
-      border-top-width: 4px;
-      border-left-width: 4px;
-      border-top-left-radius: 12px;
+      border-top-width: 3px;
+      border-left-width: 3px;
+      border-top-left-radius: 8px;
     }
 
     .scanner-frame::after {
       top: -2px;
       right: -2px;
-      border-top-width: 4px;
-      border-right-width: 4px;
-      border-top-right-radius: 12px;
+      border-top-width: 3px;
+      border-right-width: 3px;
+      border-top-right-radius: 8px;
     }
 
     .scanner-corner-bottom-left,
     .scanner-corner-bottom-right {
       position: absolute;
-      width: 38px;
-      height: 38px;
-      border-color: rgba(255, 255, 255, 0.95);
+      width: 30px;
+      height: 30px;
+      border-color: rgba(255, 255, 255, 0.8);
       border-style: solid;
       border-width: 0;
       bottom: -2px;
@@ -198,16 +189,16 @@
 
     .scanner-corner-bottom-left {
       left: -2px;
-      border-bottom-width: 4px;
-      border-left-width: 4px;
-      border-bottom-left-radius: 12px;
+      border-bottom-width: 3px;
+      border-left-width: 3px;
+      border-bottom-left-radius: 8px;
     }
 
     .scanner-corner-bottom-right {
       right: -2px;
-      border-bottom-width: 4px;
-      border-right-width: 4px;
-      border-bottom-right-radius: 12px;
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      border-bottom-right-radius: 8px;
     }
 
     .laser {
@@ -240,46 +231,38 @@
     }
 
     .checkmark {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-      display: grid;
-      place-items: center;
-      font-size: 3.2rem;
-      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.3);
-      transform: scale(0.92);
-      animation: pop 0.45s ease-out;
+      font-size: 2rem;
+      color: var(--accent);
     }
 
-    .error-state {
-      position: absolute;
-      inset: 0;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+    /* Power Apps Iframe Container */
+    .powerapps-container {
+      flex: 1;
+      min-height: 0;
+      background: var(--bg);
+      border: none;
+      overflow: hidden;
+    }
+
+    .powerapps-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    .error-banner {
+      background: var(--danger);
+      color: white;
+      padding: 12px;
       text-align: center;
-      background: rgba(2, 6, 23, 0.95);
-      z-index: 6;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: none;
     }
 
-    .error-state.show {
-      display: flex;
-    }
-
-    .error-title {
-      margin: 0 0 8px;
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .error-message {
-      max-width: 360px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 12px;
+    .error-banner.show {
+      display: block;
     }
 
     .sr-only {
@@ -352,16 +335,6 @@
       border-left-color: #f59e0b;
     }
 
-    @media (max-width: 640px) {
-      .debug-console-toggle {
-        bottom: 5px;
-        right: 5px;
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-      }
-    }
-
     @keyframes sweep {
       0% { top: 4%; opacity: 0.2; }
       50% { opacity: 1; }
@@ -373,72 +346,74 @@
       50% { transform: scale(1.15); opacity: 0.78; }
     }
 
-    @keyframes pop {
-      0% { transform: scale(0.5); opacity: 0.4; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @media (max-width: 640px) {
-      .app-shell {
-        padding: 10px;
-        gap: 10px;
+    @media (max-width: 768px) {
+      .scanner-banner {
+        height: 180px;
       }
 
-      .status-bar {
-        border-radius: 16px;
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
+      .scanner-preview {
+        height: 100px;
       }
 
-      .hint-text {
-        text-align: left;
-      }
-
-      .scanner-frame {
-        width: min(80vw, 260px);
+      .debug-console-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <div class="status-bar" role="status" aria-live="polite">
-      <div class="status-pill">
-        <span id="statusDot" class="status-dot"></span>
-        <span id="statusText">Initializing camera...</span>
+  <div class="kiosk-container">
+    <!-- Scanner Banner -->
+    <div class="scanner-banner">
+      <div class="scanner-header">
+        <div class="scanner-status">
+          <span id="statusDot" class="status-dot"></span>
+          <span id="statusText">Initializing scanner...</span>
+        </div>
+        <div class="last-scan" id="lastScan">Ready to scan</div>
       </div>
-      <div class="hint-text">Point the camera at a barcode or QR code</div>
-    </div>
 
-    <div class="camera-card">
-      <div id="reader" aria-label="Barcode scanner preview"></div>
-
-      <div class="overlay" aria-hidden="true">
-        <div class="scanner-frame">
-          <div class="laser"></div>
-          <div class="scanner-corner-bottom-left"></div>
-          <div class="scanner-corner-bottom-right"></div>
+      <div class="scanner-preview">
+        <div id="reader" aria-label="Barcode scanner preview"></div>
+        <div class="overlay" aria-hidden="true">
+          <div class="scanner-frame">
+            <div class="laser"></div>
+            <div class="scanner-corner-bottom-left"></div>
+            <div class="scanner-corner-bottom-right"></div>
+          </div>
+        </div>
+        <div id="flash" class="flash">
+          <div class="checkmark">✓</div>
         </div>
       </div>
+    </div>
 
-      <div id="flash" class="flash">
-        <div class="checkmark">✓</div>
-      </div>
+    <!-- Error Banner -->
+    <div id="errorBanner" class="error-banner"></div>
 
-      <div id="errorState" class="error-state" role="alert">
-        <h2 class="error-title">Camera unavailable</h2>
-        <p class="error-message" id="errorMessage"></p>
-      </div>
+    <!-- Power Apps Container -->
+    <div class="powerapps-container">
+      <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
     </div>
   </div>
 
+  <!-- Debug Console -->
   <button class="debug-console-toggle" id="debugToggle" title="Toggle debug console">🐛</button>
   <div class="debug-console" id="debugConsole"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
   <script>
+    // ==========================================
+    // CONFIGURATION - Edit these values
+    // ==========================================
+    const POWERAPPS_BASE_URL = "https://apps.powerapps.com/play/e/YOUR_ENVIRONMENT_ID_HERE/apps/YOUR_APP_ID_HERE";
+    const SCAN_DEBOUNCE_MS = 2000; // 2 second cooldown between scans
+    
+    // ==========================================
     // Debug Console Setup
+    // ==========================================
     (function() {
       const debugConsole = document.getElementById('debugConsole');
       const debugToggle = document.getElementById('debugToggle');
@@ -452,13 +427,11 @@
         debugConsole.scrollTop = debugConsole.scrollHeight;
         logCount++;
         
-        // Keep only last 100 logs
         while (debugConsole.children.length > 100) {
           debugConsole.removeChild(debugConsole.firstChild);
         }
       }
 
-      // Intercept console methods
       const originalLog = console.log;
       const originalError = console.error;
       const originalWarn = console.warn;
@@ -478,39 +451,38 @@
         addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'warn');
       };
 
-      // Toggle debug console
       debugToggle.addEventListener('click', () => {
         debugConsole.classList.toggle('show');
       });
 
-      // Show console by default and add initial logs
       debugConsole.classList.add('show');
-      addLog('Debug Console Initialized', 'log');
-      addLog(`User Agent: ${navigator.userAgent}`, 'log');
-      addLog('Waiting for scanner to initialize...', 'log');
+      addLog('Kiosk Scanner Initialized', 'log');
+      addLog(`Power Apps URL: ${POWERAPPS_BASE_URL}`, 'log');
+      addLog(`Debounce Period: ${SCAN_DEBOUNCE_MS}ms`, 'log');
 
-      // Catch global errors
       window.addEventListener('error', (event) => {
-        addLog(`Global Error: ${event.message} at ${event.filename}:${event.lineno}`, 'error');
+        addLog(`Global Error: ${event.message}`, 'error');
       });
 
-      // Catch unhandled promise rejections
       window.addEventListener('unhandledrejection', (event) => {
         addLog(`Unhandled Promise Rejection: ${event.reason}`, 'error');
       });
     })();
 
+    // ==========================================
+    // Kiosk Scanner Logic
+    // ==========================================
     (function () {
       const statusText = document.getElementById('statusText');
       const statusDot = document.getElementById('statusDot');
       const flash = document.getElementById('flash');
-      const errorState = document.getElementById('errorState');
-      const errorMessage = document.getElementById('errorMessage');
-      const readerElement = document.getElementById('reader');
+      const errorBanner = document.getElementById('errorBanner');
+      const lastScanDisplay = document.getElementById('lastScan');
+      const powerAppsFrame = document.getElementById('powerAppsFrame');
 
       let scanner = null;
-      let isPaused = false;
-      let hasShownError = false;
+      let isScanning = false;
+      let lastScanTime = 0;
 
       function setStatus(message, state) {
         statusText.textContent = message;
@@ -525,112 +497,103 @@
       }
 
       function showError(message) {
-        if (hasShownError) return;
-        hasShownError = true;
-        errorMessage.textContent = message;
-        errorState.classList.add('show');
-        setStatus('Camera unavailable', 'error');
-      }
-
-      function clearError() {
-        errorState.classList.remove('show');
+        errorBanner.textContent = `⚠️ ${message}`;
+        errorBanner.classList.add('show');
+        setStatus('Error', 'error');
+        console.error('Error:', message);
+        
+        setTimeout(() => {
+          errorBanner.classList.remove('show');
+        }, 5000);
       }
 
       function showSuccessFeedback() {
         flash.classList.add('show');
-        setTimeout(() => flash.classList.remove('show'), 1000);
+        setTimeout(() => flash.classList.remove('show'), 500);
       }
 
-      function sendToPowerApps(decodedText) {
+      function updatePowerAppsWithBarcode(decodedText) {
         try {
-          const payload = JSON.stringify({
-            event: 'BarcodeScanned',
-            value: decodedText
-          });
-
-          if (window.parent && window.parent !== window) {
-            window.parent.postMessage(payload, '*');
-          } else {
-            window.postMessage(payload, '*');
-          }
+          console.log('Updating Power Apps with barcode:', decodedText);
+          
+          // Create deep link URL with barcode parameter
+          const deepLinkUrl = `${POWERAPPS_BASE_URL}&barcode=${encodeURIComponent(decodedText)}&timestamp=${Date.now()}`;
+          console.log('Generated deep link URL:', deepLinkUrl);
+          
+          // Update iframe src to trigger Power Apps reload
+          powerAppsFrame.src = deepLinkUrl;
+          
+          // Update last scan display
+          const now = new Date().toLocaleTimeString();
+          lastScanDisplay.textContent = `Last scan: ${decodedText} @ ${now}`;
+          
+          console.log('Power Apps iframe updated with new barcode URL');
         } catch (err) {
-          console.warn('Unable to post barcode result to parent window:', err);
+          console.error('Error updating Power Apps:', err);
+          showError('Failed to update Power Apps application');
         }
       }
 
       function initializeScanner() {
-        console.log('initializeScanner() called');
+        console.log('Initializing barcode scanner...');
         
         if (!window.Html5Qrcode) {
           console.error('Html5Qrcode library not loaded');
-          showError('The scanner library failed to load. Please refresh the page and try again.');
+          showError('Scanner library failed to load. Please refresh the page.');
           return;
         }
 
-        console.log('Html5Qrcode library loaded, creating scanner instance');
+        console.log('Creating Html5Qrcode scanner instance');
         scanner = new window.Html5Qrcode('reader');
-        console.log('Scanner instance created');
 
         const config = {
           fps: 20,
-          qrbox: { width: 240, height: 240 },
+          qrbox: { width: 100, height: 100 },
           aspectRatio: 1.0,
           disableFlip: false
         };
-
-        // Only add formats if they're available
-        if (window.Html5QrcodeSupportedFormats) {
-          console.log('Html5QrcodeSupportedFormats available, adding format list');
-          config.formatsToSupport = [
-            window.Html5QrcodeSupportedFormats.CODE_128,
-            window.Html5QrcodeSupportedFormats.EAN_13,
-            window.Html5QrcodeSupportedFormats.QR_CODE,
-            window.Html5QrcodeSupportedFormats.CODE_39,
-            window.Html5QrcodeSupportedFormats.EAN_8,
-            window.Html5QrcodeSupportedFormats.UPC_A,
-            window.Html5QrcodeSupportedFormats.UPC_E,
-            window.Html5QrcodeSupportedFormats.ITF,
-            window.Html5QrcodeSupportedFormats.PDF_417,
-            window.Html5QrcodeSupportedFormats.AZTEC,
-            window.Html5QrcodeSupportedFormats.DATA_MATRIX
-          ];
-        } else {
-          console.warn('Html5QrcodeSupportedFormats not available, using default formats');
-        }
 
         const cameraConstraints = {
           facingMode: "environment"
         };
 
-        console.log('Config created, calling scanner.start()', config);
+        console.log('Starting camera with constraints');
         
-        // Add timeout for initialization
         let initTimeout = setTimeout(() => {
-          console.error('Camera initialization timeout - 15 seconds exceeded');
+          console.error('Camera initialization timeout');
           if (scanner && scanner.isScanning) {
             scanner.stop().catch(() => {});
           }
-          showError('Camera initialization timed out. Please check camera permissions and try again.');
-          setStatus('Initialization timeout', 'error');
+          showError('Camera timeout. Please check camera permissions.');
+          setStatus('Timeout', 'error');
         }, 15000);
 
         scanner.start(
           cameraConstraints,
           config,
           (decodedText) => {
-            console.log('Barcode scanned:', decodedText);
-            if (isPaused) return;
-            isPaused = true;
-            setStatus('Processing...', 'processing');
+            // Debounce - prevent multiple scans within cooldown period
+            const now = Date.now();
+            if (now - lastScanTime < SCAN_DEBOUNCE_MS) {
+              console.log('Scan ignored - debounce period active');
+              return;
+            }
+            
+            lastScanTime = now;
+            console.log('Barcode detected:', decodedText);
+            isScanning = true;
+            
+            setStatus('Processing scan...', 'processing');
             showSuccessFeedback();
-            sendToPowerApps(decodedText);
+            updatePowerAppsWithBarcode(decodedText);
+            
             setTimeout(() => {
-              isPaused = false;
-              clearError();
+              isScanning = false;
               setStatus('Ready to scan', 'ready');
-            }, 1000);
+            }, SCAN_DEBOUNCE_MS);
           },
           (errorMessageText) => {
+            // Suppress "no QR code found" messages
             if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
               return;
             }
@@ -638,28 +601,39 @@
           }
         ).then(() => {
           clearTimeout(initTimeout);
-          console.log('Scanner started successfully');
-          clearError();
+          console.log('Camera started successfully');
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
           clearTimeout(initTimeout);
-          console.error('Scanner start error:', error);
+          console.error('Camera start failed:', error);
           const message = error && error.message
             ? error.message
-            : 'Unable to access the camera. Please allow camera permissions and try again.';
+            : 'Unable to access camera. Please allow camera permissions.';
           showError(message);
         });
       }
 
-      window.addEventListener('load', initializeScanner);
+      function initializePowerApps() {
+        console.log('Initializing Power Apps iframe');
+        console.log('Loading Power Apps URL:', POWERAPPS_BASE_URL);
+        powerAppsFrame.src = POWERAPPS_BASE_URL;
+      }
+
+      // Initialize on page load
+      window.addEventListener('load', () => {
+        console.log('Page loaded, initializing components');
+        initializeScanner();
+        initializePowerApps();
+      });
+
+      // Cleanup on page unload
       window.addEventListener('beforeunload', () => {
         if (scanner && scanner.isScanning) {
           scanner.stop().catch(() => {});
         }
       });
-      
-      // Log when page loads
-      console.log('Page load event listener attached');
+
+      console.log('Scanner initialization logic loaded');
     })();
   </script>
 </body>
