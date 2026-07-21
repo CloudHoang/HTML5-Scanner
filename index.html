@@ -44,11 +44,11 @@
       gap: 0;
     }
 
-    /* Scanner Banner - Side Section (30% width - 3 of 10 columns) */
+    /* Scanner Banner - Full Screen Section */
     .scanner-banner {
       display: flex;
       flex-direction: column;
-      width: 30%;
+      width: 100%;
       height: 100%;
       background: linear-gradient(135deg, #020617 0%, #111827 100%);
       border-right: 2px solid var(--accent);
@@ -238,7 +238,7 @@
       color: var(--accent);
     }
 
-    /* Power Apps Iframe Container (70% width - 7 of 10 columns) */
+    /* Power Apps Iframe Container - Hidden in Full Screen Mode */
     .powerapps-container {
       flex: 1;
       width: 70%;
@@ -246,7 +246,7 @@
       background: var(--bg);
       border: none;
       overflow: hidden;
-      display: flex;
+      display: none;
       flex-direction: column;
     }
 
@@ -361,9 +361,9 @@
 
       .scanner-banner {
         width: 100%;
-        height: 220px;
+        height: 100%;
         border-right: none;
-        border-bottom: 2px solid var(--accent);
+        border-bottom: none;
       }
 
       .powerapps-container {
