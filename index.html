@@ -293,6 +293,75 @@
       border: 0;
     }
 
+    .debug-console {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      max-height: 200px;
+      background: rgba(0, 0, 0, 0.95);
+      border-top: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.75rem;
+      overflow-y: auto;
+      z-index: 9999;
+      padding: 8px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .debug-console.show {
+      display: block;
+    }
+
+    .debug-console-toggle {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 10000;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .debug-console-line {
+      margin: 2px 0;
+      padding: 2px 4px;
+      border-left: 2px solid transparent;
+    }
+
+    .debug-console-line.log {
+      color: #a0aec0;
+      border-left-color: #60a5fa;
+    }
+
+    .debug-console-line.error {
+      color: #f87171;
+      border-left-color: var(--danger);
+    }
+
+    .debug-console-line.warn {
+      color: #fbbf24;
+      border-left-color: #f59e0b;
+    }
+
+    @media (max-width: 640px) {
+      .debug-console-toggle {
+        bottom: 5px;
+        right: 5px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+    }
+
     @keyframes sweep {
       0% { top: 4%; opacity: 0.2; }
       50% { opacity: 1; }
@@ -364,8 +433,73 @@
     </div>
   </div>
 
+  <button class="debug-console-toggle" id="debugToggle" title="Toggle debug console">🐛</button>
+  <div class="debug-console" id="debugConsole"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
   <script>
+    // Debug Console Setup
+    (function() {
+      const debugConsole = document.getElementById('debugConsole');
+      const debugToggle = document.getElementById('debugToggle');
+      let logCount = 0;
+
+      function addLog(message, type = 'log') {
+        const line = document.createElement('div');
+        line.className = `debug-console-line ${type}`;
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${message}`;
+        debugConsole.appendChild(line);
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+        logCount++;
+        
+        // Keep only last 100 logs
+        while (debugConsole.children.length > 100) {
+          debugConsole.removeChild(debugConsole.firstChild);
+        }
+      }
+
+      // Intercept console methods
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'log');
+      };
+
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'error');
+      };
+
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'warn');
+      };
+
+      // Toggle debug console
+      debugToggle.addEventListener('click', () => {
+        debugConsole.classList.toggle('show');
+      });
+
+      // Show console by default and add initial logs
+      debugConsole.classList.add('show');
+      addLog('Debug Console Initialized', 'log');
+      addLog(`User Agent: ${navigator.userAgent}`, 'log');
+      addLog('Waiting for scanner to initialize...', 'log');
+
+      // Catch global errors
+      window.addEventListener('error', (event) => {
+        addLog(`Global Error: ${event.message} at ${event.filename}:${event.lineno}`, 'error');
+      });
+
+      // Catch unhandled promise rejections
+      window.addEventListener('unhandledrejection', (event) => {
+        addLog(`Unhandled Promise Rejection: ${event.reason}`, 'error');
+      });
+    })();
+
     (function () {
       const statusText = document.getElementById('statusText');
       const statusDot = document.getElementById('statusDot');
@@ -425,12 +559,17 @@
       }
 
       function initializeScanner() {
+        console.log('initializeScanner() called');
+        
         if (!window.Html5Qrcode) {
+          console.error('Html5Qrcode library not loaded');
           showError('The scanner library failed to load. Please refresh the page and try again.');
           return;
         }
 
+        console.log('Html5Qrcode library loaded, creating scanner instance');
         scanner = new window.Html5Qrcode('reader');
+        console.log('Scanner instance created');
 
         const config = {
           fps: 20,
@@ -456,8 +595,11 @@
           facingMode: { ideal: 'environment' }
         };
 
+        console.log('Config created, calling scanner.start()');
+        
         // Add timeout for initialization
         let initTimeout = setTimeout(() => {
+          console.error('Camera initialization timeout - 15 seconds exceeded');
           if (scanner && scanner.isScanning) {
             scanner.stop().catch(() => {});
           }
@@ -469,6 +611,7 @@
           cameraConstraints,
           config,
           (decodedText) => {
+            console.log('Barcode scanned:', decodedText);
             if (isPaused) return;
             isPaused = true;
             setStatus('Processing...', 'processing');
@@ -484,18 +627,20 @@
             if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
               return;
             }
+            console.warn('Scanner warning:', errorMessageText);
           }
         ).then(() => {
           clearTimeout(initTimeout);
+          console.log('Scanner started successfully');
           clearError();
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
           clearTimeout(initTimeout);
+          console.error('Scanner start error:', error);
           const message = error && error.message
             ? error.message
             : 'Unable to access the camera. Please allow camera permissions and try again.';
           showError(message);
-          console.error('Camera initialization failed:', error);
         });
       }
 
@@ -505,6 +650,9 @@
           scanner.stop().catch(() => {});
         }
       });
+      
+      // Log when page loads
+      console.log('Page load event listener attached');
     })();
   </script>
 </body>
