@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Barcode Scanner for Power Apps</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.82);
+      --panel-strong: rgba(15, 23, 42, 0.96);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-strong: #16a34a;
+      --danger: #f43f5e;
+      --border: rgba(255, 255, 255, 0.16);
+      --shadow: 0 20px 50px rgba(2, 6, 23, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top, rgba(34, 197, 94, 0.2), transparent 30%),
+        linear-gradient(135deg, #020617 0%, #111827 100%);
+    }
+
+    .app-shell {
+      width: min(100vw, 900px);
+      height: min(100vh, 700px);
+      max-height: 100vh;
+      padding: clamp(12px, 2vw, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      z-index: 5;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.ready {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .status-dot.processing {
+      background: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.2);
+    }
+
+    .hint-text {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: right;
+    }
+
+    .camera-card {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: rgba(2, 6, 23, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    #reader video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    .scanner-frame {
+      position: relative;
+      width: min(72vw, 300px);
+      aspect-ratio: 1;
+      max-width: 320px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.38);
+      background: transparent;
+    }
+
+    .scanner-frame::before,
+    .scanner-frame::after {
+      content: "";
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      border-color: rgba(255, 255, 255, 0.95);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .scanner-frame::before {
+      top: -2px;
+      left: -2px;
+      border-top-width: 4px;
+      border-left-width: 4px;
+      border-top-left-radius: 12px;
+    }
+
+    .scanner-frame::after {
+      top: -2px;
+      right: -2px;
+      border-top-width: 4px;
+      border-right-width: 4px;
+      border-top-right-radius: 12px;
+    }
+
+    .scanner-corner-bottom-left,
+    .scanner-corner-bottom-right {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      border-color: rgba(255, 255, 255, 0.95);
+      border-style: solid;
+      border-width: 0;
+      bottom: -2px;
+    }
+
+    .scanner-corner-bottom-left {
+      left: -2px;
+      border-bottom-width: 4px;
+      border-left-width: 4px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .scanner-corner-bottom-right {
+      right: -2px;
+      border-bottom-width: 4px;
+      border-right-width: 4px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .laser {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #22c55e, transparent);
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.8);
+      animation: sweep 2.2s linear infinite;
+      opacity: 0.95;
+    }
+
+    .flash {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 197, 94, 0.16);
+      backdrop-filter: blur(1px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 4;
+    }
+
+    .flash.show {
+      opacity: 1;
+    }
+
+    .checkmark {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      display: grid;
+      place-items: center;
+      font-size: 3.2rem;
+      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.3);
+      transform: scale(0.92);
+      animation: pop 0.45s ease-out;
+    }
+
+    .error-state {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      background: rgba(2, 6, 23, 0.95);
+      z-index: 6;
+    }
+
+    .error-state.show {
+      display: flex;
+    }
+
+    .error-title {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .error-message {
+      max-width: 360px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @keyframes sweep {
+      0% { top: 4%; opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { top: 96%; opacity: 0.2; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.78; }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .status-bar {
+        border-radius: 16px;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .hint-text {
+        text-align: left;
+      }
+
+      .scanner-frame {
+        width: min(80vw, 260px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="status-bar" role="status" aria-live="polite">
+      <div class="status-pill">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText">Initializing camera...</span>
+      </div>
+      <div class="hint-text">Point the camera at a barcode or QR code</div>
+    </div>
+
+    <div class="camera-card">
+      <div id="reader" aria-label="Barcode scanner preview"></div>
+
+      <div class="overlay" aria-hidden="true">
+        <div class="scanner-frame">
+          <div class="laser"></div>
+          <div class="scanner-corner-bottom-left"></div>
+          <div class="scanner-corner-bottom-right"></div>
+        </div>
+      </div>
+
+      <div id="flash" class="flash">
+        <div class="checkmark">✓</div>
+      </div>
+
+      <div id="errorState" class="error-state" role="alert">
+        <h2 class="error-title">Camera unavailable</h2>
+        <p class="error-message" id="errorMessage"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <script>
+    (function () {
+      const statusText = document.getElementById('statusText');
+      const statusDot = document.getElementById('statusDot');
+      const flash = document.getElementById('flash');
+      const errorState = document.getElementById('errorState');
+      const errorMessage = document.getElementById('errorMessage');
+      const readerElement = document.getElementById('reader');
+
+      let scanner = null;
+      let isPaused = false;
+      let hasShownError = false;
+
+      function setStatus(message, state) {
+        statusText.textContent = message;
+        statusDot.className = 'status-dot';
+        if (state === 'ready') {
+          statusDot.classList.add('ready');
+        } else if (state === 'processing') {
+          statusDot.classList.add('processing');
+        } else if (state === 'error') {
+          statusDot.classList.add('error');
+        }
+      }
+
+      function showError(message) {
+        if (hasShownError) return;
+        hasShownError = true;
+        errorMessage.textContent = message;
+        errorState.classList.add('show');
+        setStatus('Camera unavailable', 'error');
+      }
+
+      function clearError() {
+        errorState.classList.remove('show');
+      }
+
+      function showSuccessFeedback() {
+        flash.classList.add('show');
+        setTimeout(() => flash.classList.remove('show'), 1000);
+      }
+
+      function sendToPowerApps(decodedText) {
+        try {
+          const payload = JSON.stringify({
+            event: 'BarcodeScanned',
+            value: decodedText
+          });
+
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage(payload, '*');
+          } else {
+            window.postMessage(payload, '*');
+          }
+        } catch (err) {
+          console.warn('Unable to post barcode result to parent window:', err);
+        }
+      }
+
+      function initializeScanner() {
+        if (!window.Html5Qrcode) {
+          showError('The scanner library failed to load. Please refresh the page and try again.');
+          return;
+        }
+
+        scanner = new window.Html5Qrcode('reader');
+
+        const config = {
+          fps: 20,
+          qrbox: { width: 240, height: 240 },
+          aspectRatio: 1.0,
+          disableFlip: false,
+          formatsToSupport: [
+            window.Html5QrcodeSupportedFormats.CODE_128,
+            window.Html5QrcodeSupportedFormats.EAN_13,
+            window.Html5QrcodeSupportedFormats.QR_CODE,
+            window.Html5QrcodeSupportedFormats.CODE_39,
+            window.Html5QrcodeSupportedFormats.EAN_8,
+            window.Html5QrcodeSupportedFormats.UPC_A,
+            window.Html5QrcodeSupportedFormats.UPC_E,
+            window.Html5QrcodeSupportedFormats.ITF,
+            window.Html5QrcodeSupportedFormats.PDF_417,
+            window.Html5QrcodeSupportedFormats.AZTEC,
+            window.Html5QrcodeSupportedFormats.DATA_MATRIX
+          ]
+        };
+
+        const cameraConstraints = {
+          facingMode: { ideal: 'environment' }
+        };
+
+        scanner.start(
+          cameraConstraints,
+          config,
+          (decodedText) => {
+            if (isPaused) return;
+            isPaused = true;
+            setStatus('Processing...', 'processing');
+            showSuccessFeedback();
+            sendToPowerApps(decodedText);
+            setTimeout(() => {
+              isPaused = false;
+              clearError();
+              setStatus('Ready to scan', 'ready');
+            }, 1000);
+          },
+          (errorMessageText) => {
+            if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
+              return;
+            }
+          }
+        ).then(() => {
+          clearError();
+          setStatus('Ready to scan', 'ready');
+        }).catch((error) => {
+          const message = error && error.message
+            ? error.message
+            : 'Unable to access the camera. Please allow camera permissions and try again.';
+          showError(message);
+          console.error('Camera initialization failed:', error);
+        });
+      }
+
+      window.addEventListener('load', initializeScanner);
+      window.addEventListener('beforeunload', () => {
+        if (scanner && scanner.isScanning) {
+          scanner.stop().catch(() => {});
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
