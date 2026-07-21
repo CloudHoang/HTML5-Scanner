@@ -456,6 +456,15 @@
           facingMode: { ideal: 'environment' }
         };
 
+        // Add timeout for initialization
+        let initTimeout = setTimeout(() => {
+          if (scanner && scanner.isScanning) {
+            scanner.stop().catch(() => {});
+          }
+          showError('Camera initialization timed out. Please check camera permissions and try again.');
+          setStatus('Initialization timeout', 'error');
+        }, 15000);
+
         scanner.start(
           cameraConstraints,
           config,
@@ -477,9 +486,11 @@
             }
           }
         ).then(() => {
+          clearTimeout(initTimeout);
           clearError();
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
+          clearTimeout(initTimeout);
           const message = error && error.message
             ? error.message
             : 'Unable to access the camera. Please allow camera permissions and try again.';
