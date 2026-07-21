@@ -44,11 +44,11 @@
       gap: 0;
     }
 
-    /* Scanner Banner - Full Screen Section */
+    /* Scanner Banner - Side Section (30% width) */
     .scanner-banner {
       display: flex;
       flex-direction: column;
-      width: 100%;
+      width: 30%;
       height: 100%;
       background: linear-gradient(135deg, #020617 0%, #111827 100%);
       border-right: 2px solid var(--accent);
@@ -238,7 +238,7 @@
       color: var(--accent);
     }
 
-    /* Power Apps Iframe Container - Hidden in Full Screen Mode */
+    /* Power Apps Iframe Container (70% width) */
     .powerapps-container {
       flex: 1;
       width: 70%;
@@ -246,7 +246,7 @@
       background: var(--bg);
       border: none;
       overflow: hidden;
-      display: none;
+      display: flex;
       flex-direction: column;
     }
 
@@ -361,9 +361,9 @@
 
       .scanner-banner {
         width: 100%;
-        height: 100%;
+        height: 220px;
         border-right: none;
-        border-bottom: none;
+        border-bottom: 2px solid var(--accent);
       }
 
       .powerapps-container {
@@ -423,7 +423,7 @@
     // CONFIGURATION - Edit these values
     // ==========================================
     const POWERAPPS_BASE_URL = "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/7fb15c6c-cb4e-4e71-91c4-565b6f98ed59";
-    const SCAN_DEBOUNCE_MS = 2000; // 2 second cooldown between scans
+    const SCAN_DEBOUNCE_MS = 10000; // 10 second pause after scan
     
     // ==========================================
     // Debug Console Setup
@@ -498,6 +498,7 @@
       let scanner = null;
       let isScanning = false;
       let lastScanTime = 0;
+      let scannerPaused = false;
 
       function setStatus(message, state) {
         statusText.textContent = message;
@@ -527,27 +528,95 @@
         setTimeout(() => flash.classList.remove('show'), 500);
       }
 
-      function updatePowerAppsWithBarcode(decodedText) {
+      function sendToApp(barcode) {
         try {
-          console.log('Updating Power Apps with barcode:', decodedText);
-          
-          // Create deep link URL with barcode parameter
-          const deepLinkUrl = `${POWERAPPS_BASE_URL}&barcode=${encodeURIComponent(decodedText)}&timestamp=${Date.now()}`;
-          console.log('Generated deep link URL:', deepLinkUrl);
-          
-          // Update iframe src to trigger Power Apps reload
-          powerAppsFrame.src = deepLinkUrl;
-          
-          // Update last scan display
-          const now = new Date().toLocaleTimeString();
-          lastScanDisplay.textContent = `Last scan: ${decodedText} @ ${now}`;
-          
-          console.log('Power Apps iframe updated with new barcode URL');
+          console.log('Sending barcode to Power Apps iframe:', barcode);
+          // Send barcode value to iframe via postMessage (simulates typing)
+          if (powerAppsFrame && powerAppsFrame.contentWindow) {
+            powerAppsFrame.contentWindow.postMessage({
+              type: 'BARCODE_SCANNED',
+              value: barcode
+            }, '*');
+            console.log('Barcode sent to iframe via postMessage');
+          }
         } catch (err) {
-          console.error('Error updating Power Apps:', err);
-          showError('Failed to update Power Apps application');
+          console.error('Error sending barcode to app:', err);
         }
       }
+
+      function pauseScannerForDuration(ms) {
+        try {
+          if (scanner && scanner.isScanning) {
+            console.log(`Pausing scanner for ${ms}ms...`);
+            scanner.stop().then(() => {
+              scannerPaused = true;
+              console.log('Scanner paused successfully');
+              
+              // Resume scanner after specified duration
+              setTimeout(() => {
+                console.log('Resuming scanner...');
+                if (scanner) {
+                  const config = {
+                    fps: 20,
+                    disableFlip: false
+                  };
+                  const cameraConstraints = {
+                    facingMode: "environment"
+                  };
+                  
+                  scanner.start(
+                    cameraConstraints,
+                    config,
+                    handleScan,
+                    (errorMessageText) => {
+                      if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
+                        return;
+                      }
+                      console.warn('Scanner warning:', errorMessageText);
+                    }
+                  ).then(() => {
+                    scannerPaused = false;
+                    console.log('Scanner resumed successfully');
+                    setStatus('Ready to scan', 'ready');
+                  }).catch((error) => {
+                    console.error('Error resuming scanner:', error);
+                    showError('Failed to resume scanner');
+                  });
+                }
+              }, ms);
+            }).catch((error) => {
+              console.error('Error pausing scanner:', error);
+            });
+          }
+        } catch (err) {
+          console.error('Error in pauseScannerForDuration:', err);
+        }
+      }
+
+      const handleScan = (decodedText) => {
+        const now = Date.now();
+        if (now - lastScanTime < SCAN_DEBOUNCE_MS) {
+          console.log('Scan ignored - scanner paused');
+          return;
+        }
+        
+        lastScanTime = now;
+        console.log('Barcode detected:', decodedText);
+        isScanning = true;
+        
+        setStatus('Processing scan...', 'processing');
+        showSuccessFeedback();
+        
+        // Send barcode to app as if typing
+        sendToApp(decodedText);
+        
+        // Update last scan display
+        const timeStr = new Date().toLocaleTimeString();
+        lastScanDisplay.textContent = `Last scan: ${decodedText} @ ${timeStr}`;
+        
+        // Pause scanner for 10 seconds
+        pauseScannerForDuration(SCAN_DEBOUNCE_MS);
+      };
 
       function initializeScanner() {
         console.log('Initializing barcode scanner...');
@@ -584,27 +653,7 @@
         scanner.start(
           cameraConstraints,
           config,
-          (decodedText) => {
-            // Debounce - prevent multiple scans within cooldown period
-            const now = Date.now();
-            if (now - lastScanTime < SCAN_DEBOUNCE_MS) {
-              console.log('Scan ignored - debounce period active');
-              return;
-            }
-            
-            lastScanTime = now;
-            console.log('Barcode detected:', decodedText);
-            isScanning = true;
-            
-            setStatus('Processing scan...', 'processing');
-            showSuccessFeedback();
-            updatePowerAppsWithBarcode(decodedText);
-            
-            setTimeout(() => {
-              isScanning = false;
-              setStatus('Ready to scan', 'ready');
-            }, SCAN_DEBOUNCE_MS);
-          },
+          handleScan,
           (errorMessageText) => {
             // Suppress "no QR code found" messages
             if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
