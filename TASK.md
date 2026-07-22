@@ -75,19 +75,40 @@ Transform a simple HTML5 barcode/QR code scanner into a production-ready **Kiosk
 - ✅ Restored debug console visibility by default
 - ✅ Fixed layout issues (error banner, flex containers)
 
+### Phase 7: Layout Changes & Scanner Pause Attempt (July 22, 2026)
+- ✅ Changed layout to 30% scanner / 70% Power Apps (from full-screen scanner)
+- ✅ Enlarged scanner frame from 120px to 75% screen size for full-area detection
+- ⚠️ Attempted barcode transmission via postMessage - **NOT WORKING**
+- ⚠️ Attempted scanner pause for 10 seconds after scan - **NOT WORKING**
+
 ---
 
 ## 🚧 Known Issues / Current Status
 
-### **Status:** ⚠️ In Testing
+### **Status:** ⚠️ In Testing / Active Development
 - Camera initialization may require explicit user permission
 - Power Apps iframe loading depends on network and CORS policies
 - Some browsers may restrict camera access (https required)
+
+### Current Issues (July 22, 2026):
+1. **🔴 postMessage Not Working** - Barcode transmission to Power Apps via postMessage not functioning as expected
+   - Attempted implementation: Send barcode value to iframe using `postMessage({ type: 'BARCODE_SCANNED', value: barcode })`
+   - Issue: Power Apps iframe may not be receiving or processing the message
+   - Possible causes: CORS restrictions, Power Apps not listening for postMessage, iframe origin mismatch
+   - Next steps: Investigate if Power Apps supports postMessage API, may need to revert to deep-link method
+
+2. **🔴 Scanner Pause Not Working** - 10-second scanner pause after scan not functioning
+   - Attempted implementation: Call `scanner.stop()` after detection, resume after 10 seconds
+   - Issue: Scanner may not properly pause/resume or may throw errors during resume
+   - Possible causes: html5-qrcode library limitations, promise rejection, camera release issues
+   - Next steps: Test pause/resume logic, add error handling, consider alternative approach
 
 ### Issues to Monitor:
 1. **Camera Access:** Requires https and user permission prompt
 2. **Power Apps Loading:** Iframe loads in white iframe container
 3. **CORS:** Power Apps may have restrictions on embedding
+4. **postMessage Communication:** May require Power Apps-side implementation
+5. **Camera Pause/Resume:** html5-qrcode library may have limitations
 
 ---
 
@@ -237,32 +258,39 @@ const SCAN_DEBOUNCE_MS = 2000; // Adjust cooldown if needed
 | Hour 4 | Power Apps Integration | ✅ Done |
 | Hour 5 | Layout Redesign (70/30) | ✅ Done |
 | Hour 6 | Critical Bug Fixes | ✅ Done |
-| Hour 7 | Testing & Documentation | 🔄 Current |
+| Hour 7 | Testing & Documentation | ✅ Done |
+| July 22 | Layout Refinement & Scanner Pause Attempt | ⚠️ Issues Found |
 
 ---
 
 ## ✨ Next Steps
 
-### Immediate (This Week)
-1. ☐ Test camera functionality on different devices
-2. ☐ Verify Power Apps integration with real scans
-3. ☐ Monitor debug console for any errors
-4. ☐ Test on mobile/tablet
-5. ☐ Validate barcode accuracy
+### Immediate (BLOCKING - Must Fix)
+1. ☐ **Fix Scanner Pause Logic** - Investigate html5-qrcode pause/resume functionality
+   - Current issue: Scanner pause after detection not working
+   - Need to test pause/resume with error handling
+   
+2. ☐ **Fix postMessage Communication** - Investigate iframe message passing
+   - Current issue: postMessage to Power Apps iframe not working
+   - Alternatives: Revert to deep-link URL update method, investigate Power Apps postMessage support
 
-### Short Term (Next 2 Weeks)
+3. ☐ **Test on Device** - Real-world camera testing
+   - Verify camera functionality after latest changes
+   - Test barcode detection in 75% frame zone
+
+### Short Term (Next Session)
+1. ☐ Implement working barcode transmission (either postMessage fix or deep-link alternative)
+2. ☐ Implement working scanner pause/resume or revert to debounce-only
+3. ☐ Test camera functionality on different devices
+4. ☐ Verify Power Apps integration with actual scans
+5. ☐ Test on mobile/tablet layouts
+
+### Medium Term (Next 2 Weeks)
 1. ☐ Production security hardening
 2. ☐ Analytics integration
 3. ☐ Performance optimization
 4. ☐ User training documentation
 5. ☐ Deploy to production kiosk hardware
-
-### Medium Term (Next Month)
-1. ☐ Add barcode history/logging
-2. ☐ Implement offline mode
-3. ☐ Mobile app version
-4. ☐ Admin dashboard
-5. ☐ Multi-language support
 
 ---
 
