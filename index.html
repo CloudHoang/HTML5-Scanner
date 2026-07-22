@@ -44,14 +44,14 @@
       gap: 0;
     }
 
-    /* Scanner Banner - Side Section (30% width) */
+    /* Scanner Banner - Side Section (30% width, Right Side) */
     .scanner-banner {
       display: flex;
       flex-direction: column;
       width: 30%;
       height: 100%;
       background: linear-gradient(135deg, #020617 0%, #111827 100%);
-      border-right: 2px solid var(--accent);
+      border-left: 2px solid var(--accent);
       padding: 12px;
       gap: 8px;
       flex-shrink: 0;
@@ -381,7 +381,14 @@
 </head>
 <body>
   <div class="kiosk-container">
-    <!-- Scanner Banner -->
+    <!-- Power Apps Container (Left Side 70%) -->
+    <div class="powerapps-container">
+      <!-- Error Banner -->
+      <div id="errorBanner" class="error-banner"></div>
+      <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
+    </div>
+
+    <!-- Scanner Banner (Right Side 30%) -->
     <div class="scanner-banner">
       <div class="scanner-header">
         <div class="scanner-status">
@@ -404,13 +411,6 @@
           <div class="checkmark">✓</div>
         </div>
       </div>
-    </div>
-
-    <!-- Power Apps Container -->
-    <div class="powerapps-container">
-      <!-- Error Banner -->
-      <div id="errorBanner" class="error-banner"></div>
-      <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
     </div>
   </div>
 
