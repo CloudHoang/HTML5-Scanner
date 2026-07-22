@@ -127,12 +127,10 @@
     #reader video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
       background: #000;
     }
-
-    .overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
@@ -595,6 +593,7 @@
 
         const config = {
           fps: 20,
+          qrbox: { width: 250, height: 250 },
           experimentalFeatures: {
             useBarCodeDetectorIfSupported: true
           },
@@ -603,9 +602,7 @@
         };
 
         const cameraConstraints = {
-          facingMode: "environment",
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          facingMode: "environment"
         };
 
         console.log('⚙️ Starting camera with constraints:', JSON.stringify(cameraConstraints));
@@ -623,24 +620,12 @@
           handleScanError
         ).then(() => {
           clearTimeout(initTimeout);
-          console.log('✅ Camera started successfully! Listening for QR codes (Full-frame scan enabled)...');
+          console.log('✅ Camera started successfully! Listening for QR codes...');
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
           clearTimeout(initTimeout);
-          console.error('❌ Camera start failed with high-res, retrying with fallback constraints:', error);
-          // Fallback to basic facingMode if width/height ideal constraints failed
-          scanner.start(
-            { facingMode: "environment" },
-            config,
-            handleScan,
-            handleScanError
-          ).then(() => {
-            console.log('✅ Camera started with fallback constraints!');
-            setStatus('Ready to scan', 'ready');
-          }).catch((fallbackError) => {
-            console.error('❌ Fallback camera start failed:', fallbackError);
-            showError('Unable to access camera.');
-          });
+          console.error('❌ Camera start failed:', error);
+          showError('Unable to access camera.');
         });
       }
 
