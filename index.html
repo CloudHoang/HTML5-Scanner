@@ -498,7 +498,7 @@
       let scanner = null;
       let isScanning = false;
       let lastScanTime = 0;
-      let scannerPaused = false;
+      let scannedFrameCount = 0;
 
       function setStatus(message, state) {
         statusText.textContent = message;
@@ -528,110 +528,71 @@
         setTimeout(() => flash.classList.remove('show'), 500);
       }
 
-      function sendToApp(barcode) {
-        try {
-          console.log('Sending barcode to Power Apps iframe:', barcode);
-          // Send barcode value to iframe via postMessage (simulates typing)
-          if (powerAppsFrame && powerAppsFrame.contentWindow) {
-            powerAppsFrame.contentWindow.postMessage({
-              type: 'BARCODE_SCANNED',
-              value: barcode
-            }, '*');
-            console.log('Barcode sent to iframe via postMessage');
-          }
-        } catch (err) {
-          console.error('Error sending barcode to app:', err);
-        }
-      }
-
-      function pauseScannerForDuration(ms) {
-        try {
-          if (scanner && scanner.isScanning) {
-            console.log(`Pausing scanner for ${ms}ms...`);
-            scanner.stop().then(() => {
-              scannerPaused = true;
-              console.log('Scanner paused successfully');
-              
-              // Resume scanner after specified duration
-              setTimeout(() => {
-                console.log('Resuming scanner...');
-                if (scanner) {
-                  const config = {
-                    fps: 20,
-                    disableFlip: false
-                  };
-                  const cameraConstraints = {
-                    facingMode: "environment"
-                  };
-                  
-                  scanner.start(
-                    cameraConstraints,
-                    config,
-                    handleScan,
-                    (errorMessageText) => {
-                      if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
-                        return;
-                      }
-                      console.warn('Scanner warning:', errorMessageText);
-                    }
-                  ).then(() => {
-                    scannerPaused = false;
-                    console.log('Scanner resumed successfully');
-                    setStatus('Ready to scan', 'ready');
-                  }).catch((error) => {
-                    console.error('Error resuming scanner:', error);
-                    showError('Failed to resume scanner');
-                  });
-                }
-              }, ms);
-            }).catch((error) => {
-              console.error('Error pausing scanner:', error);
-            });
-          }
-        } catch (err) {
-          console.error('Error in pauseScannerForDuration:', err);
-        }
-      }
-
-      const handleScan = (decodedText) => {
+      const handleScan = (decodedText, result) => {
         const now = Date.now();
-        if (now - lastScanTime < SCAN_DEBOUNCE_MS) {
-          console.log('Scan ignored - scanner paused');
+        // Simple 2s debounce to prevent spamming logs for the same code
+        if (now - lastScanTime < 2000) {
           return;
         }
-        
         lastScanTime = now;
-        console.log('Barcode detected:', decodedText);
-        isScanning = true;
-        
-        setStatus('Processing scan...', 'processing');
+
+        console.log('========================================');
+        console.log('🎉 [SUCCESS] BARCODE/QR DETECTED!');
+        console.log('📄 Value:', decodedText);
+        if (result) {
+          console.log('📊 Format:', result.result?.format?.formatName || 'Unknown');
+        }
+        console.log('========================================');
+
+        setStatus('QR Detected!', 'processing');
         showSuccessFeedback();
-        
-        // Send barcode to app as if typing
-        sendToApp(decodedText);
-        
-        // Update last scan display
+
+        // Update UI last scan display
         const timeStr = new Date().toLocaleTimeString();
-        lastScanDisplay.textContent = `Last scan: ${decodedText} @ ${timeStr}`;
+        lastScanDisplay.textContent = `LAST: ${decodedText} (${timeStr})`;
         
-        // Pause scanner for 10 seconds
-        pauseScannerForDuration(SCAN_DEBOUNCE_MS);
+        setTimeout(() => {
+          setStatus('Ready to scan', 'ready');
+        }, 2000);
       };
 
+      function handleScanError(errorMessageText) {
+        scannedFrameCount++;
+        
+        // Log stream activity every 60 frames (~3 seconds at 20fps)
+        if (scannedFrameCount % 60 === 0) {
+          console.log(`🔍 [SCANNER ACTIVE] Analyzed ${scannedFrameCount} video frames so far...`);
+        }
+
+        if (typeof errorMessageText === 'string') {
+          if (errorMessageText.includes('No QR code found') || errorMessageText.includes('No MultiFormat Readers')) {
+            return; // Normal idle searching frame
+          }
+          console.warn('⚠️ [SCANNER WARNING]:', errorMessageText);
+        }
+      }
+
       function initializeScanner() {
-        console.log('Initializing barcode scanner...');
+        console.log('🚀 Initializing Html5Qrcode scanner...');
         
         if (!window.Html5Qrcode) {
-          console.error('Html5Qrcode library not loaded');
+          console.error('❌ Html5Qrcode library not loaded!');
           showError('Scanner library failed to load. Please refresh the page.');
           return;
         }
 
-        console.log('Creating Html5Qrcode scanner instance');
+        console.log('📷 Creating Html5Qrcode scanner instance on #reader');
         scanner = new window.Html5Qrcode('reader');
 
         const config = {
-          fps: 20,
+          fps: 15,
+          qrbox: function(viewfinderWidth, viewfinderHeight) {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const qrSize = Math.floor(minEdge * 0.75);
+            console.log(`📐 Calculated QRBox size: ${qrSize}x${qrSize} (Viewfinder: ${viewfinderWidth}x${viewfinderHeight})`);
+            return { width: qrSize, height: qrSize };
+          },
+          aspectRatio: 1.0,
           disableFlip: false
         };
 
@@ -639,13 +600,10 @@
           facingMode: "environment"
         };
 
-        console.log('Starting camera with constraints');
+        console.log('⚙️ Starting camera with config:', JSON.stringify(config));
         
         let initTimeout = setTimeout(() => {
-          console.error('Camera initialization timeout');
-          if (scanner && scanner.isScanning) {
-            scanner.stop().catch(() => {});
-          }
+          console.error('⏰ Camera initialization timeout (15s)');
           showError('Camera timeout. Please check camera permissions.');
           setStatus('Timeout', 'error');
         }, 15000);
@@ -654,20 +612,14 @@
           cameraConstraints,
           config,
           handleScan,
-          (errorMessageText) => {
-            // Suppress "no QR code found" messages
-            if (typeof errorMessageText === 'string' && errorMessageText.includes('No QR code found')) {
-              return;
-            }
-            console.warn('Scanner warning:', errorMessageText);
-          }
+          handleScanError
         ).then(() => {
           clearTimeout(initTimeout);
-          console.log('Camera started successfully');
+          console.log('✅ Camera started successfully! Listening for QR codes...');
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
           clearTimeout(initTimeout);
-          console.error('Camera start failed:', error);
+          console.error('❌ Camera start failed:', error);
           const message = error && error.message
             ? error.message
             : 'Unable to access camera. Please allow camera permissions.';
