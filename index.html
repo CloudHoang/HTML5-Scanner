@@ -531,39 +531,41 @@
       }
 
       function sendToIframe(value) {
-        console.log('📤 Transmitting QR Code to Power Apps iframe:', value);
+        console.log('📤 Transmitting QR Code to Power Apps iframe (No URL reload):', value);
         
         // 1. postMessage (Simulated data event to iframe window)
         if (powerAppsFrame && powerAppsFrame.contentWindow) {
           try {
+            // Object payload
             powerAppsFrame.contentWindow.postMessage({
               type: 'BARCODE_SCANNED',
               event: 'barcode_scanned',
               barcode: value,
-              value: value
+              value: value,
+              text: value
             }, '*');
-            console.log('✅ Sent postMessage with value:', value);
+
+            // Plain string payload
+            powerAppsFrame.contentWindow.postMessage(value, '*');
+
+            console.log('✅ Sent postMessage data to iframe contentWindow');
           } catch (err) {
             console.error('❌ postMessage failed:', err);
           }
+
+          // 2. Focus iframe window
+          try {
+            powerAppsFrame.focus();
+            console.log('🎯 Focused Power Apps iframe');
+          } catch (err) {
+            console.warn('⚠️ Focus iframe warning:', err);
+          }
         }
 
-        // 2. Deep linking URL update (loads Power Apps with ?barcode=VALUE)
-        try {
-          const timestamp = Date.now();
-          const separator = POWERAPPS_BASE_URL.includes('?') ? '&' : '?';
-          const targetUrl = `${POWERAPPS_BASE_URL}${separator}barcode=${encodeURIComponent(value)}&timestamp=${timestamp}`;
-          
-          console.log('🔄 Updating iframe src to pass barcode parameter:', targetUrl);
-          powerAppsFrame.src = targetUrl;
-        } catch (err) {
-          console.error('❌ Failed to update iframe src:', err);
-        }
-
-        // 3. Copy to clipboard for easy manual pasting if needed
+        // 3. Copy to clipboard automatically for convenient dán/typing
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(value).then(() => {
-            console.log('📋 QR value copied to clipboard as fallback input');
+            console.log('📋 QR value copied to clipboard');
           }).catch(() => {});
         }
       }
