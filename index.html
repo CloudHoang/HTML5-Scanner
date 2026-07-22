@@ -571,7 +571,6 @@
           console.warn('⚠️ [SCANNER WARNING]:', errorMessageText);
         }
       }
-
       function initializeScanner() {
         console.log('🚀 Initializing Html5Qrcode scanner...');
         
@@ -584,23 +583,32 @@
         console.log('📷 Creating Html5Qrcode scanner instance on #reader');
         scanner = new window.Html5Qrcode('reader');
 
+        // Formats configuration
+        const formatsToSupport = window.Html5QrcodeSupportedFormats ? [
+          window.Html5QrcodeSupportedFormats.QR_CODE,
+          window.Html5QrcodeSupportedFormats.CODE_128,
+          window.Html5QrcodeSupportedFormats.EAN_13,
+          window.Html5QrcodeSupportedFormats.CODE_39,
+          window.Html5QrcodeSupportedFormats.UPC_A,
+          window.Html5QrcodeSupportedFormats.DATA_MATRIX
+        ] : undefined;
+
         const config = {
-          fps: 15,
-          qrbox: function(viewfinderWidth, viewfinderHeight) {
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrSize = Math.floor(minEdge * 0.75);
-            console.log(`📐 Calculated QRBox size: ${qrSize}x${qrSize} (Viewfinder: ${viewfinderWidth}x${viewfinderHeight})`);
-            return { width: qrSize, height: qrSize };
+          fps: 20,
+          experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
           },
-          aspectRatio: 1.0,
+          formatsToSupport: formatsToSupport,
           disableFlip: false
         };
 
         const cameraConstraints = {
-          facingMode: "environment"
+          facingMode: "environment",
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         };
 
-        console.log('⚙️ Starting camera with config:', JSON.stringify(config));
+        console.log('⚙️ Starting camera with constraints:', JSON.stringify(cameraConstraints));
         
         let initTimeout = setTimeout(() => {
           console.error('⏰ Camera initialization timeout (15s)');
@@ -615,15 +623,24 @@
           handleScanError
         ).then(() => {
           clearTimeout(initTimeout);
-          console.log('✅ Camera started successfully! Listening for QR codes...');
+          console.log('✅ Camera started successfully! Listening for QR codes (Full-frame scan enabled)...');
           setStatus('Ready to scan', 'ready');
         }).catch((error) => {
           clearTimeout(initTimeout);
-          console.error('❌ Camera start failed:', error);
-          const message = error && error.message
-            ? error.message
-            : 'Unable to access camera. Please allow camera permissions.';
-          showError(message);
+          console.error('❌ Camera start failed with high-res, retrying with fallback constraints:', error);
+          // Fallback to basic facingMode if width/height ideal constraints failed
+          scanner.start(
+            { facingMode: "environment" },
+            config,
+            handleScan,
+            handleScanError
+          ).then(() => {
+            console.log('✅ Camera started with fallback constraints!');
+            setStatus('Ready to scan', 'ready');
+          }).catch((fallbackError) => {
+            console.error('❌ Fallback camera start failed:', fallbackError);
+            showError('Unable to access camera.');
+          });
         });
       }
 
