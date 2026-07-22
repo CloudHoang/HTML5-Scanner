@@ -530,8 +530,7 @@
 
       const handleScan = (decodedText, result) => {
         const now = Date.now();
-        // Simple 2s debounce to prevent spamming logs for the same code
-        if (now - lastScanTime < 2000) {
+        if (now - lastScanTime < 1500) {
           return;
         }
         lastScanTime = now;
@@ -539,38 +538,27 @@
         console.log('========================================');
         console.log('🎉 [SUCCESS] BARCODE/QR DETECTED!');
         console.log('📄 Value:', decodedText);
-        if (result) {
-          console.log('📊 Format:', result.result?.format?.formatName || 'Unknown');
-        }
         console.log('========================================');
 
-        setStatus('QR Detected!', 'processing');
+        setStatus(`✅ SCANNED: ${decodedText}`, 'ready');
         showSuccessFeedback();
 
         // Update UI last scan display
         const timeStr = new Date().toLocaleTimeString();
         lastScanDisplay.textContent = `LAST: ${decodedText} (${timeStr})`;
         
-        setTimeout(() => {
-          setStatus('Ready to scan', 'ready');
-        }, 2000);
+        // Show alert pop-up immediately to confirm scan
+        alert(`🎉 QR CODE DETECTED!\n\nValue: ${decodedText}`);
       };
 
       function handleScanError(errorMessageText) {
         scannedFrameCount++;
         
-        // Log stream activity every 60 frames (~3 seconds at 20fps)
         if (scannedFrameCount % 60 === 0) {
-          console.log(`🔍 [SCANNER ACTIVE] Analyzed ${scannedFrameCount} video frames so far...`);
-        }
-
-        if (typeof errorMessageText === 'string') {
-          if (errorMessageText.includes('No QR code found') || errorMessageText.includes('No MultiFormat Readers')) {
-            return; // Normal idle searching frame
-          }
-          console.warn('⚠️ [SCANNER WARNING]:', errorMessageText);
+          console.log(`🔍 [SCANNER ACTIVE] Analyzed ${scannedFrameCount} video frames...`);
         }
       }
+
       function initializeScanner() {
         console.log('🚀 Initializing Html5Qrcode scanner...');
         
@@ -583,31 +571,16 @@
         console.log('📷 Creating Html5Qrcode scanner instance on #reader');
         scanner = new window.Html5Qrcode('reader');
 
-        // Formats configuration
-        const formatsToSupport = window.Html5QrcodeSupportedFormats ? [
-          window.Html5QrcodeSupportedFormats.QR_CODE,
-          window.Html5QrcodeSupportedFormats.CODE_128,
-          window.Html5QrcodeSupportedFormats.EAN_13,
-          window.Html5QrcodeSupportedFormats.CODE_39,
-          window.Html5QrcodeSupportedFormats.UPC_A,
-          window.Html5QrcodeSupportedFormats.DATA_MATRIX
-        ] : undefined;
-
         const config = {
-          fps: 20,
-          qrbox: { width: 250, height: 250 },
-          experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true
-          },
-          formatsToSupport: formatsToSupport,
-          disableFlip: false
+          fps: 10,
+          qrbox: { width: 250, height: 250 }
         };
 
         const cameraConstraints = {
           facingMode: "environment"
         };
 
-        console.log('⚙️ Starting camera with constraints:', JSON.stringify(cameraConstraints));
+        console.log('⚙️ Starting camera with config:', JSON.stringify(config));
         
         let initTimeout = setTimeout(() => {
           console.error('⏰ Camera initialization timeout (15s)');
