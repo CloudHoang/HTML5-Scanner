@@ -565,7 +565,7 @@
         // 3. Copy to clipboard automatically for convenient dán/typing
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(value).then(() => {
-            console.log('📋 QR value copied to clipboard');
+            console.log('📋 QR value copied to clipboard. Press Ctrl+V in Power Apps to paste.');
           }).catch(() => {});
         }
       }
