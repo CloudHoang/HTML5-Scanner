@@ -80,6 +80,7 @@ Transform a simple HTML5 barcode/QR code scanner into a production-ready **Kiosk
 - ✅ Enlarged scanner frame from 120px to 75% screen size for full-area detection
 - ⚠️ Attempted barcode transmission via postMessage - **NOT WORKING**
 - ⚠️ Attempted scanner pause for 10 seconds after scan - **NOT WORKING**
+- ✅ **Stable commit for QR scan (simplified logging):** `79a43fa` (Use `git reset --hard 79a43fa` to revert if needed)
 
 ---
 
