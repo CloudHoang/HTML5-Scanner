@@ -424,7 +424,7 @@
     // CONFIGURATION - Edit these values
     // ==========================================
     const POWERAPPS_BASE_URL = "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/7fb15c6c-cb4e-4e71-91c4-565b6f98ed59";
-    const SCAN_DEBOUNCE_MS = 10000; // 10 second pause after scan
+    const SCAN_PAUSE_SECONDS = 30; // 30 second pause after scan
     
     // ==========================================
     // Debug Console Setup
@@ -474,7 +474,7 @@
       debugConsole.classList.add('show');
       addLog('Kiosk Scanner Initialized', 'log');
       addLog(`Power Apps URL: ${POWERAPPS_BASE_URL}`, 'log');
-      addLog(`Debounce Period: ${SCAN_DEBOUNCE_MS}ms`, 'log');
+      addLog(`Pause Duration: ${SCAN_PAUSE_SECONDS}s`, 'log');
 
       window.addEventListener('error', (event) => {
         addLog(`Global Error: ${event.message}`, 'error');
@@ -498,7 +498,8 @@
 
       let scanner = null;
       let isScanning = false;
-      let lastScanTime = 0;
+      let isPaused = false;
+      let countdownTimer = null;
       let scannedFrameCount = 0;
 
       function setStatus(message, state) {
@@ -529,27 +530,128 @@
         setTimeout(() => flash.classList.remove('show'), 500);
       }
 
+      function sendToIframe(value) {
+        console.log('📤 Transmitting QR Code to Power Apps iframe:', value);
+        
+        // 1. postMessage (Simulated data event to iframe window)
+        if (powerAppsFrame && powerAppsFrame.contentWindow) {
+          try {
+            powerAppsFrame.contentWindow.postMessage({
+              type: 'BARCODE_SCANNED',
+              event: 'barcode_scanned',
+              barcode: value,
+              value: value
+            }, '*');
+            console.log('✅ Sent postMessage with value:', value);
+          } catch (err) {
+            console.error('❌ postMessage failed:', err);
+          }
+        }
+
+        // 2. Deep linking URL update (loads Power Apps with ?barcode=VALUE)
+        try {
+          const timestamp = Date.now();
+          const separator = POWERAPPS_BASE_URL.includes('?') ? '&' : '?';
+          const targetUrl = `${POWERAPPS_BASE_URL}${separator}barcode=${encodeURIComponent(value)}&timestamp=${timestamp}`;
+          
+          console.log('🔄 Updating iframe src to pass barcode parameter:', targetUrl);
+          powerAppsFrame.src = targetUrl;
+        } catch (err) {
+          console.error('❌ Failed to update iframe src:', err);
+        }
+
+        // 3. Copy to clipboard for easy manual pasting if needed
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value).then(() => {
+            console.log('📋 QR value copied to clipboard as fallback input');
+          }).catch(() => {});
+        }
+      }
+
+      function pauseScannerFor(seconds = 30) {
+        isPaused = true;
+
+        // Try native pause if available
+        try {
+          if (scanner && typeof scanner.pause === 'function') {
+            scanner.pause(true);
+            console.log('⏸️ html5-qrcode scanner paused');
+          }
+        } catch (e) {
+          console.warn('scanner.pause warning:', e);
+        }
+
+        let remaining = seconds;
+
+        if (countdownTimer) clearInterval(countdownTimer);
+
+        const updatePauseStatus = () => {
+          setStatus(`⏸️ PAUSED (${remaining}s remaining - Click to resume)`, 'processing');
+        };
+
+        updatePauseStatus();
+
+        countdownTimer = setInterval(() => {
+          remaining--;
+          if (remaining <= 0) {
+            resumeScanner();
+          } else {
+            updatePauseStatus();
+          }
+        }, 1000);
+      }
+
+      function resumeScanner() {
+        if (countdownTimer) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
+        }
+        isPaused = false;
+
+        try {
+          if (scanner && typeof scanner.resume === 'function') {
+            scanner.resume();
+            console.log('▶️ html5-qrcode scanner resumed');
+          }
+        } catch (e) {
+          console.warn('scanner.resume warning:', e);
+        }
+
+        setStatus('Ready to scan', 'ready');
+        console.log('✅ Scanner is ready for next QR code');
+      }
+
+      // Allow user to click status bar to resume early
+      statusText.style.cursor = 'pointer';
+      statusText.title = 'Click to resume scanning if paused';
+      statusText.addEventListener('click', () => {
+        if (isPaused) {
+          console.log('👆 User manually resumed scanner');
+          resumeScanner();
+        }
+      });
+
       const handleScan = (decodedText, result) => {
-        const now = Date.now();
-        if (now - lastScanTime < 1500) {
+        if (isPaused) {
           return;
         }
-        lastScanTime = now;
 
         console.log('========================================');
         console.log('🎉 [SUCCESS] BARCODE/QR DETECTED!');
         console.log('📄 Value:', decodedText);
         console.log('========================================');
 
-        setStatus(`✅ SCANNED: ${decodedText}`, 'ready');
         showSuccessFeedback();
 
         // Update UI last scan display
         const timeStr = new Date().toLocaleTimeString();
         lastScanDisplay.textContent = `LAST: ${decodedText} (${timeStr})`;
         
-        // Show alert pop-up immediately to confirm scan
-        alert(`🎉 QR CODE DETECTED!\n\nValue: ${decodedText}`);
+        // Transmit value to Power Apps iframe
+        sendToIframe(decodedText);
+
+        // Pause scanner for 30s
+        pauseScannerFor(SCAN_PAUSE_SECONDS);
       };
 
       function handleScanError(errorMessageText) {
