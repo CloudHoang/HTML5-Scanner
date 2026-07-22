@@ -108,8 +108,9 @@
 
     .scanner-preview {
       position: relative;
-      flex: 1;
-      min-height: 0;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 80vh;
       background: #000;
       border-radius: 8px;
       overflow: hidden;
@@ -572,8 +573,15 @@
         scanner = new window.Html5Qrcode('reader');
 
         const config = {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
+          fps: 15,
+          aspectRatio: 1.0,
+          qrbox: { width: 220, height: 220 }
+        };
+
+        // Expose test helper in console for quick testing
+        window.testFakeScan = function(val = "TEST-QR-12345") {
+          console.log('🧪 Running test scan with value:', val);
+          handleScan(val);
         };
 
         const cameraConstraints = {
