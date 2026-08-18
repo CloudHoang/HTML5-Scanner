@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#090d16" />
-  <title>Kiosk Scanner Pro - 3 Tabs Navigation, Barcode Gun & Power Apps</title>
+  <title>Kiosk Scanner Pro - Input Mode Selector (Camera / Barcode Gun / Dual)</title>
   
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -403,6 +403,7 @@
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-secondary);
+      transition: var(--transition);
     }
 
     .method-chip.active {
@@ -672,6 +673,66 @@
       border-right: 1px solid var(--border-strong);
     }
 
+    /* ========================================================= */
+    /* INPUT MODE SELECTOR WIDGET (Tùy chọn: Camera / Súng / Cả hai) */
+    /* ========================================================= */
+    .mode-selector-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .mode-selector-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mode-buttons-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 28px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mode-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
     /* Scanner Header Card */
     .scanner-header-card {
       display: flex;
@@ -753,6 +814,13 @@
       border: 1.5px solid rgba(59, 130, 246, 0.4);
       border-radius: var(--radius-md);
       position: relative;
+      transition: var(--transition);
+    }
+
+    .barcode-gun-card.gun-only-expanded {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
     }
 
     .gun-card-header {
@@ -774,14 +842,14 @@
 
     .gun-input {
       flex: 1;
-      height: 36px;
-      padding: 0 10px;
+      height: 38px;
+      padding: 0 12px;
       background: rgba(0, 0, 0, 0.5);
       border: 1.5px solid rgba(59, 130, 246, 0.4);
       border-radius: var(--radius-sm);
       color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 600;
       outline: none;
       transition: var(--transition);
@@ -801,13 +869,13 @@
     }
 
     .gun-submit-btn {
-      height: 36px;
-      padding: 0 12px;
+      height: 38px;
+      padding: 0 14px;
       background: var(--primary);
       color: #ffffff;
       border: none;
       border-radius: var(--radius-sm);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
@@ -819,7 +887,6 @@
       box-shadow: 0 0 10px var(--primary-glow);
     }
 
-    /* Buffering Indicator for 1s Inactivity Wait */
     .gun-buffering-indicator {
       display: none;
       align-items: center;
@@ -839,12 +906,50 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
-      max-height: 40vh;
+      max-height: 38vh;
       background: #000000;
       border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid var(--border-strong);
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      transition: var(--transition);
+    }
+
+    /* Special Gun-Only Viewport Graphic */
+    .gun-mode-graphic {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1e293b 0%, #030712 100%);
+      padding: 20px;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .gun-mode-icon {
+      font-size: 3.5rem;
+      animation: pulseGun 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGun {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 20px var(--accent-glow)); }
+    }
+
+    .gun-mode-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .gun-mode-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      max-width: 220px;
     }
 
     #reader {
@@ -1425,7 +1530,7 @@
       }
       .scanner-banner {
         width: 100%;
-        height: 320px;
+        height: 340px;
         min-width: unset;
         border-left: none !important;
         border-right: none !important;
@@ -1433,7 +1538,7 @@
       }
       .main-display-container {
         width: 100%;
-        height: calc(100% - 320px);
+        height: calc(100% - 340px);
       }
     }
   </style>
@@ -1506,13 +1611,13 @@
         <!-- ========================================================= -->
         <div class="stage-view active start-screen" id="viewStageStart">
           <div class="start-card">
-            <div class="start-hero-icon">📷</div>
-            <h1 class="start-title">HỆ THỐNG KIOSK TỰ ĐỘNG</h1>
-            <p class="start-subtitle">Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.</p>
+            <div class="start-hero-icon" id="startHeroIcon">⚡</div>
+            <h1 class="start-title" id="startHeroTitle">HỆ THỐNG KIOSK TỰ ĐỘNG</h1>
+            <p class="start-subtitle" id="startHeroSubtitle">Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.</p>
             
             <div class="dual-methods-row">
-              <div class="method-chip active">📷 Camera tự động quét</div>
-              <div class="method-chip active">🔫 Súng bắn mã Barcode/QR</div>
+              <div class="method-chip active" id="chipCameraIndicator">📷 Camera tự động quét</div>
+              <div class="method-chip active" id="chipGunIndicator">🔫 Súng bắn mã Barcode/QR</div>
             </div>
 
             <div class="scan-steps-grid">
@@ -1538,14 +1643,12 @@
         <div class="stage-view process-screen" id="viewStageProcess">
           <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
           
-          <!-- Prominent "Đang tiến hành in" Badge Overlay (Only shown during auto print flow) -->
           <div class="printing-status-overlay" id="printingStatusOverlay">
             <span class="printer-anim-icon">🖨️</span>
             <span>Đang tiến hành in phiếu...</span>
             <span class="print-countdown-badge" id="printCountdownBadge">5s</span>
           </div>
 
-          <!-- Bottom Floating Kiosk Action Bar: Print, Open Tab for MFA Auth, Return -->
           <div class="process-control-bar">
             <button class="process-btn process-btn-print" id="btnTriggerPrint" title="Gọi lệnh in trên Kiosk">
               🖨️ In Phiếu
@@ -1586,6 +1689,25 @@
 
       <!-- Scanner Panel (Right Side 30%) -->
       <section class="scanner-banner">
+        
+        <!-- ========================================================= -->
+        <!-- INPUT MODE SWITCHER: Chọn Chế Độ (Camera / Máy bắn / Cả hai) -->
+        <!-- ========================================================= -->
+        <div class="mode-selector-card">
+          <div class="mode-selector-title">🎯 Chế độ nạp mã:</div>
+          <div class="mode-buttons-group">
+            <button class="mode-btn" data-mode="camera" id="btnModeCamera" title="Chỉ sử dụng Camera quét">
+              📷 Camera
+            </button>
+            <button class="mode-btn" data-mode="gun" id="btnModeGun" title="Chỉ sử dụng Súng/Máy bắn mã">
+              🔫 Máy bắn
+            </button>
+            <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Máy bắn">
+              ⚡ Cả hai
+            </button>
+          </div>
+        </div>
+
         <!-- Status & Last Scan Card -->
         <div class="scanner-header-card">
           <div class="scanner-status-row">
@@ -1601,10 +1723,10 @@
         </div>
 
         <!-- Dedicated Barcode Gun / Manual Input Card -->
-        <div class="barcode-gun-card">
+        <div class="barcode-gun-card" id="barcodeGunCard">
           <div class="gun-card-header">
             <span>🔫 Máy bắn QR / Nhập mã:</span>
-            <span style="font-size: 0.68rem; color: var(--accent); font-weight: 600;">HID Auto-detect</span>
+            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--accent); font-weight: 600;">HID Sẵn sàng</span>
           </div>
           <div class="gun-input-group">
             <input 
@@ -1623,10 +1745,18 @@
           </div>
         </div>
 
-        <!-- Scanner Viewport Frame -->
-        <div class="scanner-viewport-wrapper">
+        <!-- Scanner Viewport Frame (Holds Video or Gun Graphic) -->
+        <div class="scanner-viewport-wrapper" id="scannerViewportWrapper">
           <div id="reader" aria-label="Camera Barcode Preview"></div>
-          <div class="overlay-frame" aria-hidden="true">
+          
+          <!-- Gun-only Mode Visual Display -->
+          <div class="gun-mode-graphic" id="gunModeGraphic">
+            <div class="gun-mode-icon">🔫</div>
+            <div class="gun-mode-title">CHẾ ĐỘ SÚNG BẮN MÃ</div>
+            <div class="gun-mode-sub">Cầm súng bắn trực tiếp vào mã QR hoặc mã vạch bất kỳ lúc nào.</div>
+          </div>
+
+          <div class="overlay-frame" id="cameraReticleOverlay" aria-hidden="true">
             <div class="scanner-reticle">
               <div class="reticle-corner reticle-tl"></div>
               <div class="reticle-corner reticle-tr"></div>
@@ -1640,8 +1770,8 @@
           </div>
         </div>
 
-        <!-- Camera Controls -->
-        <div class="controls-card">
+        <!-- Camera Controls (Hidden in Gun-Only Mode) -->
+        <div class="controls-card" id="cameraControlsCard">
           <div class="control-row">
             <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">Camera:</label>
             <select id="cameraSelect" class="select-input">
@@ -1701,6 +1831,17 @@
         <button class="modal-close-btn" data-close="modalSettings">&times;</button>
       </div>
       <div class="modal-body">
+        <!-- Input Mode Setting -->
+        <div class="form-group">
+          <label class="form-label" for="cfgInputMode">Chế độ nạp mã mặc định:</label>
+          <select id="cfgInputMode" class="form-input">
+            <option value="both">⚡ Cả hai (Camera + Máy bắn QR)</option>
+            <option value="camera">📷 Chỉ sử dụng Camera</option>
+            <option value="gun">🔫 Chỉ sử dụng Máy bắn QR (Tắt camera)</option>
+          </select>
+          <div class="form-help">Chọn thiết bị quét hoạt động cho máy Kiosk.</div>
+        </div>
+
         <!-- Power Apps Base URL -->
         <div class="form-group">
           <label class="form-label" for="cfgPowerAppsUrl">URL Ứng dụng Power Apps:</label>
@@ -1800,10 +1941,12 @@
   <script>
     /**
      * KIOSK SCANNER PRO
+     * Input Modes: 'both' | 'camera' | 'gun'
      */
     const DEFAULT_CONFIG = {
+      inputMode: "both", // 'both' | 'camera' | 'gun'
       powerAppsUrl: "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/e8ad3a34-b6a3-452b-a984-01eb262236a5",
-      gunDelayMs: 1000, // 1 giây inactive để nhận đủ dữ liệu từ súng bắn mã
+      gunDelayMs: 1000,
       pauseSeconds: 30,
       printDelaySeconds: 5,
       thankYouSeconds: 5,
@@ -1857,7 +2000,7 @@
           if (this.ctx.state === 'suspended') this.ctx.resume();
 
           const now = this.ctx.currentTime;
-          const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+          const notes = [523.25, 659.25, 783.99, 1046.50];
           notes.forEach((freq, i) => {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
@@ -1969,6 +2112,7 @@
       let availableCameras = [];
       let isTorchOn = false;
       let lastScannedValue = "";
+      let isCameraActive = false;
       
       // STAGES: 'START' | 'PROCESS' | 'THANKYOU'
       let currentStage = 'START';
@@ -1993,9 +2137,26 @@
       const printCountdownBadge = document.getElementById('printCountdownBadge');
       const resetCountdownNumber = document.getElementById('resetCountdownNumber');
 
+      const barcodeGunCard = document.getElementById('barcodeGunCard');
       const barcodeGunInput = document.getElementById('barcodeGunInput');
       const btnGunSubmit = document.getElementById('btnGunSubmit');
       const gunBufferingIndicator = document.getElementById('gunBufferingIndicator');
+      const gunStatusBadge = document.getElementById('gunStatusBadge');
+
+      const scannerViewportWrapper = document.getElementById('scannerViewportWrapper');
+      const readerElem = document.getElementById('reader');
+      const gunModeGraphic = document.getElementById('gunModeGraphic');
+      const cameraReticleOverlay = document.getElementById('cameraReticleOverlay');
+      const cameraControlsCard = document.getElementById('cameraControlsCard');
+
+      // Mode Selector Buttons
+      const btnModeCamera = document.getElementById('btnModeCamera');
+      const btnModeGun = document.getElementById('btnModeGun');
+      const btnModeBoth = document.getElementById('btnModeBoth');
+
+      const chipCameraIndicator = document.getElementById('chipCameraIndicator');
+      const chipGunIndicator = document.getElementById('chipGunIndicator');
+      const startHeroSubtitle = document.getElementById('startHeroSubtitle');
 
       const statusText = document.getElementById('statusText');
       const statusDot = document.getElementById('statusDot');
@@ -2038,6 +2199,76 @@
       }
 
       // -------------------------------------------------------------
+      // INPUT MODE SWITCHER ENGINE ('both' | 'camera' | 'gun')
+      // -------------------------------------------------------------
+      async function setInputMode(mode, save = true) {
+        config.inputMode = mode;
+        if (save) {
+          AppStorage.saveConfig(config);
+        }
+        console.log(`🎯 [INPUT MODE] Chuyển chế độ: ${mode}`);
+
+        // Update UI Button Group
+        btnModeCamera.classList.toggle('active', mode === 'camera');
+        btnModeGun.classList.toggle('active', mode === 'gun');
+        btnModeBoth.classList.toggle('active', mode === 'both');
+
+        // Update Home chips
+        chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
+        chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
+
+        if (mode === 'gun') {
+          startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in phiếu.';
+        } else if (mode === 'camera') {
+          startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in phiếu.';
+        } else {
+          startHeroSubtitle.textContent = 'Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.';
+        }
+
+        // Handle Gun-Only mode vs Camera Modes
+        if (mode === 'gun') {
+          // Stop camera stream to save power/CPU
+          await stopCameraScanner();
+          readerElem.style.display = 'none';
+          cameraReticleOverlay.style.display = 'none';
+          cameraControlsCard.style.display = 'none';
+          gunModeGraphic.style.display = 'flex';
+          barcodeGunCard.style.display = 'flex';
+          barcodeGunCard.classList.add('gun-only-expanded');
+          gunStatusBadge.textContent = 'Chế độ Súng đang BẬT';
+          gunStatusBadge.style.color = 'var(--accent)';
+          setStatus('Sẵn sàng nhận máy bắn', 'ready');
+          showToast('Chế độ: Chỉ dùng Máy bắn mã (Đã tắt Camera)', 'info');
+          
+          if (barcodeGunInput) barcodeGunInput.focus();
+        } else {
+          // 'camera' or 'both'
+          gunModeGraphic.style.display = 'none';
+          readerElem.style.display = 'flex';
+          cameraReticleOverlay.style.display = 'flex';
+          cameraControlsCard.style.display = 'flex';
+          barcodeGunCard.classList.remove('gun-only-expanded');
+
+          if (mode === 'camera') {
+            barcodeGunCard.style.display = 'none';
+            gunStatusBadge.textContent = 'Đã tắt Súng';
+            gunStatusBadge.style.color = 'var(--text-muted)';
+            showToast('Chế độ: Chỉ dùng Camera', 'info');
+          } else {
+            // 'both'
+            barcodeGunCard.style.display = 'flex';
+            gunStatusBadge.textContent = 'HID Sẵn sàng';
+            gunStatusBadge.style.color = 'var(--accent)';
+            showToast('Chế độ: Sử dụng cả Camera & Máy bắn', 'info');
+          }
+
+          if (!isCameraActive) {
+            await startCameraScanner(config.selectedCameraId || null);
+          }
+        }
+      }
+
+      // -------------------------------------------------------------
       // 3-Tab Switcher Logic
       // -------------------------------------------------------------
       function clearAllWorkflowTimers() {
@@ -2072,9 +2303,11 @@
 
         // TAB 1: START
         if (stage === 'START') {
-          resumeScanner();
+          if (config.inputMode !== 'gun') {
+            resumeScanner();
+          }
           setTimeout(() => {
-            if (barcodeGunInput) {
+            if (barcodeGunInput && config.inputMode !== 'camera') {
               barcodeGunInput.value = '';
               barcodeGunInput.focus();
             }
@@ -2256,7 +2489,6 @@
         const cleanVal = value.trim();
         if (!cleanVal) return;
 
-        // Hide buffering indicator
         if (gunBufferingIndicator) {
           gunBufferingIndicator.classList.remove('active');
         }
@@ -2318,7 +2550,9 @@
         }
 
         // 8. Pause Scanner
-        pauseScanner(config.pauseSeconds);
+        if (config.inputMode !== 'gun') {
+          pauseScanner(config.pauseSeconds);
+        }
       }
 
       // Scanner Pause & Resume Logic
@@ -2423,18 +2657,25 @@
         }
       }
 
+      async function stopCameraScanner() {
+        if (html5Scanner) {
+          try {
+            if (html5Scanner.isScanning) {
+              await html5Scanner.stop();
+            }
+            await html5Scanner.clear();
+          } catch (e) {}
+          isCameraActive = false;
+        }
+      }
+
       async function startCameraScanner(cameraId = null) {
         if (!window.Html5Qrcode) {
           setStatus('Lỗi nạp thư viện', 'error');
           return;
         }
 
-        if (html5Scanner) {
-          try {
-            await html5Scanner.stop();
-            await html5Scanner.clear();
-          } catch (e) {}
-        }
+        await stopCameraScanner();
 
         html5Scanner = new Html5Qrcode('reader');
 
@@ -2452,19 +2693,21 @@
           cameraChoice,
           scanConfig,
           (decodedText) => {
-            if (!isPaused) {
+            if (!isPaused && config.inputMode !== 'gun') {
               console.log('🎉 CAMERA QUÉT THÀNH CÔNG:', decodedText);
               transmitBarcode(decodedText, 'Camera');
             }
           },
           () => {}
         ).then(() => {
+          isCameraActive = true;
           setStatus('Sẵn sàng quét', 'ready');
           console.log('✅ Camera đã hoạt động thành công.');
         }).catch((err) => {
+          isCameraActive = false;
           console.error('❌ Lỗi khởi động camera:', err);
           setStatus('Lỗi camera', 'error');
-          showToast('Không thể truy cập camera. Vui lòng cấp quyền!', 'error', 5000);
+          showToast('Không thể truy cập camera. Vui lòng cấp quyền hoặc chọn chế độ Súng bắn mã!', 'error', 5000);
         });
       }
 
@@ -2575,9 +2818,7 @@
       }
 
       // -------------------------------------------------------------
-      // USB Barcode Gun Engine:
-      // 1. Global Interception (Dù click bất kỳ đâu trên màn hình vẫn nhận)
-      // 2. Chờ 1 giây Inactive để gom đủ 100% dữ liệu trước khi chuyển tab
+      // USB Barcode Gun Engine
       // -------------------------------------------------------------
       function setupBarcodeGunListener() {
         const delayMs = parseInt(config.gunDelayMs, 10) || 1000;
@@ -2596,6 +2837,10 @@
           gunBuffer = '';
 
           if (finalCode.length >= 2) {
+            if (config.inputMode === 'camera') {
+              console.log('⚠️ Bỏ qua mã súng bắn do đang ở chế độ Chỉ Camera');
+              return;
+            }
             console.log(`🔫 [BARCODE GUN RECEIVED] Đã nhận đủ dữ liệu sau ${delayMs}ms inactive:`, finalCode);
             transmitBarcode(finalCode, 'Súng bắn mã');
             if (barcodeGunInput) barcodeGunInput.value = '';
@@ -2603,24 +2848,22 @@
         }
 
         function scheduleDebounce() {
+          if (config.inputMode === 'camera') return;
           if (gunBufferingIndicator) {
             gunBufferingIndicator.classList.add('active');
           }
           if (gunDebounceTimer) {
             clearTimeout(gunDebounceTimer);
           }
-          // Chờ đúng 1 giây (1000ms) inactive không có ký tự mới rồi mới nạp Power Apps
           gunDebounceTimer = setTimeout(() => {
             commitBufferedGunScan();
           }, delayMs);
         }
 
-        // Nút Gửi thủ công
         btnGunSubmit.addEventListener('click', () => {
           commitBufferedGunScan();
         });
 
-        // Nhập trong ô text
         barcodeGunInput.addEventListener('input', (e) => {
           gunBuffer = barcodeGunInput.value;
           scheduleDebounce();
@@ -2629,17 +2872,16 @@
         barcodeGunInput.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            // Enter key also schedules / commits
             scheduleDebounce();
           }
         });
 
-        // Global Key Listener: Bắt tín hiệu súng bắn dù người dùng click bất kỳ đâu trên màn hình
         window.addEventListener('keydown', (e) => {
+          if (config.inputMode === 'camera') return;
+
           const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
           const activeId = document.activeElement ? document.activeElement.id : '';
 
-          // Bỏ qua nếu người dùng đang gõ tìm kiếm trong modal lịch sử hoặc cài đặt
           if (activeTag === 'input' && activeId !== 'barcodeGunInput') {
             return;
           }
@@ -2656,9 +2898,9 @@
           }
         }, true);
 
-        // Tự động Refocus vào ô súng bắn khi user click bất kỳ đâu trên Tab 1
+        // Auto-refocus on Tab 1
         document.addEventListener('click', (e) => {
-          if (currentStage === 'START') {
+          if (currentStage === 'START' && config.inputMode !== 'camera') {
             const target = e.target;
             const isButton = target.closest('button') || target.closest('select') || target.closest('input') || target.closest('.modal-card');
             if (!isButton && barcodeGunInput) {
@@ -2671,6 +2913,11 @@
       // Event Listeners Setup
       function setupEventListeners() {
         setupBarcodeGunListener();
+
+        // Mode Selector Buttons
+        btnModeCamera.addEventListener('click', () => setInputMode('camera'));
+        btnModeGun.addEventListener('click', () => setInputMode('gun'));
+        btnModeBoth.addEventListener('click', () => setInputMode('both'));
 
         // 3 Navigation Tabs
         tabBtnStart.addEventListener('click', () => {
@@ -2793,6 +3040,7 @@
         });
 
         document.getElementById('btnSettings').addEventListener('click', () => {
+          document.getElementById('cfgInputMode').value = config.inputMode || 'both';
           document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
           document.getElementById('cfgGunDelayMs').value = config.gunDelayMs || 1000;
           document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
@@ -2837,6 +3085,7 @@
 
         // Save Settings
         document.getElementById('btnSaveSettings').addEventListener('click', () => {
+          const newMode = document.getElementById('cfgInputMode').value;
           const newUrl = document.getElementById('cfgPowerAppsUrl').value.trim();
           const newGunDelay = parseInt(document.getElementById('cfgGunDelayMs').value, 10) || 1000;
           const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
@@ -2855,6 +3104,7 @@
 
           AppStorage.saveConfig(config);
           updateAudioBtnUI();
+          setInputMode(newMode);
           document.getElementById('modalSettings').classList.remove('open');
           showToast('Đã lưu cấu hình cài đặt thành công!', 'success');
         });
@@ -2864,6 +3114,7 @@
           if (confirm('Khôi phục cấu hình về mặc định ban đầu?')) {
             config = { ...DEFAULT_CONFIG };
             AppStorage.saveConfig(config);
+            document.getElementById('cfgInputMode').value = config.inputMode;
             document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
             document.getElementById('cfgGunDelayMs').value = config.gunDelayMs;
             document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
@@ -2874,6 +3125,7 @@
             document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
             document.getElementById('cfgUrlReloadEnabled').checked = config.urlReloadEnabled;
             updateAudioBtnUI();
+            setInputMode('both');
             showToast('Đã khôi phục cài đặt mặc định', 'info');
           }
         });
@@ -2888,7 +3140,7 @@
       // Initialize Application
       async function initApp() {
         setupDebugLogger();
-        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Global Barcode Gun + 1s Inactive Debounce)...');
+        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Input Mode Selector)...');
         
         updateNetStatus();
         updateHistoryBadge();
@@ -2902,7 +3154,7 @@
         switchTab('START', false);
 
         await enumerateCameras();
-        await startCameraScanner(config.selectedCameraId || null);
+        await setInputMode(config.inputMode || 'both', false);
 
         console.log('🎉 Kiosk Scanner Pro đã sẵn sàng phục vụ!');
       }

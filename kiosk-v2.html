@@ -1,0 +1,3172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#090d16" />
+  <title>Kiosk Scanner Pro - Input Mode Selector (Camera / Barcode Gun / Dual)</title>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-base: #060913;
+      --bg-surface: #0e1424;
+      --bg-card: rgba(18, 26, 44, 0.85);
+      --bg-card-hover: rgba(28, 39, 66, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.35);
+      --accent-hover: #059669;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* Main App Wrapper */
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Control Toolbar */
+    .top-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      padding: 0 16px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 20;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      background: linear-gradient(90deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* 3 Interactive Clickable Navigation Tabs in Toolbar */
+    .workflow-tab-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 6px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-strong);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .workflow-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      outline: none;
+    }
+
+    .workflow-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Tab 1: Active Hướng dẫn */
+    .workflow-tab-btn.active.tab-start {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Tab 2: Active Đang in / Power Apps */
+    .workflow-tab-btn.active.tab-process {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: var(--warning);
+      color: #fbbf24;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Tab 3: Active Cảm ơn */
+    .workflow-tab-btn.active.tab-thankyou {
+      background: rgba(168, 85, 247, 0.22);
+      border-color: #a855f7;
+      color: #c084fc;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+    }
+
+    .tab-arrow {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin: 0 1px;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-status.offline {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-family: var(--font-main);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tool-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .tool-btn.active {
+      background: rgba(16, 185, 129, 0.18);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .tool-btn .badge-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* Kiosk Split-Screen Container */
+    .kiosk-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kiosk-container.layout-reversed {
+      flex-direction: row-reverse;
+    }
+
+    /* Main Display Container (70% width) */
+    .main-display-container {
+      flex: 1;
+      width: 70%;
+      height: 100%;
+      background: #020617;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .iframe-loading-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+      z-index: 25;
+    }
+
+    .iframe-loading-bar.active {
+      animation: loadingSlide 1.5s infinite;
+      transform: scaleX(1);
+    }
+
+    @keyframes loadingSlide {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(0%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Stage Views inside Main Display */
+    .stage-view {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      animation: fadeInView 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stage-view.active {
+      display: flex;
+    }
+
+    @keyframes fadeInView {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ========================================================= */
+    /* 1. TAB START SCREEN (Hướng dẫn quét QR & Bắn mã) */
+    /* ========================================================= */
+    .start-screen {
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      padding: 30px;
+      text-align: center;
+      color: var(--text-primary);
+      overflow-y: auto;
+    }
+
+    .start-card {
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 35px 30px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+    }
+
+    .start-hero-icon {
+      position: relative;
+      width: 85px;
+      height: 85px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      box-shadow: 0 0 35px var(--accent-glow);
+      animation: floatHero 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatHero {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-8px) scale(1.02); }
+    }
+
+    .start-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .start-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      line-height: 1.5;
+    }
+
+    .dual-methods-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .method-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .method-chip.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .scan-steps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .step-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ========================================================= */
+    /* 2. TAB PROCESS SCREEN (Power Apps Iframe & Đang in) */
+    /* ========================================================= */
+    .process-screen {
+      background: #ffffff;
+      padding: 0;
+      position: relative;
+    }
+
+    .process-screen iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+
+    .printing-status-overlay {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--warning);
+      border-radius: var(--radius-full);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      z-index: 30;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      animation: pulsePrinting 1.8s infinite;
+    }
+
+    @keyframes pulsePrinting {
+      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.7); }
+    }
+
+    .printer-anim-icon {
+      font-size: 1.3rem;
+      animation: bouncePrinter 1s infinite alternate;
+    }
+
+    @keyframes bouncePrinter {
+      from { transform: translateY(0); }
+      to { transform: translateY(-3px); }
+    }
+
+    .print-countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      background: var(--warning);
+      color: #000;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    /* Floating Toolbar inside Power Apps Tab */
+    .process-control-bar {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 20;
+    }
+
+    .process-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .process-btn-print {
+      background: var(--accent);
+      color: #000;
+    }
+    .process-btn-print:hover { background: var(--accent-hover); }
+
+    .process-btn-open-tab {
+      background: rgba(59, 130, 246, 0.25);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: #93c5fd;
+    }
+    .process-btn-open-tab:hover { background: rgba(59, 130, 246, 0.4); color: #fff; }
+
+    .process-btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+    .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* ========================================================= */
+    /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn) */
+    /* ========================================================= */
+    .thankyou-screen {
+      background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+      padding: 40px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .thankyou-card {
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 45px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(168, 85, 247, 0.5);
+      border-radius: 28px;
+      box-shadow: 0 25px 60px -15px rgba(168, 85, 247, 0.4);
+      backdrop-filter: blur(14px);
+    }
+
+    .thankyou-icon-box {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #fff;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+      animation: popCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popCheck {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .thankyou-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .thankyou-subtitle {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .print-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .auto-reset-counter {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Scanner Panel (Right Side 30%) */
+    .scanner-banner {
+      display: flex;
+      flex-direction: column;
+      width: 30%;
+      min-width: 320px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--bg-surface) 0%, #080c18 100%);
+      border-left: 1px solid var(--border-strong);
+      padding: 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      z-index: 15;
+    }
+
+    .kiosk-container.layout-reversed .scanner-banner {
+      border-left: none;
+      border-right: 1px solid var(--border-strong);
+    }
+
+    /* ========================================================= */
+    /* INPUT MODE SELECTOR WIDGET (Tùy chọn: Camera / Súng / Cả hai) */
+    /* ========================================================= */
+    .mode-selector-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .mode-selector-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mode-buttons-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 28px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mode-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* Scanner Header Card */
+    .scanner-header-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .scanner-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scanner-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+
+    .scanner-status-pill:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--warning);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.ready {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .status-dot.paused {
+      background: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+    }
+
+    .last-scan-box {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      word-break: break-all;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px 8px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* Dedicated USB Gun / Manual Barcode Input Card */
+    .barcode-gun-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(16, 185, 129, 0.12));
+      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      border-radius: var(--radius-md);
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .barcode-gun-card.gun-only-expanded {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+
+    .gun-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .gun-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gun-input {
+      flex: 1;
+      height: 38px;
+      padding: 0 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      border-radius: var(--radius-sm);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 600;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .gun-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .gun-input::placeholder {
+      color: #64748b;
+      font-family: var(--font-main);
+      font-size: 0.78rem;
+      font-weight: 400;
+    }
+
+    .gun-submit-btn {
+      height: 38px;
+      padding: 0 14px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .gun-submit-btn:hover {
+      background: #2563eb;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .gun-buffering-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #fbbf24;
+      font-weight: 600;
+      animation: pulse 1s infinite;
+    }
+
+    .gun-buffering-indicator.active {
+      display: flex;
+    }
+
+    /* Scanner Viewport */
+    .scanner-viewport-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 38vh;
+      background: #000000;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      transition: var(--transition);
+    }
+
+    /* Special Gun-Only Viewport Graphic */
+    .gun-mode-graphic {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1e293b 0%, #030712 100%);
+      padding: 20px;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .gun-mode-icon {
+      font-size: 3.5rem;
+      animation: pulseGun 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGun {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 20px var(--accent-glow)); }
+    }
+
+    .gun-mode-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .gun-mode-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      max-width: 220px;
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #reader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block;
+    }
+
+    /* Overlay Target Frame & Laser */
+    .overlay-frame {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .scanner-reticle {
+      position: relative;
+      width: 72%;
+      height: 72%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.45);
+    }
+
+    .reticle-corner {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-color: var(--accent);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .reticle-tl { top: -2px; left: -2px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 12px; }
+    .reticle-tr { top: -2px; right: -2px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 12px; }
+    .reticle-bl { bottom: -2px; left: -2px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 12px; }
+    .reticle-br { bottom: -2px; right: -2px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 12px; }
+
+    .scanner-laser {
+      position: absolute;
+      left: 2%;
+      right: 2%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), #fff, var(--accent), transparent);
+      box-shadow: 0 0 14px var(--accent), 0 0 6px #fff;
+      animation: laserSweep 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes laserSweep {
+      0% { top: 6%; opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { top: 94%; opacity: 0.3; }
+    }
+
+    .scan-flash {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(16, 185, 129, 0.25);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 10;
+    }
+
+    .scan-flash.active {
+      opacity: 1;
+    }
+
+    .scan-flash-icon {
+      font-size: 3rem;
+      color: #ffffff;
+      text-shadow: 0 0 20px var(--accent);
+      transform: scale(0.8);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .scan-flash.active .scan-flash-icon {
+      transform: scale(1.1);
+    }
+
+    /* Camera Controls Card */
+    .controls-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-input {
+      flex: 1;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 0.78rem;
+      padding: 0 10px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--border-strong);
+    }
+
+    .icon-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* Quick Action Mini Bar inside scanner panel */
+    .scanner-quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .quick-action-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    /* Modals & Drawer Overlays */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 580px;
+      max-height: 88vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .modal-backdrop.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+    }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+    }
+
+    /* Form Elements */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .form-help {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .form-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .form-switch-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .switch-toggle {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .btn-primary {
+      height: 36px;
+      padding: 0 16px;
+      background: var(--accent);
+      color: #000000;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      height: 36px;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .btn-danger {
+      height: 36px;
+      padding: 0 14px;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* History Modal Styles */
+    .history-stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .history-item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+    }
+
+    .history-item-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .history-item-value {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+      word-break: break-all;
+    }
+
+    .history-item-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .history-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: slideInRight 0.3s ease;
+      pointer-events: auto;
+    }
+
+    .toast-pill.success { border-left: 4px solid var(--accent); }
+    .toast-pill.error { border-left: 4px solid var(--danger); }
+    .toast-pill.info { border-left: 4px solid var(--primary); }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Debug Console */
+    .debug-console {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 220px;
+      background: rgba(3, 7, 18, 0.96);
+      border-top: 2px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      overflow-y: auto;
+      z-index: 9000;
+      padding: 10px;
+      display: none;
+    }
+
+    .debug-console.show { display: block; }
+
+    .debug-line {
+      margin: 2px 0;
+      padding: 2px 4px;
+      border-left: 2px solid transparent;
+      line-height: 1.4;
+    }
+
+    .debug-line.log { color: #94a3b8; border-left-color: var(--primary); }
+    .debug-line.error { color: #f87171; border-left-color: var(--danger); }
+    .debug-line.warn { color: #fbbf24; border-left-color: var(--warning); }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .kiosk-container {
+        flex-direction: column !important;
+      }
+      .scanner-banner {
+        width: 100%;
+        height: 340px;
+        min-width: unset;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .main-display-container {
+        width: 100%;
+        height: calc(100% - 340px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Top Global Toolbar -->
+    <header class="top-toolbar">
+      <div class="brand-section">
+        <div class="brand-logo">⚡</div>
+        <div class="brand-title">Kiosk Scanner Pro</div>
+      </div>
+
+      <!-- 3 Clickable Interactive Navigation Tabs -->
+      <nav class="workflow-tab-bar" aria-label="Kiosk Stage Tabs">
+        <button class="workflow-tab-btn active tab-start" id="tabBtnStart" title="Bấm để chuyển về Trang 1: Hướng dẫn quét">
+          <span>📖</span> 1. Hướng dẫn
+        </button>
+        <span class="tab-arrow">➔</span>
+        <button class="workflow-tab-btn tab-process" id="tabBtnProcess" title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
+          <span>⚡</span> 2. Đang in (5s)
+        </button>
+        <span class="tab-arrow">➔</span>
+        <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou" title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
+          <span>🎉</span> 3. Cảm ơn (5s)
+        </button>
+      </nav>
+
+      <div class="toolbar-actions">
+        <div id="netStatus" class="badge-status" style="margin-right: 4px;">
+          <span style="font-size: 8px;">●</span> Online
+        </div>
+
+        <button class="tool-btn" id="btnAudioToggle" title="Bật/Tắt âm thanh bíp khi quét">
+          <span id="audioIcon">🔊</span> Beep
+        </button>
+        <button class="tool-btn" id="btnTorchToggle" title="Bật/Tắt đèn Flash (Torch)">
+          <span>🔦</span> Flash
+        </button>
+        <button class="tool-btn" id="btnScanFile" title="Quét từ file ảnh">
+          <span>🖼️</span> Ảnh
+        </button>
+        <button class="tool-btn" id="btnHistory" title="Lịch sử quét">
+          <span>📋</span> Lịch sử <span class="badge-count" id="historyBadge">0</span>
+        </button>
+        <button class="tool-btn" id="btnLayoutToggle" title="Đổi vị trí Máy quét / Màn hình chính">
+          <span>↔️</span> Đổi bên
+        </button>
+        <button class="tool-btn" id="btnSettings" title="Cài đặt hệ thống">
+          <span>⚙️</span> Cài đặt
+        </button>
+        <button class="tool-btn" id="btnFullscreen" title="Toàn màn hình (Kiosk Mode)">
+          <span>⛶</span>
+        </button>
+        <button class="tool-btn" id="btnDebugToggle" title="Bật Debug Console">
+          <span>🐛</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Split Screen Container -->
+    <main class="kiosk-container" id="kioskContainer">
+      
+      <!-- Main Display Area (Left Side 70%): 3 Tabs / Process Stages -->
+      <section class="main-display-container">
+        <div id="iframeLoadingBar" class="iframe-loading-bar"></div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: START (Hướng dẫn quét QR Code & Bắn mã) -->
+        <!-- ========================================================= -->
+        <div class="stage-view active start-screen" id="viewStageStart">
+          <div class="start-card">
+            <div class="start-hero-icon" id="startHeroIcon">⚡</div>
+            <h1 class="start-title" id="startHeroTitle">HỆ THỐNG KIOSK TỰ ĐỘNG</h1>
+            <p class="start-subtitle" id="startHeroSubtitle">Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.</p>
+            
+            <div class="dual-methods-row">
+              <div class="method-chip active" id="chipCameraIndicator">📷 Camera tự động quét</div>
+              <div class="method-chip active" id="chipGunIndicator">🔫 Súng bắn mã Barcode/QR</div>
+            </div>
+
+            <div class="scan-steps-grid">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-desc">Đưa mã trước camera hoặc Bắn mã</div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-desc">Đang in phiếu (chờ 5 giây)</div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-desc">Nhận phiếu & Hoàn tất</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang in) -->
+        <!-- ========================================================= -->
+        <div class="stage-view process-screen" id="viewStageProcess">
+          <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
+          
+          <div class="printing-status-overlay" id="printingStatusOverlay">
+            <span class="printer-anim-icon">🖨️</span>
+            <span>Đang tiến hành in phiếu...</span>
+            <span class="print-countdown-badge" id="printCountdownBadge">5s</span>
+          </div>
+
+          <div class="process-control-bar">
+            <button class="process-btn process-btn-print" id="btnTriggerPrint" title="Gọi lệnh in trên Kiosk">
+              🖨️ In Phiếu
+            </button>
+            <button class="process-btn process-btn-open-tab" id="btnOpenPowerAppsInTab" title="Mở Power Apps ra Tab mới để đăng nhập tài khoản Microsoft nếu bị chặn">
+              🌐 Mở Tab mới (Đăng nhập MFA)
+            </button>
+            <button class="process-btn process-btn-cancel" id="btnCancelProcess" title="Hủy và quay lại màn hình chính">
+              ✖ Trở về Trang 1
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: THANK YOU (Trang Cảm ơn sau khi in) -->
+        <!-- ========================================================= -->
+        <div class="stage-view thankyou-screen" id="viewStageThankYou">
+          <div class="thankyou-card">
+            <div class="thankyou-icon-box">✓</div>
+            <h2 class="thankyou-title">CẢM ƠN QUÝ KHÁCH!</h2>
+            <p class="thankyou-subtitle">Lệnh in đã được gửi đến máy in thành công. Vui lòng nhận phiếu tại khay in bên dưới.</p>
+            
+            <div class="print-status-pill">
+              <span>🖨️</span> Trạng thái: <strong>DISPATCHED_TO_SPOOLER</strong>
+            </div>
+
+            <div class="auto-reset-counter" id="autoResetTimerText">
+              Tự động quay về màn hình đầu sau <strong id="resetCountdownNumber" style="color: #ffffff; font-size: 1.05rem;">5</strong> giây...
+            </div>
+
+            <button class="btn-primary" id="btnImmediateReset" style="margin-top: 10px; height: 40px; padding: 0 24px; border-radius: 9999px;">
+              Quét mã tiếp theo ngay
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Scanner Panel (Right Side 30%) -->
+      <section class="scanner-banner">
+        
+        <!-- ========================================================= -->
+        <!-- INPUT MODE SWITCHER: Chọn Chế Độ (Camera / Máy bắn / Cả hai) -->
+        <!-- ========================================================= -->
+        <div class="mode-selector-card">
+          <div class="mode-selector-title">🎯 Chế độ nạp mã:</div>
+          <div class="mode-buttons-group">
+            <button class="mode-btn" data-mode="camera" id="btnModeCamera" title="Chỉ sử dụng Camera quét">
+              📷 Camera
+            </button>
+            <button class="mode-btn" data-mode="gun" id="btnModeGun" title="Chỉ sử dụng Súng/Máy bắn mã">
+              🔫 Máy bắn
+            </button>
+            <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Máy bắn">
+              ⚡ Cả hai
+            </button>
+          </div>
+        </div>
+
+        <!-- Status & Last Scan Card -->
+        <div class="scanner-header-card">
+          <div class="scanner-status-row">
+            <div class="scanner-status-pill" id="statusPill" title="Click để tiếp tục quét ngay nếu đang tạm dừng">
+              <span id="statusDot" class="status-dot"></span>
+              <span id="statusText">Khởi tạo camera...</span>
+            </div>
+            <button class="tool-btn" id="btnResumeEarly" style="padding: 2px 8px; height: 24px; font-size: 0.7rem;">
+              ▶ Tiếp tục
+            </button>
+          </div>
+          <div class="last-scan-box" id="lastScanText">Chưa có mã quét nào</div>
+        </div>
+
+        <!-- Dedicated Barcode Gun / Manual Input Card -->
+        <div class="barcode-gun-card" id="barcodeGunCard">
+          <div class="gun-card-header">
+            <span>🔫 Máy bắn QR / Nhập mã:</span>
+            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--accent); font-weight: 600;">HID Sẵn sàng</span>
+          </div>
+          <div class="gun-input-group">
+            <input 
+              type="text" 
+              id="barcodeGunInput" 
+              class="gun-input" 
+              placeholder="Bắn mã hoặc gõ mã..." 
+              autocomplete="off" 
+              autocapitalize="off" 
+              spellcheck="false"
+            />
+            <button class="gun-submit-btn" id="btnGunSubmit" title="Xác nhận mã">Gửi</button>
+          </div>
+          <div class="gun-buffering-indicator" id="gunBufferingIndicator">
+            <span>⏳</span> <span>Đang nhận chuỗi mã từ máy bắn (chờ 1s hoàn tất)...</span>
+          </div>
+        </div>
+
+        <!-- Scanner Viewport Frame (Holds Video or Gun Graphic) -->
+        <div class="scanner-viewport-wrapper" id="scannerViewportWrapper">
+          <div id="reader" aria-label="Camera Barcode Preview"></div>
+          
+          <!-- Gun-only Mode Visual Display -->
+          <div class="gun-mode-graphic" id="gunModeGraphic">
+            <div class="gun-mode-icon">🔫</div>
+            <div class="gun-mode-title">CHẾ ĐỘ SÚNG BẮN MÃ</div>
+            <div class="gun-mode-sub">Cầm súng bắn trực tiếp vào mã QR hoặc mã vạch bất kỳ lúc nào.</div>
+          </div>
+
+          <div class="overlay-frame" id="cameraReticleOverlay" aria-hidden="true">
+            <div class="scanner-reticle">
+              <div class="reticle-corner reticle-tl"></div>
+              <div class="reticle-corner reticle-tr"></div>
+              <div class="reticle-corner reticle-bl"></div>
+              <div class="reticle-corner reticle-br"></div>
+              <div class="scanner-laser"></div>
+            </div>
+          </div>
+          <div id="scanFlash" class="scan-flash">
+            <div class="scan-flash-icon">✓</div>
+          </div>
+        </div>
+
+        <!-- Camera Controls (Hidden in Gun-Only Mode) -->
+        <div class="controls-card" id="cameraControlsCard">
+          <div class="control-row">
+            <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">Camera:</label>
+            <select id="cameraSelect" class="select-input">
+              <option value="">Đang tải danh sách camera...</option>
+            </select>
+            <button class="icon-btn" id="btnRefreshCameras" title="Tải lại danh sách camera">🔄</button>
+          </div>
+        </div>
+
+        <!-- Quick Action Grid -->
+        <div class="scanner-quick-actions">
+          <button class="quick-action-btn" id="btnQuickTestScan">
+            🧪 Test Scan (Mẫu)
+          </button>
+          <button class="quick-action-btn" id="btnCopyLastScan">
+            📄 Copy mã vừa quét
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Hidden File Input for Image Scanning -->
+  <input type="file" id="fileScanInput" accept="image/*" style="display: none;" />
+
+  <!-- MODAL: Lịch sử quét (Scan History) -->
+  <div class="modal-backdrop" id="modalHistory">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📋 Lịch sử quét mã (<span id="historyModalCount">0</span>)</div>
+        <button class="modal-close-btn" data-close="modalHistory">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="history-stats-bar">
+          <input type="text" id="historySearchInput" class="form-input" placeholder="🔍 Tìm kiếm mã..." style="max-width: 260px;" />
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-secondary" id="btnExportCSV" style="font-size: 0.78rem; height: 32px;">📥 Xuất CSV</button>
+            <button class="btn-secondary" id="btnCopyAllHistory" style="font-size: 0.78rem; height: 32px;">📑 Copy tất cả</button>
+          </div>
+        </div>
+        <div class="history-list" id="historyListContainer">
+          <!-- Render dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger" id="btnClearHistory">🗑️ Xóa lịch sử</button>
+        <button class="btn-secondary" data-close="modalHistory">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Cài đặt hệ thống (Settings) -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">⚙️ Cài đặt Kiosk Scanner & In ấn</div>
+        <button class="modal-close-btn" data-close="modalSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Input Mode Setting -->
+        <div class="form-group">
+          <label class="form-label" for="cfgInputMode">Chế độ nạp mã mặc định:</label>
+          <select id="cfgInputMode" class="form-input">
+            <option value="both">⚡ Cả hai (Camera + Máy bắn QR)</option>
+            <option value="camera">📷 Chỉ sử dụng Camera</option>
+            <option value="gun">🔫 Chỉ sử dụng Máy bắn QR (Tắt camera)</option>
+          </select>
+          <div class="form-help">Chọn thiết bị quét hoạt động cho máy Kiosk.</div>
+        </div>
+
+        <!-- Power Apps Base URL -->
+        <div class="form-group">
+          <label class="form-label" for="cfgPowerAppsUrl">URL Ứng dụng Power Apps:</label>
+          <input type="text" id="cfgPowerAppsUrl" class="form-input" placeholder="https://apps.powerapps.com/play/..." />
+          <div class="form-help">Mã quét sẽ được gắn vào URL dạng <code>?barcode=[VALUE]&timestamp=[TIME]</code></div>
+        </div>
+
+        <!-- Gun Scanner Inactivity Delay (1s default) -->
+        <div class="form-group">
+          <label class="form-label" for="cfgGunDelayMs">Thời gian chờ máy bắn nhận đủ dữ liệu (mili-giây):</label>
+          <input type="number" id="cfgGunDelayMs" class="form-input" min="300" max="3000" step="100" value="1000" />
+          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để đảm bảo máy bắn gửi xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1 giây).</div>
+        </div>
+
+        <!-- Printing Delay Duration -->
+        <div class="form-group">
+          <label class="form-label" for="cfgPrintDelaySeconds">Thời gian hiển thị trang "Đang in" khi quét tự động (giây):</label>
+          <input type="number" id="cfgPrintDelaySeconds" class="form-input" min="1" max="60" value="5" />
+          <div class="form-help">Thời gian hiển thị trang đang in trước khi chuyển sang trang Cảm ơn (mặc định: 5s).</div>
+        </div>
+
+        <!-- Thank you screen reset countdown duration -->
+        <div class="form-group">
+          <label class="form-label" for="cfgThankYouSeconds">Thời gian hiển thị trang "Cảm ơn" (giây):</label>
+          <input type="number" id="cfgThankYouSeconds" class="form-input" min="1" max="60" value="5" />
+          <div class="form-help">Thời gian hiển thị trang Cảm ơn trước khi tự động quay về trang đầu (mặc định: 5s).</div>
+        </div>
+
+        <!-- Pause duration -->
+        <div class="form-group">
+          <label class="form-label" for="cfgPauseSeconds">Thời gian tạm dừng camera máy quét (giây):</label>
+          <input type="number" id="cfgPauseSeconds" class="form-input" min="1" max="300" value="30" />
+          <div class="form-help">Giúp chống quét lặp lại khi khách hàng chưa rời mã khỏi camera.</div>
+        </div>
+
+        <!-- Toggle switches -->
+        <div class="form-switch-row">
+          <div>
+            <div class="form-switch-label">🔊 Âm thanh Beep khi quét / bắn mã</div>
+            <div class="form-help">Phát tiếng kêu bíp báo hiệu thành công</div>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="cfgSoundEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-switch-row">
+          <div>
+            <div class="form-switch-label">📳 Rung phản hồi (Haptic Vibrate)</div>
+            <div class="form-help">Áp dụng cho điện thoại và máy tính bảng hỗ trợ</div>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="cfgVibrateEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-switch-row">
+          <div>
+            <div class="form-switch-label">📋 Tự động sao chép vào Clipboard</div>
+            <div class="form-help">Copy giá trị mã quét vào bộ nhớ tạm</div>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="cfgClipboardEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-switch-row">
+          <div>
+            <div class="form-switch-label">🔄 Tự động Reload Iframe với Param</div>
+            <div class="form-help">Kích hoạt phương án Solution 2 truyền qua <code>Param("barcode")</code></div>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="cfgUrlReloadEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnResetSettings">Khôi phục mặc định</button>
+        <button class="btn-primary" id="btnSaveSettings">Lưu cài đặt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Debug Console -->
+  <div class="debug-console" id="debugConsole"></div>
+
+  <!-- Third-party Scanner Library -->
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+
+  <script>
+    /**
+     * KIOSK SCANNER PRO
+     * Input Modes: 'both' | 'camera' | 'gun'
+     */
+    const DEFAULT_CONFIG = {
+      inputMode: "both", // 'both' | 'camera' | 'gun'
+      powerAppsUrl: "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/e8ad3a34-b6a3-452b-a984-01eb262236a5",
+      gunDelayMs: 1000,
+      pauseSeconds: 30,
+      printDelaySeconds: 5,
+      thankYouSeconds: 5,
+      soundEnabled: true,
+      vibrateEnabled: true,
+      clipboardEnabled: true,
+      urlReloadEnabled: true,
+      layoutReversed: false,
+      selectedCameraId: ""
+    };
+
+    // ==========================================
+    // 1. Audio Engine (Web Audio API Synthesizer)
+    // ==========================================
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+      },
+      playSuccessBeep() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200, now);
+          osc.frequency.exponentialRampToValueAtTime(1800, now + 0.08);
+
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.16);
+        } catch (e) {}
+      },
+      playChime() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.frequency.setValueAtTime(freq, now + i * 0.08);
+            gain.gain.setValueAtTime(0.2, now + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + i * 0.08);
+            osc.stop(now + i * 0.08 + 0.25);
+          });
+        } catch (e) {}
+      }
+    };
+
+    // ==========================================
+    // 2. Storage & State Management
+    // ==========================================
+    const AppStorage = {
+      CONFIG_KEY: 'kiosk_scanner_config_v2',
+      HISTORY_KEY: 'kiosk_scanner_history_v2',
+
+      getConfig() {
+        try {
+          const raw = localStorage.getItem(this.CONFIG_KEY);
+          return raw ? { ...DEFAULT_CONFIG, ...JSON.parse(raw) } : { ...DEFAULT_CONFIG };
+        } catch (e) {
+          return { ...DEFAULT_CONFIG };
+        }
+      },
+
+      saveConfig(cfg) {
+        try {
+          localStorage.setItem(this.CONFIG_KEY, JSON.stringify(cfg));
+        } catch (e) {}
+      },
+
+      getHistory() {
+        try {
+          const raw = localStorage.getItem(this.HISTORY_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      },
+
+      addHistoryItem(value, format = 'QR/Barcode') {
+        try {
+          const history = this.getHistory();
+          const newItem = {
+            id: 'scan_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            value: value,
+            format: format,
+            timestamp: new Date().toISOString()
+          };
+          history.unshift(newItem);
+          if (history.length > 500) history.pop();
+          localStorage.setItem(this.HISTORY_KEY, JSON.stringify(history));
+          return newItem;
+        } catch (e) {
+          return null;
+        }
+      },
+
+      clearHistory() {
+        try {
+          localStorage.removeItem(this.HISTORY_KEY);
+        } catch (e) {}
+      },
+
+      deleteHistoryItem(id) {
+        try {
+          const history = this.getHistory().filter(item => item.id !== id);
+          localStorage.setItem(this.HISTORY_KEY, JSON.stringify(history));
+        } catch (e) {}
+      }
+    };
+
+    // ==========================================
+    // 3. UI Toast Notification Helper
+    // ==========================================
+    function showToast(message, type = 'info', duration = 3000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast-pill ${type}`;
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(50px)';
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    // ==========================================
+    // 4. Main Application Controller
+    // ==========================================
+    (function () {
+      let config = AppStorage.getConfig();
+      let html5Scanner = null;
+      let isPaused = false;
+      let countdownTimer = null;
+      
+      let printingTimer = null;
+      let thankYouTimer = null;
+      
+      let availableCameras = [];
+      let isTorchOn = false;
+      let lastScannedValue = "";
+      let isCameraActive = false;
+      
+      // STAGES: 'START' | 'PROCESS' | 'THANKYOU'
+      let currentStage = 'START';
+
+      // Barcode Gun Global Buffer & Debounce Timer
+      let gunBuffer = "";
+      let gunDebounceTimer = null;
+
+      // DOM Elements
+      const powerAppsFrame = document.getElementById('powerAppsFrame');
+      const iframeLoadingBar = document.getElementById('iframeLoadingBar');
+      
+      const viewStageStart = document.getElementById('viewStageStart');
+      const viewStageProcess = document.getElementById('viewStageProcess');
+      const viewStageThankYou = document.getElementById('viewStageThankYou');
+
+      const tabBtnStart = document.getElementById('tabBtnStart');
+      const tabBtnProcess = document.getElementById('tabBtnProcess');
+      const tabBtnThankYou = document.getElementById('tabBtnThankYou');
+
+      const printingStatusOverlay = document.getElementById('printingStatusOverlay');
+      const printCountdownBadge = document.getElementById('printCountdownBadge');
+      const resetCountdownNumber = document.getElementById('resetCountdownNumber');
+
+      const barcodeGunCard = document.getElementById('barcodeGunCard');
+      const barcodeGunInput = document.getElementById('barcodeGunInput');
+      const btnGunSubmit = document.getElementById('btnGunSubmit');
+      const gunBufferingIndicator = document.getElementById('gunBufferingIndicator');
+      const gunStatusBadge = document.getElementById('gunStatusBadge');
+
+      const scannerViewportWrapper = document.getElementById('scannerViewportWrapper');
+      const readerElem = document.getElementById('reader');
+      const gunModeGraphic = document.getElementById('gunModeGraphic');
+      const cameraReticleOverlay = document.getElementById('cameraReticleOverlay');
+      const cameraControlsCard = document.getElementById('cameraControlsCard');
+
+      // Mode Selector Buttons
+      const btnModeCamera = document.getElementById('btnModeCamera');
+      const btnModeGun = document.getElementById('btnModeGun');
+      const btnModeBoth = document.getElementById('btnModeBoth');
+
+      const chipCameraIndicator = document.getElementById('chipCameraIndicator');
+      const chipGunIndicator = document.getElementById('chipGunIndicator');
+      const startHeroSubtitle = document.getElementById('startHeroSubtitle');
+
+      const statusText = document.getElementById('statusText');
+      const statusDot = document.getElementById('statusDot');
+      const statusPill = document.getElementById('statusPill');
+      const lastScanText = document.getElementById('lastScanText');
+      const scanFlash = document.getElementById('scanFlash');
+      const cameraSelect = document.getElementById('cameraSelect');
+      const kioskContainer = document.getElementById('kioskContainer');
+      const historyBadge = document.getElementById('historyBadge');
+      const debugConsole = document.getElementById('debugConsole');
+      const netStatus = document.getElementById('netStatus');
+      const btnTorchToggle = document.getElementById('btnTorchToggle');
+      const btnAudioToggle = document.getElementById('btnAudioToggle');
+      const audioIcon = document.getElementById('audioIcon');
+
+      // Setup Logger to Debug Console
+      function setupDebugLogger() {
+        function appendLog(msg, type = 'log') {
+          const line = document.createElement('div');
+          line.className = `debug-line ${type}`;
+          line.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${msg}`;
+          debugConsole.appendChild(line);
+          debugConsole.scrollTop = debugConsole.scrollHeight;
+          while (debugConsole.children.length > 80) debugConsole.removeChild(debugConsole.firstChild);
+        }
+
+        const origLog = console.log, origErr = console.error, origWarn = console.warn;
+        console.log = function(...args) {
+          origLog.apply(console, args);
+          appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'log');
+        };
+        console.error = function(...args) {
+          origErr.apply(console, args);
+          appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'error');
+        };
+        console.warn = function(...args) {
+          origWarn.apply(console, args);
+          appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'warn');
+        };
+      }
+
+      // -------------------------------------------------------------
+      // INPUT MODE SWITCHER ENGINE ('both' | 'camera' | 'gun')
+      // -------------------------------------------------------------
+      async function setInputMode(mode, save = true) {
+        config.inputMode = mode;
+        if (save) {
+          AppStorage.saveConfig(config);
+        }
+        console.log(`🎯 [INPUT MODE] Chuyển chế độ: ${mode}`);
+
+        // Update UI Button Group
+        btnModeCamera.classList.toggle('active', mode === 'camera');
+        btnModeGun.classList.toggle('active', mode === 'gun');
+        btnModeBoth.classList.toggle('active', mode === 'both');
+
+        // Update Home chips
+        chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
+        chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
+
+        if (mode === 'gun') {
+          startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in phiếu.';
+        } else if (mode === 'camera') {
+          startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in phiếu.';
+        } else {
+          startHeroSubtitle.textContent = 'Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.';
+        }
+
+        // Handle Gun-Only mode vs Camera Modes
+        if (mode === 'gun') {
+          // Stop camera stream to save power/CPU
+          await stopCameraScanner();
+          readerElem.style.display = 'none';
+          cameraReticleOverlay.style.display = 'none';
+          cameraControlsCard.style.display = 'none';
+          gunModeGraphic.style.display = 'flex';
+          barcodeGunCard.style.display = 'flex';
+          barcodeGunCard.classList.add('gun-only-expanded');
+          gunStatusBadge.textContent = 'Chế độ Súng đang BẬT';
+          gunStatusBadge.style.color = 'var(--accent)';
+          setStatus('Sẵn sàng nhận máy bắn', 'ready');
+          showToast('Chế độ: Chỉ dùng Máy bắn mã (Đã tắt Camera)', 'info');
+          
+          if (barcodeGunInput) barcodeGunInput.focus();
+        } else {
+          // 'camera' or 'both'
+          gunModeGraphic.style.display = 'none';
+          readerElem.style.display = 'flex';
+          cameraReticleOverlay.style.display = 'flex';
+          cameraControlsCard.style.display = 'flex';
+          barcodeGunCard.classList.remove('gun-only-expanded');
+
+          if (mode === 'camera') {
+            barcodeGunCard.style.display = 'none';
+            gunStatusBadge.textContent = 'Đã tắt Súng';
+            gunStatusBadge.style.color = 'var(--text-muted)';
+            showToast('Chế độ: Chỉ dùng Camera', 'info');
+          } else {
+            // 'both'
+            barcodeGunCard.style.display = 'flex';
+            gunStatusBadge.textContent = 'HID Sẵn sàng';
+            gunStatusBadge.style.color = 'var(--accent)';
+            showToast('Chế độ: Sử dụng cả Camera & Máy bắn', 'info');
+          }
+
+          if (!isCameraActive) {
+            await startCameraScanner(config.selectedCameraId || null);
+          }
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 3-Tab Switcher Logic
+      // -------------------------------------------------------------
+      function clearAllWorkflowTimers() {
+        if (printingTimer) {
+          clearInterval(printingTimer);
+          printingTimer = null;
+        }
+        if (thankYouTimer) {
+          clearInterval(thankYouTimer);
+          thankYouTimer = null;
+        }
+        if (gunDebounceTimer) {
+          clearTimeout(gunDebounceTimer);
+          gunDebounceTimer = null;
+        }
+      }
+
+      function switchTab(stage, isAutoScanTrigger = false) {
+        currentStage = stage;
+        clearAllWorkflowTimers();
+        console.log(`🔀 [TAB SWITCH] Chuyển đổi Tab: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
+
+        // 1. Update Active Views
+        viewStageStart.classList.toggle('active', stage === 'START');
+        viewStageProcess.classList.toggle('active', stage === 'PROCESS');
+        viewStageThankYou.classList.toggle('active', stage === 'THANKYOU');
+
+        // 2. Update Top Tab Buttons Active States
+        tabBtnStart.classList.toggle('active', stage === 'START');
+        tabBtnProcess.classList.toggle('active', stage === 'PROCESS');
+        tabBtnThankYou.classList.toggle('active', stage === 'THANKYOU');
+
+        // TAB 1: START
+        if (stage === 'START') {
+          if (config.inputMode !== 'gun') {
+            resumeScanner();
+          }
+          setTimeout(() => {
+            if (barcodeGunInput && config.inputMode !== 'camera') {
+              barcodeGunInput.value = '';
+              barcodeGunInput.focus();
+            }
+          }, 100);
+        } 
+        // TAB 2: PROCESS
+        else if (stage === 'PROCESS') {
+          if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
+            loadPowerApps();
+          }
+
+          if (isAutoScanTrigger) {
+            printingStatusOverlay.style.display = 'flex';
+            let printRemaining = parseInt(config.printDelaySeconds, 10) || 5;
+            printCountdownBadge.textContent = `${printRemaining}s`;
+
+            triggerKioskPrint();
+
+            printingTimer = setInterval(() => {
+              printRemaining--;
+              if (printRemaining <= 0) {
+                clearInterval(printingTimer);
+                printingTimer = null;
+                console.log('⏱️ Đã xong 5s Tab Đang in -> Tự động chuyển Tab Cảm ơn');
+                switchTab('THANKYOU', true);
+              } else {
+                printCountdownBadge.textContent = `${printRemaining}s`;
+              }
+            }, 1000);
+          } else {
+            printingStatusOverlay.style.display = 'none';
+            showToast('Đang ở Tab Power Apps. Bạn có thể đăng nhập hoặc kiểm tra ứng dụng.', 'info', 3500);
+          }
+        } 
+        // TAB 3: THANK YOU
+        else if (stage === 'THANKYOU') {
+          if (config.soundEnabled) {
+            AudioEngine.playChime();
+          }
+
+          let thankRemaining = parseInt(config.thankYouSeconds, 10) || 5;
+          resetCountdownNumber.textContent = thankRemaining;
+
+          thankYouTimer = setInterval(() => {
+            thankRemaining--;
+            if (thankRemaining <= 0) {
+              clearInterval(thankYouTimer);
+              thankYouTimer = null;
+              console.log('⏱️ Đã xong 5s Tab Cảm ơn -> Tự động quay về Tab 1 (Start)');
+              switchTab('START', false);
+            } else {
+              resetCountdownNumber.textContent = thankRemaining;
+            }
+          }, 1000);
+        }
+      }
+
+      // -------------------------------------------------------------
+      // Kiosk Print Trigger & AfterPrint Listener
+      // -------------------------------------------------------------
+      function triggerKioskPrint() {
+        console.log('🖨️ [KIOSK PRINT] Đang phát lệnh in window.print()...');
+        
+        return new Promise((resolve) => {
+          let hasResolved = false;
+
+          const handleAfterPrint = () => {
+            if (hasResolved) return;
+            hasResolved = true;
+            window.removeEventListener('afterprint', handleAfterPrint);
+            console.log('✅ [AFTERPRINT] Trình duyệt đã gửi lệnh in vào hàng đợi (SPOOLER).');
+            resolve({ status: 'DISPATCHED_TO_SPOOLER', timestamp: Date.now() });
+          };
+
+          window.addEventListener('afterprint', handleAfterPrint);
+
+          setTimeout(() => {
+            if (!hasResolved) {
+              hasResolved = true;
+              window.removeEventListener('afterprint', handleAfterPrint);
+              resolve({ status: 'DISPATCHED_TO_SPOOLER_TIMEOUT_FALLBACK', timestamp: Date.now() });
+            }
+          }, 4000);
+
+          try {
+            if (powerAppsFrame && powerAppsFrame.contentWindow && typeof powerAppsFrame.contentWindow.print === 'function') {
+              try {
+                powerAppsFrame.contentWindow.print();
+              } catch (e) {
+                window.print();
+              }
+            } else {
+              window.print();
+            }
+          } catch (err) {
+            console.warn('Direct print invoke error:', err);
+            handleAfterPrint();
+          }
+        });
+      }
+
+      // Listen for postMessage from Power Apps iframe
+      window.addEventListener('message', (event) => {
+        if (!event.data) return;
+        console.log('📩 Nhận postMessage từ Iframe:', event.data);
+
+        if (
+          event.data === 'PRINT_DONE' ||
+          event.data.event === 'PRINT_DONE' ||
+          event.data.type === 'PRINT_DONE' ||
+          event.data.event === 'AFTER_PRINT' ||
+          event.data.event === 'TASK_COMPLETED'
+        ) {
+          console.log('🎯 Power Apps đã xác nhận in xong!');
+          switchTab('THANKYOU', true);
+        }
+      });
+
+      // Online/Offline Monitor
+      function updateNetStatus() {
+        if (navigator.onLine) {
+          netStatus.className = 'badge-status';
+          netStatus.innerHTML = '<span style="font-size: 8px;">●</span> Online';
+        } else {
+          netStatus.className = 'badge-status offline';
+          netStatus.innerHTML = '<span style="font-size: 8px;">●</span> Mất mạng';
+          showToast('Mất kết nối Internet!', 'error', 4000);
+        }
+      }
+      window.addEventListener('online', updateNetStatus);
+      window.addEventListener('offline', updateNetStatus);
+
+      // Status Indicator
+      function setStatus(msg, state = 'ready') {
+        statusText.textContent = msg;
+        statusDot.className = `status-dot ${state}`;
+      }
+
+      function updateHistoryBadge() {
+        const count = AppStorage.getHistory().length;
+        historyBadge.textContent = count;
+      }
+
+      function updateAudioBtnUI() {
+        if (config.soundEnabled) {
+          audioIcon.textContent = '🔊';
+          btnAudioToggle.classList.add('active');
+        } else {
+          audioIcon.textContent = '🔇';
+          btnAudioToggle.classList.remove('active');
+        }
+      }
+
+      // Load Power Apps into Main Iframe
+      function loadPowerApps(value = null) {
+        if (!config.powerAppsUrl) return;
+
+        iframeLoadingBar.classList.add('active');
+        let targetUrl = config.powerAppsUrl;
+
+        if (value && config.urlReloadEnabled) {
+          const timestamp = Date.now();
+          const separator = targetUrl.includes('?') ? '&' : '?';
+          targetUrl = `${targetUrl}${separator}barcode=${encodeURIComponent(value)}&timestamp=${timestamp}`;
+        }
+
+        console.log('🔄 Đang nạp Power Apps Iframe:', targetUrl);
+        powerAppsFrame.src = targetUrl;
+
+        powerAppsFrame.onload = () => {
+          iframeLoadingBar.classList.remove('active');
+          console.log('✅ Power Apps Iframe đã tải xong.');
+        };
+      }
+
+      // Transmit Scanned / Shot Code to Power Apps & Systems
+      function transmitBarcode(value, source = 'Camera/Gun') {
+        if (!value || typeof value !== 'string') return;
+        const cleanVal = value.trim();
+        if (!cleanVal) return;
+
+        if (gunBufferingIndicator) {
+          gunBufferingIndicator.classList.remove('active');
+        }
+
+        console.log(`🎯 [TRANSMIT] Xử lý mã quét [${source}]:`, cleanVal);
+        lastScannedValue = cleanVal;
+        const timeStr = new Date().toLocaleTimeString();
+        lastScanText.innerHTML = `<strong>MÃ:</strong> ${cleanVal} <span style="color:var(--text-muted);">(${timeStr})</span>`;
+
+        if (barcodeGunInput && barcodeGunInput.value !== cleanVal) {
+          barcodeGunInput.value = cleanVal;
+        }
+
+        // 1. Audio & Haptic Feedback
+        if (config.soundEnabled) {
+          AudioEngine.playSuccessBeep();
+        }
+        if (config.vibrateEnabled && navigator.vibrate) {
+          navigator.vibrate([80, 50, 80]);
+        }
+
+        // 2. Visual Flash
+        scanFlash.classList.add('active');
+        setTimeout(() => scanFlash.classList.remove('active'), 450);
+
+        // 3. Save to History
+        AppStorage.addHistoryItem(cleanVal, source);
+        updateHistoryBadge();
+
+        // 4. Switch to TAB 2: PROCESS with Auto Print Workflow (5s)
+        switchTab('PROCESS', true);
+
+        // 5. Load Power Apps with barcode param
+        if (config.urlReloadEnabled) {
+          loadPowerApps(cleanVal);
+        }
+
+        // 6. Fallback: postMessage
+        if (powerAppsFrame && powerAppsFrame.contentWindow) {
+          try {
+            powerAppsFrame.contentWindow.postMessage({
+              type: 'BARCODE_SCANNED',
+              event: 'barcode_scanned',
+              barcode: cleanVal,
+              value: cleanVal
+            }, '*');
+          } catch (e) {}
+        }
+
+        // 7. Fallback: Copy to Clipboard
+        if (config.clipboardEnabled && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(cleanVal).then(() => {
+            showToast(`Đã nhận mã: ${cleanVal}`, 'success', 2500);
+          }).catch(() => {
+            showToast(`Đã nhận mã: ${cleanVal}`, 'success', 2500);
+          });
+        } else {
+          showToast(`Đã nhận mã: ${cleanVal}`, 'success', 2500);
+        }
+
+        // 8. Pause Scanner
+        if (config.inputMode !== 'gun') {
+          pauseScanner(config.pauseSeconds);
+        }
+      }
+
+      // Scanner Pause & Resume Logic
+      function pauseScanner(seconds = 30) {
+        isPaused = true;
+        try {
+          if (html5Scanner && typeof html5Scanner.pause === 'function') {
+            html5Scanner.pause(true);
+          }
+        } catch (e) {}
+
+        let remaining = parseInt(seconds, 10) || 30;
+        if (countdownTimer) clearInterval(countdownTimer);
+
+        const updatePauseUI = () => {
+          setStatus(`Tạm dừng (${remaining}s - Click tiếp tục)`, 'paused');
+        };
+
+        updatePauseUI();
+        countdownTimer = setInterval(() => {
+          remaining--;
+          if (remaining <= 0) {
+            resumeScanner();
+          } else {
+            updatePauseUI();
+          }
+        }, 1000);
+      }
+
+      function resumeScanner() {
+        if (countdownTimer) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
+        }
+        isPaused = false;
+
+        try {
+          if (html5Scanner && typeof html5Scanner.resume === 'function') {
+            html5Scanner.resume();
+          }
+        } catch (e) {}
+
+        setStatus('Sẵn sàng quét', 'ready');
+        console.log('▶️ Máy quét camera đã sẵn sàng tiếp tục');
+      }
+
+      // Torch / Flashlight Control
+      async function toggleTorch() {
+        if (!html5Scanner) return;
+        try {
+          const videoElem = document.querySelector('#reader video');
+          if (!videoElem || !videoElem.srcObject) {
+            showToast('Chưa có luồng video camera', 'error');
+            return;
+          }
+          const track = videoElem.srcObject.getVideoTracks()[0];
+          const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+
+          if (!capabilities.torch) {
+            showToast('Camera hiện tại không hỗ trợ đèn Flash', 'info');
+            return;
+          }
+
+          isTorchOn = !isTorchOn;
+          await track.applyConstraints({
+            advanced: [{ torch: isTorchOn }]
+          });
+
+          btnTorchToggle.classList.toggle('active', isTorchOn);
+          showToast(isTorchOn ? 'Đã bật đèn Flash 🔦' : 'Đã tắt đèn Flash', 'info');
+        } catch (err) {
+          console.warn('Torch error:', err);
+          showToast('Không thể điều khiển đèn Flash', 'error');
+        }
+      }
+
+      // Camera Discovery & Initialization
+      async function enumerateCameras() {
+        try {
+          if (!window.Html5Qrcode) return;
+          const devices = await Html5Qrcode.getCameras();
+          availableCameras = devices || [];
+          cameraSelect.innerHTML = '';
+
+          if (availableCameras.length === 0) {
+            cameraSelect.innerHTML = '<option value="">Không tìm thấy camera</option>';
+            return;
+          }
+
+          availableCameras.forEach((cam, idx) => {
+            const opt = document.createElement('option');
+            opt.value = cam.id;
+            opt.textContent = cam.label || `Camera ${idx + 1}`;
+            if (config.selectedCameraId === cam.id) {
+              opt.selected = true;
+            }
+            cameraSelect.appendChild(opt);
+          });
+        } catch (err) {
+          console.warn('Enumerate cameras failed:', err);
+          cameraSelect.innerHTML = '<option value="">Lỗi nạp camera</option>';
+        }
+      }
+
+      async function stopCameraScanner() {
+        if (html5Scanner) {
+          try {
+            if (html5Scanner.isScanning) {
+              await html5Scanner.stop();
+            }
+            await html5Scanner.clear();
+          } catch (e) {}
+          isCameraActive = false;
+        }
+      }
+
+      async function startCameraScanner(cameraId = null) {
+        if (!window.Html5Qrcode) {
+          setStatus('Lỗi nạp thư viện', 'error');
+          return;
+        }
+
+        await stopCameraScanner();
+
+        html5Scanner = new Html5Qrcode('reader');
+
+        const scanConfig = {
+          fps: 15,
+          aspectRatio: 1.0,
+          qrbox: { width: 220, height: 220 }
+        };
+
+        const cameraChoice = cameraId ? { deviceId: { exact: cameraId } } : { facingMode: "environment" };
+
+        setStatus('Đang bật camera...', 'paused');
+
+        html5Scanner.start(
+          cameraChoice,
+          scanConfig,
+          (decodedText) => {
+            if (!isPaused && config.inputMode !== 'gun') {
+              console.log('🎉 CAMERA QUÉT THÀNH CÔNG:', decodedText);
+              transmitBarcode(decodedText, 'Camera');
+            }
+          },
+          () => {}
+        ).then(() => {
+          isCameraActive = true;
+          setStatus('Sẵn sàng quét', 'ready');
+          console.log('✅ Camera đã hoạt động thành công.');
+        }).catch((err) => {
+          isCameraActive = false;
+          console.error('❌ Lỗi khởi động camera:', err);
+          setStatus('Lỗi camera', 'error');
+          showToast('Không thể truy cập camera. Vui lòng cấp quyền hoặc chọn chế độ Súng bắn mã!', 'error', 5000);
+        });
+      }
+
+      // Quét từ file ảnh
+      async function scanFromFile(file) {
+        if (!file || !window.Html5Qrcode) return;
+        try {
+          setStatus('Đang giải mã ảnh...', 'paused');
+          const tempScanner = new Html5Qrcode('reader');
+          const decodedText = await tempScanner.scanFile(file, true);
+          showToast('Giải mã file ảnh thành công!', 'success');
+          transmitBarcode(decodedText, 'File ảnh');
+        } catch (err) {
+          console.error('Scan file error:', err);
+          showToast('Không tìm thấy mã hợp lệ trong ảnh này', 'error');
+          setStatus('Sẵn sàng quét', 'ready');
+        }
+      }
+
+      // Render History List
+      function renderHistoryModal(filterQuery = "") {
+        const container = document.getElementById('historyListContainer');
+        const countSpan = document.getElementById('historyModalCount');
+        const history = AppStorage.getHistory();
+        
+        let filtered = history;
+        if (filterQuery.trim()) {
+          const q = filterQuery.toLowerCase().trim();
+          filtered = history.filter(item => item.value.toLowerCase().includes(q));
+        }
+
+        countSpan.textContent = filtered.length;
+        container.innerHTML = '';
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<div class="empty-state">Chưa có mã quét nào được ghi nhận</div>';
+          return;
+        }
+
+        filtered.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'history-item';
+          const dateStr = new Date(item.timestamp).toLocaleString();
+          el.innerHTML = `
+            <div class="history-item-content">
+              <div class="history-item-value">${item.value}</div>
+              <div class="history-item-meta">${dateStr} • ${item.format || 'QR/Barcode'}</div>
+            </div>
+            <div class="history-item-actions">
+              <button class="tool-btn btn-copy-single" data-val="${item.value}" title="Copy mã">📄</button>
+              <button class="tool-btn btn-resend-single" data-val="${item.value}" title="Gửi lại mã vào Power Apps">🔄</button>
+              <button class="tool-btn btn-del-single" data-id="${item.id}" title="Xóa mục này">❌</button>
+            </div>
+          `;
+          container.appendChild(el);
+        });
+
+        container.querySelectorAll('.btn-copy-single').forEach(b => {
+          b.addEventListener('click', () => {
+            navigator.clipboard.writeText(b.dataset.val);
+            showToast(`Đã copy: ${b.dataset.val}`, 'success');
+          });
+        });
+
+        container.querySelectorAll('.btn-resend-single').forEach(b => {
+          b.addEventListener('click', () => {
+            transmitBarcode(b.dataset.val, 'History Re-send');
+            document.getElementById('modalHistory').classList.remove('open');
+          });
+        });
+
+        container.querySelectorAll('.btn-del-single').forEach(b => {
+          b.addEventListener('click', () => {
+            AppStorage.deleteHistoryItem(b.dataset.id);
+            renderHistoryModal(document.getElementById('historySearchInput').value);
+            updateHistoryBadge();
+          });
+        });
+      }
+
+      // Export CSV Helper
+      function exportHistoryCSV() {
+        const history = AppStorage.getHistory();
+        if (history.length === 0) {
+          showToast('Lịch sử trống, không có dữ liệu xuất!', 'info');
+          return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+        csvContent += "STT,Gia Tri Ma (Barcode),Nguon Quet,Thoi Gian Quet\n";
+
+        history.forEach((item, idx) => {
+          const cleanVal = `"${item.value.replace(/"/g, '""')}"`;
+          const source = `"${item.format || 'QR/Barcode'}"`;
+          const time = `"${new Date(item.timestamp).toLocaleString()}"`;
+          csvContent += `${idx + 1},${cleanVal},${source},${time}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `kiosk_scan_history_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast('Đã xuất file CSV thành công!', 'success');
+      }
+
+      // -------------------------------------------------------------
+      // USB Barcode Gun Engine
+      // -------------------------------------------------------------
+      function setupBarcodeGunListener() {
+        const delayMs = parseInt(config.gunDelayMs, 10) || 1000;
+
+        function commitBufferedGunScan() {
+          if (gunDebounceTimer) {
+            clearTimeout(gunDebounceTimer);
+            gunDebounceTimer = null;
+          }
+
+          if (gunBufferingIndicator) {
+            gunBufferingIndicator.classList.remove('active');
+          }
+
+          const finalCode = (gunBuffer || (barcodeGunInput ? barcodeGunInput.value : '')).trim();
+          gunBuffer = '';
+
+          if (finalCode.length >= 2) {
+            if (config.inputMode === 'camera') {
+              console.log('⚠️ Bỏ qua mã súng bắn do đang ở chế độ Chỉ Camera');
+              return;
+            }
+            console.log(`🔫 [BARCODE GUN RECEIVED] Đã nhận đủ dữ liệu sau ${delayMs}ms inactive:`, finalCode);
+            transmitBarcode(finalCode, 'Súng bắn mã');
+            if (barcodeGunInput) barcodeGunInput.value = '';
+          }
+        }
+
+        function scheduleDebounce() {
+          if (config.inputMode === 'camera') return;
+          if (gunBufferingIndicator) {
+            gunBufferingIndicator.classList.add('active');
+          }
+          if (gunDebounceTimer) {
+            clearTimeout(gunDebounceTimer);
+          }
+          gunDebounceTimer = setTimeout(() => {
+            commitBufferedGunScan();
+          }, delayMs);
+        }
+
+        btnGunSubmit.addEventListener('click', () => {
+          commitBufferedGunScan();
+        });
+
+        barcodeGunInput.addEventListener('input', (e) => {
+          gunBuffer = barcodeGunInput.value;
+          scheduleDebounce();
+        });
+
+        barcodeGunInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            scheduleDebounce();
+          }
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if (config.inputMode === 'camera') return;
+
+          const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+          const activeId = document.activeElement ? document.activeElement.id : '';
+
+          if (activeTag === 'input' && activeId !== 'barcodeGunInput') {
+            return;
+          }
+
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            scheduleDebounce();
+          } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            gunBuffer += e.key;
+            if (barcodeGunInput && document.activeElement !== barcodeGunInput) {
+              barcodeGunInput.value = gunBuffer;
+            }
+            scheduleDebounce();
+          }
+        }, true);
+
+        // Auto-refocus on Tab 1
+        document.addEventListener('click', (e) => {
+          if (currentStage === 'START' && config.inputMode !== 'camera') {
+            const target = e.target;
+            const isButton = target.closest('button') || target.closest('select') || target.closest('input') || target.closest('.modal-card');
+            if (!isButton && barcodeGunInput) {
+              barcodeGunInput.focus();
+            }
+          }
+        });
+      }
+
+      // Event Listeners Setup
+      function setupEventListeners() {
+        setupBarcodeGunListener();
+
+        // Mode Selector Buttons
+        btnModeCamera.addEventListener('click', () => setInputMode('camera'));
+        btnModeGun.addEventListener('click', () => setInputMode('gun'));
+        btnModeBoth.addEventListener('click', () => setInputMode('both'));
+
+        // 3 Navigation Tabs
+        tabBtnStart.addEventListener('click', () => {
+          switchTab('START', false);
+        });
+
+        tabBtnProcess.addEventListener('click', () => {
+          switchTab('PROCESS', false);
+        });
+
+        tabBtnThankYou.addEventListener('click', () => {
+          switchTab('THANKYOU', false);
+        });
+
+        // Tab 2 Control Buttons
+        document.getElementById('btnTriggerPrint').addEventListener('click', () => {
+          triggerKioskPrint();
+        });
+
+        document.getElementById('btnOpenPowerAppsInTab').addEventListener('click', () => {
+          if (config.powerAppsUrl) {
+            window.open(config.powerAppsUrl, '_blank');
+            showToast('Đã mở Power Apps trong tab mới để đăng nhập tài khoản Microsoft!', 'info', 5000);
+          }
+        });
+
+        document.getElementById('btnCancelProcess').addEventListener('click', () => {
+          switchTab('START', false);
+        });
+
+        // Tab 3 Immediate Reset Button
+        document.getElementById('btnImmediateReset').addEventListener('click', () => {
+          switchTab('START', false);
+        });
+
+        // Early resume button & status pill click
+        statusPill.addEventListener('click', () => {
+          if (isPaused) resumeScanner();
+        });
+        document.getElementById('btnResumeEarly').addEventListener('click', resumeScanner);
+
+        // Audio toggle
+        btnAudioToggle.addEventListener('click', () => {
+          config.soundEnabled = !config.soundEnabled;
+          AppStorage.saveConfig(config);
+          updateAudioBtnUI();
+          if (config.soundEnabled) AudioEngine.playSuccessBeep();
+          showToast(config.soundEnabled ? 'Đã bật âm thanh Beep' : 'Đã tắt âm thanh', 'info');
+        });
+
+        // Torch toggle
+        btnTorchToggle.addEventListener('click', toggleTorch);
+
+        // Scan from Image file
+        const fileInput = document.getElementById('fileScanInput');
+        document.getElementById('btnScanFile').addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) {
+            scanFromFile(e.target.files[0]);
+          }
+        });
+
+        // Layout Toggle (Flip sides)
+        document.getElementById('btnLayoutToggle').addEventListener('click', () => {
+          config.layoutReversed = !config.layoutReversed;
+          kioskContainer.classList.toggle('layout-reversed', config.layoutReversed);
+          AppStorage.saveConfig(config);
+          showToast(config.layoutReversed ? 'Máy quét bên TRÁI' : 'Máy quét bên PHẢI', 'info');
+        });
+
+        // Fullscreen Toggle
+        document.getElementById('btnFullscreen').addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        });
+
+        // Debug Console Toggle
+        document.getElementById('btnDebugToggle').addEventListener('click', () => {
+          debugConsole.classList.toggle('show');
+        });
+
+        // Camera Switcher
+        cameraSelect.addEventListener('change', (e) => {
+          const selectedId = e.target.value;
+          if (selectedId) {
+            config.selectedCameraId = selectedId;
+            AppStorage.saveConfig(config);
+            startCameraScanner(selectedId);
+          }
+        });
+        document.getElementById('btnRefreshCameras').addEventListener('click', async () => {
+          await enumerateCameras();
+          showToast('Đã làm mới danh sách camera', 'info');
+        });
+
+        // Quick Test Scan
+        document.getElementById('btnQuickTestScan').addEventListener('click', () => {
+          const testCode = 'DEMO-QR-' + Math.floor(100000 + Math.random() * 900000);
+          console.log('🧪 Kích hoạt Test Scan:', testCode);
+          transmitBarcode(testCode, 'Test Nút Bấm');
+        });
+
+        // Copy Last Scan
+        document.getElementById('btnCopyLastScan').addEventListener('click', () => {
+          if (!lastScannedValue) {
+            showToast('Chưa có mã quét nào gần đây', 'info');
+            return;
+          }
+          navigator.clipboard.writeText(lastScannedValue);
+          showToast(`Đã copy: ${lastScannedValue}`, 'success');
+        });
+
+        // Modals Management
+        document.getElementById('btnHistory').addEventListener('click', () => {
+          renderHistoryModal();
+          document.getElementById('modalHistory').classList.add('open');
+        });
+
+        document.getElementById('btnSettings').addEventListener('click', () => {
+          document.getElementById('cfgInputMode').value = config.inputMode || 'both';
+          document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
+          document.getElementById('cfgGunDelayMs').value = config.gunDelayMs || 1000;
+          document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
+          document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds || 5;
+          document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds || 5;
+          document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
+          document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
+          document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
+          document.getElementById('cfgUrlReloadEnabled').checked = config.urlReloadEnabled;
+          document.getElementById('modalSettings').classList.add('open');
+        });
+
+        document.querySelectorAll('[data-close]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const modalId = btn.dataset.close;
+            document.getElementById(modalId).classList.remove('open');
+          });
+        });
+
+        document.getElementById('historySearchInput').addEventListener('input', (e) => {
+          renderHistoryModal(e.target.value);
+        });
+
+        document.getElementById('btnExportCSV').addEventListener('click', exportHistoryCSV);
+
+        document.getElementById('btnCopyAllHistory').addEventListener('click', () => {
+          const list = AppStorage.getHistory();
+          if (list.length === 0) return showToast('Lịch sử trống!', 'info');
+          const allText = list.map(i => `${i.timestamp}\t${i.value}`).join('\n');
+          navigator.clipboard.writeText(allText);
+          showToast('Đã copy toàn bộ lịch sử quét!', 'success');
+        });
+
+        document.getElementById('btnClearHistory').addEventListener('click', () => {
+          if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử quét?')) {
+            AppStorage.clearHistory();
+            renderHistoryModal();
+            updateHistoryBadge();
+            showToast('Đã xóa toàn bộ lịch sử', 'info');
+          }
+        });
+
+        // Save Settings
+        document.getElementById('btnSaveSettings').addEventListener('click', () => {
+          const newMode = document.getElementById('cfgInputMode').value;
+          const newUrl = document.getElementById('cfgPowerAppsUrl').value.trim();
+          const newGunDelay = parseInt(document.getElementById('cfgGunDelayMs').value, 10) || 1000;
+          const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
+          const newPrintDelay = parseInt(document.getElementById('cfgPrintDelaySeconds').value, 10) || 5;
+          const newThankYou = parseInt(document.getElementById('cfgThankYouSeconds').value, 10) || 5;
+
+          config.powerAppsUrl = newUrl;
+          config.gunDelayMs = newGunDelay;
+          config.pauseSeconds = newPause;
+          config.printDelaySeconds = newPrintDelay;
+          config.thankYouSeconds = newThankYou;
+          config.soundEnabled = document.getElementById('cfgSoundEnabled').checked;
+          config.vibrateEnabled = document.getElementById('cfgVibrateEnabled').checked;
+          config.clipboardEnabled = document.getElementById('cfgClipboardEnabled').checked;
+          config.urlReloadEnabled = document.getElementById('cfgUrlReloadEnabled').checked;
+
+          AppStorage.saveConfig(config);
+          updateAudioBtnUI();
+          setInputMode(newMode);
+          document.getElementById('modalSettings').classList.remove('open');
+          showToast('Đã lưu cấu hình cài đặt thành công!', 'success');
+        });
+
+        // Reset Settings
+        document.getElementById('btnResetSettings').addEventListener('click', () => {
+          if (confirm('Khôi phục cấu hình về mặc định ban đầu?')) {
+            config = { ...DEFAULT_CONFIG };
+            AppStorage.saveConfig(config);
+            document.getElementById('cfgInputMode').value = config.inputMode;
+            document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
+            document.getElementById('cfgGunDelayMs').value = config.gunDelayMs;
+            document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
+            document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds;
+            document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds;
+            document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
+            document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
+            document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
+            document.getElementById('cfgUrlReloadEnabled').checked = config.urlReloadEnabled;
+            updateAudioBtnUI();
+            setInputMode('both');
+            showToast('Đã khôi phục cài đặt mặc định', 'info');
+          }
+        });
+
+        // Global test helper
+        window.testFakeScan = function(val = "PRO-TEST-9999") {
+          console.log('🧪 Manual Test Scan via window.testFakeScan:', val);
+          transmitBarcode(val, 'Manual Test');
+        };
+      }
+
+      // Initialize Application
+      async function initApp() {
+        setupDebugLogger();
+        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Input Mode Selector)...');
+        
+        updateNetStatus();
+        updateHistoryBadge();
+        updateAudioBtnUI();
+        setupEventListeners();
+
+        if (config.layoutReversed) {
+          kioskContainer.classList.add('layout-reversed');
+        }
+
+        switchTab('START', false);
+
+        await enumerateCameras();
+        await setInputMode(config.inputMode || 'both', false);
+
+        console.log('🎉 Kiosk Scanner Pro đã sẵn sàng phục vụ!');
+      }
+
+      window.addEventListener('load', initApp);
+
+      window.addEventListener('beforeunload', () => {
+        if (html5Scanner && html5Scanner.isScanning) {
+          html5Scanner.stop().catch(() => {});
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

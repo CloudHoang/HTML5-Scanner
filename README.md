@@ -1,103 +1,82 @@
-# HTML5 Barcode Scanner for Power Apps
+# HTML5 Barcode & QR Kiosk Scanner for Microsoft Power Apps
 
-A modern, responsive HTML5-based barcode and QR code scanner designed specifically for integration with Power Apps. This iframe-compatible solution provides real-time scanning capabilities with a sleek, user-friendly interface.
+Hệ thống Kiosk tự động tích hợp quét mã QR/Barcode và điều khiển in ấn qua **Microsoft Power Apps**. Hỗ trợ tùy chọn linh hoạt **Camera quét tự động**, **Máy bắn mã vạch / QR Code cầm tay (USB / Bluetooth)** hoặc **Cả hai song song**.
 
-## Features
+---
 
-- **Multi-Format Support**: Scans multiple barcode and QR code formats
-  - QR Codes
-  - Code 128, Code 39
-  - EAN-13, EAN-8
-  - UPC-A, UPC-E
-  - ITF, PDF-417
-  - Aztec, Data Matrix
+## 🌟 Tính Năng Nổi Bật (Key Features)
 
-- **Real-Time Scanning**: Continuous camera feed with live detection
-- **Visual Feedback**: Animated scanner frame with laser effect and success confirmation
-- **Responsive Design**: Works seamlessly on mobile, tablet, and desktop devices
-- **Dark Theme UI**: Modern dark interface with smooth animations
-- **Error Handling**: Graceful error states and permission management
-- **Power Apps Integration**: Automatic communication via postMessage API
-- **Accessibility**: ARIA labels and semantic HTML structure
+### 1. 🎯 Tùy Chọn Chế Độ Nạp Mã (Input Mode Selector):
+Cho phép chuyển đổi 1-chạm giữa 3 chế độ hoạt động:
+- **`📷 Chỉ Camera`:** Dành cho Kiosk chỉ dùng camera quét tự động.
+- **`🔫 Chỉ Máy bắn`:** Tự động tắt luồng Camera (tiết kiệm CPU/RAM), hiển thị giao diện đồ họa súng bắn mã chuyên dụng và phóng to ô nhập mã.
+- **`⚡ Cả hai (Dual Mode - Mặc định)`:** Hoạt động song song cả Camera và Súng bắn mã cầm tay.
 
-## Usage
+---
 
-### Embedding in Power Apps
+### 2. 🎛️ Điều Hướng 3 Tab Trực Quan (3-Stage Workflow):
+Hỗ trợ chuyển đổi linh hoạt cả tự động theo quy trình lẫn chuyển thủ công bằng 3 nút Tab trên thanh tiêu đề:
+- **`📖 1. Hướng dẫn` (Start):** Màn hình chào mừng và hướng dẫn khách hàng quét mã hoặc bắn mã.
+- **`⚡ 2. Đang in (5s)` (Process / Power Apps):**
+  - Khi quét mã tự động: Nạp Power Apps kèm `?barcode=...`, gọi lệnh in Kiosk (`window.print()`) và đếm ngược 5 giây.
+  - Khi bấm bằng tay: Giữ nguyên màn hình Power Apps để quản trị viên tự do **đăng nhập tài khoản Microsoft 365**, cấu hình hoặc kiểm tra form.
+  - Có nút **`🌐 Mở Tab mới (Đăng nhập MFA)`** để vượt qua cơ chế chặn iframe của trang đăng nhập Microsoft Entra ID.
+- **`🎉 3. Cảm ơn (5s)` (Thank You):** Phát chuông Chime chúc mừng, thông báo trạng thái `DISPATCHED_TO_SPOOLER` và đếm ngược 5 giây trước khi tự động quay về Tab 1.
 
-To use this scanner in Power Apps, embed it as a web resource in an iframe:
+---
 
-```html
-<iframe src="[path-to-index.html]" style="width: 100%; height: 100%; border: none;"></iframe>
+### 3. 🔫 Hỗ Trợ Toàn Diện Máy Bắn Mã QR / Barcode (USB & Bluetooth):
+- **Bắt phím toàn cục (Global Key Capture):** Bắt trọn vẹn luồng phím từ súng bắn mã dù người dùng có lỡ click chuột ra ngoài ô nhập liệu.
+- **Bộ đệm chờ 1 giây Inactive (Debounce 1000ms):** Đảm bảo máy bắn gửi hoàn tất 100% độ dài chuỗi mã trước khi chuyển tab nạp vào Power Apps.
+- **Auto-Refocus:** Tự động bắt lại con trỏ vào ô nhập liệu khi ở Tab 1.
+
+---
+
+### 4. 📷 Đa Phương Thức Quét & Tiện Ích Kiosk:
+- **Camera Auto Scan:** Tích hợp `html5-qrcode` v2.3.8 với khung ngắm Laser và hiệu ứng Flash.
+- **Hỗ trợ chọn Camera & Đèn Flash (Torch):** Chuyển đổi giữa các camera và bật/tắt đèn chiếu sáng.
+- **Quét từ File Ảnh:** Hỗ trợ tải ảnh có sẵn để giải mã.
+- **Âm thanh tổng hợp (Web Audio API):** Phát tiếng BEEP công nghiệp và chuông Chime chúc mừng không cần nạp file mp3 ngoài.
+- **Lịch sử quét (Scan History):** Lưu trữ mã quét cục bộ, tìm kiếm, copy và xuất file **CSV**.
+- **Đổi bên (Layout Flip) & Toàn màn hình (Fullscreen Kiosk Mode).**
+
+---
+
+## 🚀 Cấu Trúc Tệp Tin (File Structure)
+
+| Tệp tin | Mô tả |
+|---|---|
+| 🌟 **[`kiosk-v2.html`](file:///e:/Claude/HTML5-Scanner/kiosk-v2.html)** | **Phiên bản Kiosk hoàn chỉnh (V2):** Tùy chọn Camera/Súng bắn, 3 Tab điều hướng, xác thực Power Apps, âm thanh Web Audio, lịch sử CSV và in Kiosk. |
+| 📄 **[`index.html`](file:///e:/Claude/HTML5-Scanner/index.html)** | Phiên bản Kiosk gốc ổn định (Split-screen 70/30). |
+| 📋 **[`TASK.md`](file:///e:/Claude/HTML5-Scanner/TASK.md)** | Báo cáo tiến độ, checklist tính năng và tài liệu kỹ thuật. |
+| 📖 **[`README.md`](file:///e:/Claude/HTML5-Scanner/README.md)** | Tài liệu hướng dẫn sử dụng và kiến trúc hệ thống. |
+
+---
+
+## 🔄 Luồng Hoạt Động (Architecture Flow)
+
+```mermaid
+flowchart TD
+    A[Khách hàng đưa mã QR] -->|Camera quét| B(Phát hiện mã)
+    C[Nhân viên/Khách bắn mã] -->|Súng bắn mã USB/BT| D(Gom chuỗi & Chờ 1s Inactive)
+    
+    B --> E[Phát tiếng BEEP & Lưu Lịch sử]
+    D --> E
+    
+    E --> F[Chuyển Tab 2: Nạp Power Apps ?barcode=...]
+    F --> G[Phát lệnh in Kiosk & window.afterprint]
+    G -->|Đếm ngược 5 giây| H[Chuyển Tab 3: Cảm ơn quý khách]
+    H -->|Phát chuông Chime & Đếm 5 giây| I[Tự động quay về Tab 1: Hướng dẫn]
 ```
 
-### Receiving Scanned Data
+---
 
-The scanner automatically sends scanned barcodes to the parent window using the postMessage API:
-
-```javascript
-window.addEventListener('message', function(event) {
-  if (event.data.event === 'BarcodeScanned') {
-    console.log('Scanned barcode:', event.data.value);
-    // Process the barcode value
-  }
-});
-```
-
-## Technical Details
-
-- **Scanner Library**: [html5-qrcode v2.3.8](https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js)
-- **Camera Access**: Uses browser's native camera API with environment (rear) camera preference
-- **No Dependencies**: Fully self-contained HTML file with inline CSS and JavaScript
-- **Browser Support**: Chrome, Firefox, Safari, Edge (any modern browser with getUserMedia support)
-
-## Features
-
-### Status Indicators
-- **Yellow dot**: Camera initializing
-- **Green dot**: Ready to scan
-- **Blue dot**: Processing scan
-- **Red dot**: Camera error
-
-### User Experience
-- Animated scanning frame with "laser" effect
-- Flash animation on successful scan
-- Real-time status messages
-- One-second pause between scans to prevent duplicate captures
-- Responsive hints for mobile and desktop layouts
-
-## Permissions
-
-The scanner requires camera permissions to function:
-- Users will be prompted by their browser to allow camera access
-- Permission can be revoked in browser settings
-- The scanner gracefully handles permission denial with clear error messages
-
-## Scanning Tips
-
-- **Optimal Distance**: 10-20 cm from the camera
-- **Lighting**: Ensure adequate lighting for better detection
-- **Angle**: Keep barcode/QR code perpendicular to camera
-- **Camera Focus**: Allow a moment for autofocus to lock
-
-## Browser Compatibility
-
-| Browser | Support |
-|---------|---------|
-| Chrome/Edge | ✅ Full support |
-| Firefox | ✅ Full support |
-| Safari | ✅ Full support (iOS 11+) |
-| Mobile Browsers | ✅ Full support |
-
-## Security Notes
-
-- This scanner uses the postMessage API with `*` origin. In production, consider restricting the target origin.
-- Camera access is handled at the browser level with user consent
-- No data is collected or sent to external servers
-
-## Files
-
-- `index.html` - Complete scanner application with embedded CSS and JavaScript
-
-## License
-
-Designed for Power Apps integration. Feel free to customize and modify for your specific needs.
+## 🛠️ Tùy Chỉnh Cấu Hình (Settings)
+Bấm vào nút **`⚙️ Cài đặt`** trên thanh công cụ để điều chỉnh:
+- **Chế độ nạp mã mặc định:** `both` (Cả hai) / `camera` (Chỉ Camera) / `gun` (Chỉ Máy bắn).
+- **URL Power Apps:** Đường dẫn ứng dụng Canvas App.
+- **Thời gian chờ máy bắn mã (ms):** Mặc định `1000ms` (1 giây).
+- **Thời gian hiển thị trang Đang in:** Mặc định `5s`.
+- **Thời gian hiển thị trang Cảm ơn:** Mặc định `5s`.
+- **Thời gian tạm dừng camera (Pause):** Mặc định `30s`.
+- Bật/Tắt âm thanh, rung phản hồi và sao chép Clipboard.
