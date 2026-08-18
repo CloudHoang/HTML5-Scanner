@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Kiosk Scanner - Power Apps Integration</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.82);
+      --panel-strong: rgba(15, 23, 42, 0.96);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-strong: #16a34a;
+      --danger: #f43f5e;
+      --border: rgba(255, 255, 255, 0.16);
+      --shadow: 0 20px 50px rgba(2, 6, 23, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .kiosk-container {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+      gap: 0;
+    }
+
+    /* Scanner Banner - Side Section (30% width, Right Side) */
+    .scanner-banner {
+      display: flex;
+      flex-direction: column;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(135deg, #020617 0%, #111827 100%);
+      border-left: 2px solid var(--accent);
+      padding: 12px;
+      gap: 8px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .scanner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .scanner-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.ready {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .status-dot.processing {
+      background: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.2);
+    }
+
+    .last-scan {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .scanner-preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 80vh;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #reader video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    .scanner-frame {
+      position: relative;
+      width: 75%;
+      height: 75%;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 0 0 9999px rgba(2, 6, 23, 0.15);
+      background: transparent;
+    }
+
+    .scanner-frame::before,
+    .scanner-frame::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: rgba(255, 255, 255, 0.8);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .scanner-frame::before {
+      top: -2px;
+      left: -2px;
+      border-top-width: 3px;
+      border-left-width: 3px;
+      border-top-left-radius: 8px;
+    }
+
+    .scanner-frame::after {
+      top: -2px;
+      right: -2px;
+      border-top-width: 3px;
+      border-right-width: 3px;
+      border-top-right-radius: 8px;
+    }
+
+    .scanner-corner-bottom-left,
+    .scanner-corner-bottom-right {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: rgba(255, 255, 255, 0.8);
+      border-style: solid;
+      border-width: 0;
+      bottom: -2px;
+    }
+
+    .scanner-corner-bottom-left {
+      left: -2px;
+      border-bottom-width: 3px;
+      border-left-width: 3px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .scanner-corner-bottom-right {
+      right: -2px;
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .laser {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #22c55e, transparent);
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.8);
+      animation: sweep 2.2s linear infinite;
+      opacity: 0.95;
+    }
+
+    .flash {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 197, 94, 0.16);
+      backdrop-filter: blur(1px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 4;
+    }
+
+    .flash.show {
+      opacity: 1;
+    }
+
+    .checkmark {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* Power Apps Iframe Container (70% width) */
+    .powerapps-container {
+      flex: 1;
+      width: 70%;
+      height: 100%;
+      background: var(--bg);
+      border: none;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .powerapps-container iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      background: white;
+    }
+
+    .error-banner {
+      background: var(--danger);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: none;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .error-banner.show {
+      display: block;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .debug-console {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      max-height: 200px;
+      background: rgba(0, 0, 0, 0.95);
+      border-top: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.75rem;
+      overflow-y: auto;
+      z-index: 9999;
+      padding: 8px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .debug-console.show {
+      display: block;
+    }
+
+    .debug-console-toggle {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 10000;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .debug-console-line {
+      margin: 2px 0;
+      padding: 2px 4px;
+      border-left: 2px solid transparent;
+    }
+
+    .debug-console-line.log {
+      color: #a0aec0;
+      border-left-color: #60a5fa;
+    }
+
+    .debug-console-line.error {
+      color: #f87171;
+      border-left-color: var(--danger);
+    }
+
+    .debug-console-line.warn {
+      color: #fbbf24;
+      border-left-color: #f59e0b;
+    }
+
+    @keyframes sweep {
+      0% { top: 4%; opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { top: 96%; opacity: 0.2; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.78; }
+    }
+
+    @media (max-width: 1024px) {
+      .kiosk-container {
+        flex-direction: column;
+      }
+
+      .scanner-banner {
+        width: 100%;
+        height: 220px;
+        border-right: none;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .powerapps-container {
+        width: 100%;
+      }
+
+      .debug-console-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="kiosk-container">
+    <!-- Power Apps Container (Left Side 70%) -->
+    <div class="powerapps-container">
+      <!-- Error Banner -->
+      <div id="errorBanner" class="error-banner"></div>
+      <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
+    </div>
+
+    <!-- Scanner Banner (Right Side 30%) -->
+    <div class="scanner-banner">
+      <div class="scanner-header">
+        <div class="scanner-status">
+          <span id="statusDot" class="status-dot"></span>
+          <span id="statusText">Initializing scanner...</span>
+        </div>
+        <div class="last-scan" id="lastScan">Ready to scan</div>
+      </div>
+
+      <div class="scanner-preview">
+        <div id="reader" aria-label="Barcode scanner preview"></div>
+        <div class="overlay" aria-hidden="true">
+          <div class="scanner-frame">
+            <div class="laser"></div>
+            <div class="scanner-corner-bottom-left"></div>
+            <div class="scanner-corner-bottom-right"></div>
+          </div>
+        </div>
+        <div id="flash" class="flash">
+          <div class="checkmark">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Console -->
+  <button class="debug-console-toggle" id="debugToggle" title="Toggle debug console">🐛</button>
+  <div class="debug-console" id="debugConsole"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script>
+    // ==========================================
+    // CONFIGURATION - Edit these values
+    // ==========================================
+    const POWERAPPS_BASE_URL = "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/e8ad3a34-b6a3-452b-a984-01eb262236a5";
+    const SCAN_PAUSE_SECONDS = 30; // 30 second pause after scan
+    
+    // ==========================================
+    // Debug Console Setup
+    // ==========================================
+    (function() {
+      const debugConsole = document.getElementById('debugConsole');
+      const debugToggle = document.getElementById('debugToggle');
+      let logCount = 0;
+
+      function addLog(message, type = 'log') {
+        const line = document.createElement('div');
+        line.className = `debug-console-line ${type}`;
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${message}`;
+        debugConsole.appendChild(line);
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+        logCount++;
+        
+        while (debugConsole.children.length > 100) {
+          debugConsole.removeChild(debugConsole.firstChild);
+        }
+      }
+
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'log');
+      };
+
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'error');
+      };
+
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLog(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '), 'warn');
+      };
+
+      debugToggle.addEventListener('click', () => {
+        debugConsole.classList.toggle('show');
+      });
+
+      // Show console by default
+      debugConsole.classList.add('show');
+      addLog('Kiosk Scanner Initialized', 'log');
+      addLog(`Power Apps URL: ${POWERAPPS_BASE_URL}`, 'log');
+      addLog(`Pause Duration: ${SCAN_PAUSE_SECONDS}s`, 'log');
+
+      window.addEventListener('error', (event) => {
+        addLog(`Global Error: ${event.message}`, 'error');
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        addLog(`Unhandled Promise Rejection: ${event.reason}`, 'error');
+      });
+    })();
+
+    // ==========================================
+    // Kiosk Scanner Logic
+    // ==========================================
+    (function () {
+      const statusText = document.getElementById('statusText');
+      const statusDot = document.getElementById('statusDot');
+      const flash = document.getElementById('flash');
+      const errorBanner = document.getElementById('errorBanner');
+      const lastScanDisplay = document.getElementById('lastScan');
+      const powerAppsFrame = document.getElementById('powerAppsFrame');
+
+      let scanner = null;
+      let isScanning = false;
+      let isPaused = false;
+      let countdownTimer = null;
+      let scannedFrameCount = 0;
+
+      function setStatus(message, state) {
+        statusText.textContent = message;
+        statusDot.className = 'status-dot';
+        if (state === 'ready') {
+          statusDot.classList.add('ready');
+        } else if (state === 'processing') {
+          statusDot.classList.add('processing');
+        } else if (state === 'error') {
+          statusDot.classList.add('error');
+        }
+      }
+
+      function showError(message) {
+        errorBanner.textContent = `⚠️ ${message}`;
+        errorBanner.classList.add('show');
+        setStatus('Error', 'error');
+        console.error('Error:', message);
+        
+        setTimeout(() => {
+          errorBanner.classList.remove('show');
+        }, 5000);
+      }
+
+      function showSuccessFeedback() {
+        flash.classList.add('show');
+        setTimeout(() => flash.classList.remove('show'), 500);
+      }
+
+      function sendToIframe(value) {
+        console.log('📤 Transmitting QR Code to Power Apps iframe via Solution 2 (URL Param Reload):', value);
+        
+        // Solution 2: Reload iframe with barcode parameter for Param("barcode")
+        try {
+          const timestamp = Date.now();
+          const separator = POWERAPPS_BASE_URL.includes('?') ? '&' : '?';
+          const targetUrl = `${POWERAPPS_BASE_URL}${separator}barcode=${encodeURIComponent(value)}&timestamp=${timestamp}`;
+          
+          console.log('🔄 Reloading Power Apps iframe with URL parameter:', targetUrl);
+          powerAppsFrame.src = targetUrl;
+        } catch (err) {
+          console.error('❌ Failed to update iframe src:', err);
+        }
+
+        // Secondary fallback: postMessage
+        if (powerAppsFrame && powerAppsFrame.contentWindow) {
+          try {
+            powerAppsFrame.contentWindow.postMessage({
+              type: 'BARCODE_SCANNED',
+              event: 'barcode_scanned',
+              barcode: value,
+              value: value
+            }, '*');
+          } catch (err) {}
+        }
+
+        // Secondary fallback: Copy to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value).catch(() => {});
+        }
+      }
+
+      function pauseScannerFor(seconds = 30) {
+        isPaused = true;
+
+        // Try native pause if available
+        try {
+          if (scanner && typeof scanner.pause === 'function') {
+            scanner.pause(true);
+            console.log('⏸️ html5-qrcode scanner paused');
+          }
+        } catch (e) {
+          console.warn('scanner.pause warning:', e);
+        }
+
+        let remaining = seconds;
+
+        if (countdownTimer) clearInterval(countdownTimer);
+
+        const updatePauseStatus = () => {
+          setStatus(`⏸️ PAUSED (${remaining}s remaining - Click to resume)`, 'processing');
+        };
+
+        updatePauseStatus();
+
+        countdownTimer = setInterval(() => {
+          remaining--;
+          if (remaining <= 0) {
+            resumeScanner();
+          } else {
+            updatePauseStatus();
+          }
+        }, 1000);
+      }
+
+      function resumeScanner() {
+        if (countdownTimer) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
+        }
+        isPaused = false;
+
+        try {
+          if (scanner && typeof scanner.resume === 'function') {
+            scanner.resume();
+            console.log('▶️ html5-qrcode scanner resumed');
+          }
+        } catch (e) {
+          console.warn('scanner.resume warning:', e);
+        }
+
+        setStatus('Ready to scan', 'ready');
+        console.log('✅ Scanner is ready for next QR code');
+      }
+
+      // Allow user to click status bar to resume early
+      statusText.style.cursor = 'pointer';
+      statusText.title = 'Click to resume scanning if paused';
+      statusText.addEventListener('click', () => {
+        if (isPaused) {
+          console.log('👆 User manually resumed scanner');
+          resumeScanner();
+        }
+      });
+
+      const handleScan = (decodedText, result) => {
+        if (isPaused) {
+          return;
+        }
+
+        console.log('========================================');
+        console.log('🎉 [SUCCESS] BARCODE/QR DETECTED!');
+        console.log('📄 Value:', decodedText);
+        console.log('========================================');
+
+        showSuccessFeedback();
+
+        // Update UI last scan display
+        const timeStr = new Date().toLocaleTimeString();
+        lastScanDisplay.textContent = `LAST: ${decodedText} (${timeStr})`;
+        
+        // Transmit value to Power Apps iframe
+        sendToIframe(decodedText);
+
+        // Pause scanner for 30s
+        pauseScannerFor(SCAN_PAUSE_SECONDS);
+      };
+
+      function handleScanError(errorMessageText) {
+        scannedFrameCount++;
+        
+        if (scannedFrameCount % 60 === 0) {
+          console.log(`🔍 [SCANNER ACTIVE] Analyzed ${scannedFrameCount} video frames...`);
+        }
+      }
+
+      function initializeScanner() {
+        console.log('🚀 Initializing Html5Qrcode scanner...');
+        
+        if (!window.Html5Qrcode) {
+          console.error('❌ Html5Qrcode library not loaded!');
+          showError('Scanner library failed to load. Please refresh the page.');
+          return;
+        }
+
+        console.log('📷 Creating Html5Qrcode scanner instance on #reader');
+        scanner = new window.Html5Qrcode('reader');
+
+        const config = {
+          fps: 15,
+          aspectRatio: 1.0,
+          qrbox: { width: 220, height: 220 }
+        };
+
+        // Expose test helper in console for quick testing
+        window.testFakeScan = function(val = "TEST-QR-12345") {
+          console.log('🧪 Running test scan with value:', val);
+          handleScan(val);
+        };
+
+        const cameraConstraints = {
+          facingMode: "environment"
+        };
+
+        console.log('⚙️ Starting camera with config:', JSON.stringify(config));
+        
+        let initTimeout = setTimeout(() => {
+          console.error('⏰ Camera initialization timeout (15s)');
+          showError('Camera timeout. Please check camera permissions.');
+          setStatus('Timeout', 'error');
+        }, 15000);
+
+        scanner.start(
+          cameraConstraints,
+          config,
+          handleScan,
+          handleScanError
+        ).then(() => {
+          clearTimeout(initTimeout);
+          console.log('✅ Camera started successfully! Listening for QR codes...');
+          setStatus('Ready to scan', 'ready');
+        }).catch((error) => {
+          clearTimeout(initTimeout);
+          console.error('❌ Camera start failed:', error);
+          showError('Unable to access camera.');
+        });
+      }
+
+      function initializePowerApps() {
+        console.log('Initializing Power Apps iframe');
+        console.log('Loading Power Apps URL:', POWERAPPS_BASE_URL);
+        powerAppsFrame.src = POWERAPPS_BASE_URL;
+      }
+
+      // Initialize on page load
+      window.addEventListener('load', () => {
+        console.log('Page loaded, initializing components');
+        initializeScanner();
+        initializePowerApps();
+      });
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        if (scanner && scanner.isScanning) {
+          scanner.stop().catch(() => {});
+        }
+      });
+
+      console.log('Scanner initialization logic loaded');
+    })();
+  </script>
+</body>
+</html>
