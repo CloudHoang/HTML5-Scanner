@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPT D-DAY 2026 R3</title>
+    <style>
+        :root {
+            --primary-blue: #004080;
+            --tech-cyan: #00d2ff;
+            --dark-bg: #001122;
+            --light-bg: #f4f8fb;
+            --text-main: #333333;
+            --text-light: #ffffff;
+            --accent-gradient: linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5%;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(180deg, var(--dark-bg) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            color: var(--tech-cyan);
+        }
+
+        .hero-logo-box {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px var(--tech-cyan);
+            margin: 20px 0;
+        }
+
+        /* Ticker Bar */
+        .ticker-bar {
+            background: #002244;
+            color: var(--tech-cyan);
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+            border-top: 1px solid rgba(0,210,255,0.3);
+            border-bottom: 1px solid rgba(0,210,255,0.3);
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            background: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .countdown-title {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .countdown-timers {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .timer-box {
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 2rem;
+            font-weight: bold;
+            min-width: 90px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .timer-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: block;
+            color: var(--tech-cyan);
+        }
+
+        /* Intro / Welcome Section */
+        .intro-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 10%;
+            background: #ffffff;
+            gap: 40px;
+        }
+
+        .intro-text {
+            flex: 1;
+        }
+
+        .intro-text h2 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .intro-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .intro-image img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Statistics Counter Section */
+        .stats-section {
+            background: linear-gradient(135deg, #003366, #005c99);
+            color: white;
+            padding: 50px 10%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            color: var(--tech-cyan);
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Program / Agenda Section */
+        .agenda-section {
+            padding: 60px 10%;
+            background: var(--light-bg);
+        }
+
+        .agenda-section h2 {
+            text-align: center;
+            color: var(--primary-blue);
+            margin-bottom: 40px;
+            font-size: 2.2rem;
+        }
+
+        .accordion {
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .accordion-header {
+            padding: 15px 20px;
+            background: #ffffff;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 60px 10%;
+            background: #ffffff;
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .gallery-item {
+            background: #ddd;
+            height: 180px;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 40px 10%;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        footer p {
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="logo">
+            <span style="font-weight: bold; font-size: 24px; color: #cc0000;">hpt</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="#">Chương trình</a></li>
+                <li><a href="#">Khoảnh khắc</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <p style="text-transform: uppercase; letter-spacing: 3px; font-size: 14px; color: var(--tech-cyan);">HPT Corporation Event</p>
+        <h1>HPT D-DAY 2026</h1>
+        <div class="hero-logo-box">R³</div>
+        <p>Hội tụ - Sáng tạo - Phát triển</p>
+    </section>
+
+    <!-- Ticker Bar -->
+    <div class="ticker-bar">
+        📢 Chào mừng bạn đến với sự kiện công nghệ lớn nhất năm của HPT D-DAY 2026!
+    </div>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+        <div class="countdown-title">Sự kiện sẽ diễn ra trong</div>
+        <div class="countdown-timers">
+            <div class="timer-box">56 <span class="timer-label">Ngày</span></div>
+            <div class="timer-box">14 <span class="timer-label">Giờ</span></div>
+            <div class="timer-box">07 <span class="timer-label">Phút</span></div>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="intro-section">
+        <div class="intro-text">
+            <h2>Về Sự Kiện</h2>
+            <p>HPT D-DAY 2026 mang đến bước đột phá mới với chủ đề R³, định hướng chiến lược chuyển đổi số toàn diện, tối ưu hóa năng lực vận hành doanh nghiệp dựa trên nền tảng công nghệ hiện đại, trí tuệ nhân tạo và bảo mật tối ưu.</p>
+        </div>
+        <div class="intro-image">
+            <div style="background: var(--primary-blue); height: 250px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                [AI & Globe Graphic Placeholder]
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="stat-item">
+            <h3>650+</h3>
+            <p>Khách tham dự</p>
+        </div>
+        <div class="stat-item">
+            <h3>20+</h3>
+            <p>Gian hàng công nghệ</p>
+        </div>
+        <div class="stat-item">
+            <h3>20+</h3>
+            <p>Đối tác chiến lược</p>
+        </div>
+        <div class="stat-item">
+            <h3>20+</h3>
+            <p>Chuyên gia hàng đầu</p>
+        </div>
+    </section>
+
+    <!-- Program / Agenda Section -->
+    <section class="agenda-section">
+        <h2>Chương Trình Sự Kiện</h2>
+        <div class="accordion">
+            <div class="accordion-header">08:00 - 08:30: Đón khách tham dự & Check-in <span>+</span></div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">08:30 - 09:15: Khai mạc sự kiện & Phát biểu định hướng chiến lược <span>+</span></div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">09:15 - 11:30: Phiên thảo luận chuyên đề công nghệ R³ <span>+</span></div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">13:30 - 17:00: Trải nghiệm công nghệ & Triển lãm giải pháp <span>+</span></div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <h2 style="color: var(--primary-blue);">Khoảnh Khắc Đáng Nhớ</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">Hình ảnh 1</div>
+            <div class="gallery-item">Hình ảnh 2</div>
+            <div class="gallery-item">Hình ảnh 3</div>
+            <div class="gallery-item">Hình ảnh 4</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 HPT Corporation. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Simple interactive script for accordions
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                if(content) {
+                    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -3,46 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#090d16" />
-  <title>Kiosk Scanner Pro - Input Mode Selector (Camera / Barcode Gun / Dual)</title>
+  <meta name="theme-color" content="#001122" />
+  <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³</title>
   
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Google Fonts: Inter, Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <style>
     :root {
       color-scheme: dark;
-      --bg-base: #060913;
-      --bg-surface: #0e1424;
-      --bg-card: rgba(18, 26, 44, 0.85);
-      --bg-card-hover: rgba(28, 39, 66, 0.95);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
       
-      --accent: #10b981;
-      --accent-glow: rgba(16, 185, 129, 0.35);
-      --accent-hover: #059669;
-      --primary: #3b82f6;
-      --primary-glow: rgba(59, 130, 246, 0.3);
+      /* HPT D-DAY 2026 Brand Design System from layout.html */
+      --primary-blue: #004080;
+      --primary-blue-dark: #002b57;
+      --primary-blue-light: #0059b3;
+      --tech-cyan: #00d2ff;
+      --tech-cyan-glow: rgba(0, 210, 255, 0.4);
+      --tech-cyan-subtle: rgba(0, 210, 255, 0.12);
+      --dark-bg: #001122;
+      --dark-surface: #001a35;
+      --dark-card: rgba(0, 28, 58, 0.85);
+      --dark-card-hover: rgba(0, 42, 86, 0.95);
+      --light-bg: #f4f8fb;
+      
+      --hpt-red: #cc0000;
+      --hpt-red-glow: rgba(204, 0, 0, 0.45);
+      --accent-gradient: linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC);
+      --hero-gradient: linear-gradient(180deg, #001122 0%, #003366 50%, #004080 100%);
+      --stats-gradient: linear-gradient(135deg, #002b57 0%, #004b8f 50%, #0066b2 100%);
+      
+      --border-subtle: rgba(0, 210, 255, 0.18);
+      --border-strong: rgba(0, 210, 255, 0.4);
+      --border-cyan-glow: 0 0 12px rgba(0, 210, 255, 0.35);
+      
+      --accent: #00d2ff;
+      --accent-hover: #38e1ff;
+      --accent-glow: rgba(0, 210, 255, 0.4);
+      --primary: #0066cc;
+      --primary-glow: rgba(0, 102, 204, 0.4);
       --warning: #f59e0b;
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.4);
+      --success: #10b981;
       
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
+      --text-main: #f8fafc;
+      --text-primary: #ffffff;
+      --text-secondary: #94b8db;
+      --text-muted: #6282a5;
+      --text-cyan: #00d2ff;
       
       --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-heading: 'Outfit', 'Segoe UI', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
       
       --radius-sm: 6px;
       --radius-md: 10px;
       --radius-lg: 16px;
+      --radius-xl: 24px;
       --radius-full: 9999px;
       
-      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+      --shadow-cyan: 0 8px 30px rgba(0, 210, 255, 0.25);
+      --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
@@ -55,8 +79,8 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: var(--bg-base);
-      color: var(--text-primary);
+      background: var(--dark-bg);
+      color: var(--text-main);
       font-family: var(--font-main);
       -webkit-font-smoothing: antialiased;
       user-select: none;
@@ -69,76 +93,102 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
+      background: radial-gradient(circle at 50% 10%, #002244 0%, #001122 80%);
     }
 
-    /* Top Control Toolbar */
+    /* Top Corporate Header / Toolbar (HPT D-DAY 2026 style) */
     .top-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 52px;
-      padding: 0 16px;
-      background: var(--bg-surface);
+      height: 58px;
+      padding: 0 20px;
+      background: rgba(0, 17, 34, 0.95);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
-      z-index: 20;
-      gap: 12px;
+      z-index: 30;
+      gap: 14px;
       flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .brand-section {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .brand-logo {
+    .hpt-logo-text {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 26px;
+      color: var(--hpt-red);
+      letter-spacing: -0.5px;
+      text-transform: lowercase;
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      background: linear-gradient(135deg, var(--accent), var(--primary));
-      border-radius: var(--radius-sm);
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      box-shadow: 0 0 12px var(--accent-glow);
+      line-height: 1;
+      padding-right: 12px;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .brand-title-box {
+      display: flex;
+      flex-direction: column;
     }
 
     .brand-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      background: linear-gradient(90deg, #ffffff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-family: var(--font-heading);
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* 3 Interactive Clickable Navigation Tabs in Toolbar */
+    .brand-title .badge-r3 {
+      font-size: 0.72rem;
+      font-weight: 900;
+      background: var(--tech-cyan);
+      color: #001122;
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.05em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    /* 3 Interactive Clickable Navigation Tabs */
     .workflow-tab-bar {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 4px 6px;
+      gap: 5px;
+      background: rgba(0, 24, 48, 0.85);
+      padding: 4px 8px;
       border-radius: var(--radius-full);
       border: 1px solid var(--border-strong);
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 210, 255, 0.1);
     }
 
     .workflow-tab-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      height: 32px;
-      padding: 0 14px;
+      gap: 7px;
+      height: 34px;
+      padding: 0 16px;
       border-radius: var(--radius-full);
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-secondary);
-      font-family: var(--font-main);
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 0.84rem;
+      font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
       user-select: none;
@@ -146,36 +196,44 @@
     }
 
     .workflow-tab-btn:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      background: rgba(0, 210, 255, 0.08);
     }
 
-    /* Tab 1: Active Hướng dẫn */
+    /* Tab 1: Active Hướng dẫn (Cyan Glow) */
     .workflow-tab-btn.active.tab-start {
-      background: rgba(16, 185, 129, 0.22);
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
+      background: rgba(0, 210, 255, 0.2);
+      border-color: var(--tech-cyan);
+      color: var(--tech-cyan);
+      box-shadow: var(--border-cyan-glow);
     }
 
-    /* Tab 2: Active Đang in / Power Apps */
+    /* Tab 2: Active Đang in / Power Apps (Royal Blue & Amber) */
     .workflow-tab-btn.active.tab-process {
       background: rgba(245, 158, 11, 0.22);
       border-color: var(--warning);
       color: #fbbf24;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
     }
 
-    /* Tab 3: Active Cảm ơn */
+    /* Tab 3: Active Cảm ơn (Success Green & Cyan) */
     .workflow-tab-btn.active.tab-thankyou {
-      background: rgba(168, 85, 247, 0.22);
-      border-color: #a855f7;
-      color: #c084fc;
-      box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+      background: rgba(16, 185, 129, 0.22);
+      border-color: var(--success);
+      color: #34d399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Tab Error State */
+    .workflow-tab-btn.active.tab-error {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: var(--danger);
+      color: #f87171;
+      box-shadow: var(--danger-glow);
     }
 
     .tab-arrow {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       margin: 0 1px;
     }
@@ -184,19 +242,19 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: var(--radius-full);
-      font-size: 0.72rem;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--accent);
-      border: 1px solid rgba(16, 185, 129, 0.25);
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(0, 210, 255, 0.12);
+      color: var(--tech-cyan);
+      border: 1px solid rgba(0, 210, 255, 0.3);
     }
 
     .badge-status.offline {
-      background: rgba(239, 68, 68, 0.12);
+      background: rgba(239, 68, 68, 0.15);
       color: var(--danger);
-      border-color: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.35);
     }
 
     .toolbar-actions {
@@ -210,29 +268,31 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      height: 32px;
-      padding: 0 10px;
+      height: 34px;
+      padding: 0 11px;
       border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 34, 68, 0.6);
       border: 1px solid var(--border-subtle);
       color: var(--text-secondary);
       font-family: var(--font-main);
       font-size: 0.8rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
     }
 
     .tool-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
-      border-color: var(--border-strong);
+      background: rgba(0, 51, 102, 0.9);
+      color: #ffffff;
+      border-color: var(--tech-cyan);
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
     }
 
     .tool-btn.active {
-      background: rgba(16, 185, 129, 0.18);
-      color: var(--accent);
-      border-color: var(--accent);
+      background: rgba(0, 210, 255, 0.18);
+      color: var(--tech-cyan);
+      border-color: var(--tech-cyan);
+      box-shadow: var(--border-cyan-glow);
     }
 
     .tool-btn .badge-count {
@@ -243,10 +303,40 @@
       height: 18px;
       padding: 0 5px;
       border-radius: 9px;
-      background: var(--primary);
-      color: white;
+      background: var(--tech-cyan);
+      color: #001122;
       font-size: 0.68rem;
-      font-weight: 700;
+      font-weight: 800;
+    }
+
+    /* Live Ticker Bar from layout.html */
+    .ticker-bar {
+      background: #001f3f;
+      color: var(--tech-cyan);
+      padding: 6px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      border-top: 1px solid rgba(0, 210, 255, 0.25);
+      border-bottom: 1px solid rgba(0, 210, 255, 0.25);
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 25;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .ticker-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--tech-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--tech-cyan);
+      animation: pulse 1.5s infinite;
     }
 
     /* Kiosk Split-Screen Container */
@@ -254,7 +344,7 @@
       display: flex;
       flex: 1;
       width: 100%;
-      height: calc(100vh - 52px);
+      height: calc(100vh - 58px - 32px);
       overflow: hidden;
       position: relative;
     }
@@ -268,7 +358,7 @@
       flex: 1;
       width: 70%;
       height: 100%;
-      background: #020617;
+      background: #000c19;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -281,7 +371,7 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--primary));
+      background: linear-gradient(90deg, #0052D4, var(--tech-cyan), #ffffff);
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.3s ease;
@@ -310,7 +400,7 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
-      animation: fadeInView 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInView 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stage-view.active {
@@ -318,76 +408,148 @@
     }
 
     @keyframes fadeInView {
-      from { opacity: 0; transform: scale(0.99); }
+      from { opacity: 0; transform: scale(0.985); }
       to { opacity: 1; transform: scale(1); }
     }
 
     /* ========================================================= */
-    /* 1. TAB START SCREEN (Hướng dẫn quét QR & Bắn mã) */
+    /* 1. TAB START SCREEN (HPT D-DAY 2026 Hero & Quick Guide)   */
     /* ========================================================= */
     .start-screen {
-      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
-      padding: 30px;
+      background: radial-gradient(circle at 50% 30%, #002855 0%, #001226 65%, #000914 100%);
+      padding: 24px;
       text-align: center;
-      color: var(--text-primary);
+      color: var(--text-main);
       overflow-y: auto;
     }
 
     .start-card {
-      max-width: 640px;
+      max-width: 720px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      padding: 35px 30px;
-      background: rgba(15, 23, 42, 0.7);
+      gap: 16px;
+      padding: 30px 32px;
+      background: rgba(0, 24, 51, 0.78);
       border: 1px solid var(--border-strong);
-      border-radius: 24px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(12px);
-    }
-
-    .start-hero-icon {
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 210, 255, 0.12);
+      backdrop-filter: blur(16px);
       position: relative;
-      width: 85px;
-      height: 85px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
-      border: 2px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.6rem;
-      box-shadow: 0 0 35px var(--accent-glow);
-      animation: floatHero 3s ease-in-out infinite alternate;
     }
 
-    @keyframes floatHero {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-8px) scale(1.02); }
+    .start-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent);
+    }
+
+    .hero-badge-tag {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--tech-cyan);
+      background: rgba(0, 210, 255, 0.12);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+    }
+
+    .start-hero-box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
 
     .start-title {
-      font-size: 1.75rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      line-height: 1.2;
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    .start-hero-r3 {
+      font-family: var(--font-heading);
+      font-size: 3.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 0 25px var(--tech-cyan), 0 0 50px rgba(0, 210, 255, 0.4);
+      line-height: 1;
+      margin: 4px 0;
+      animation: pulseR3 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseR3 {
+      0% { text-shadow: 0 0 20px var(--tech-cyan); transform: scale(1); }
+      100% { text-shadow: 0 0 35px var(--tech-cyan), 0 0 60px rgba(0, 210, 255, 0.6); transform: scale(1.02); }
+    }
+
+    .start-slogan {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #b0d4f1;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     .start-subtitle {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--text-secondary);
-      max-width: 500px;
+      max-width: 540px;
       line-height: 1.5;
+    }
+
+    /* Event Statistics Row from layout.html */
+    .kiosk-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      background: var(--stats-gradient);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .kiosk-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .kiosk-stat-item h3 {
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--tech-cyan);
+      line-height: 1;
+    }
+
+    .kiosk-stat-item p {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #e0f2fe;
+      font-weight: 600;
     }
 
     .dual-methods-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       justify-content: center;
     }
@@ -398,26 +560,27 @@
       gap: 6px;
       padding: 6px 14px;
       border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 34, 68, 0.7);
       border: 1px solid var(--border-subtle);
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-secondary);
       transition: var(--transition);
     }
 
     .method-chip.active {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: var(--accent);
-      color: var(--accent);
+      background: rgba(0, 210, 255, 0.18);
+      border-color: var(--tech-cyan);
+      color: var(--tech-cyan);
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
     }
 
     .scan-steps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .step-item {
@@ -426,39 +589,40 @@
       align-items: center;
       gap: 6px;
       padding: 12px 10px;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(0, 17, 34, 0.55);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       transition: var(--transition);
     }
 
     .step-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: var(--border-strong);
+      background: rgba(0, 34, 68, 0.7);
+      border-color: var(--tech-cyan);
       transform: translateY(-2px);
     }
 
     .step-num {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: var(--accent);
-      color: #000;
-      font-size: 0.72rem;
-      font-weight: 800;
+      background: var(--tech-cyan);
+      color: #001122;
+      font-size: 0.75rem;
+      font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 10px var(--tech-cyan-glow);
     }
 
     .step-desc {
       font-size: 0.76rem;
-      color: var(--text-secondary);
-      font-weight: 500;
+      color: #cbd5e1;
+      font-weight: 600;
     }
 
     /* ========================================================= */
-    /* 2. TAB PROCESS SCREEN (Power Apps Iframe & Đang in) */
+    /* 2. TAB PROCESS SCREEN (Power Apps Iframe & Đang in)       */
     /* ========================================================= */
     .process-screen {
       background: #ffffff;
@@ -473,24 +637,26 @@
       background: #ffffff;
     }
 
+    /* Dynamic Print Status Overlay */
     .printing-status-overlay {
       position: absolute;
-      top: 16px;
+      top: 18px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 20px;
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(12px);
+      padding: 10px 24px;
+      background: rgba(0, 17, 34, 0.95);
+      backdrop-filter: blur(14px);
       border: 2px solid var(--warning);
       border-radius: var(--radius-full);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
       z-index: 30;
       color: #ffffff;
-      font-size: 0.88rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 0.92rem;
+      font-weight: 700;
       animation: pulsePrinting 1.8s infinite;
     }
 
@@ -500,7 +666,7 @@
     }
 
     .printer-anim-icon {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       animation: bouncePrinter 1s infinite alternate;
     }
 
@@ -513,31 +679,32 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 22px;
-      height: 22px;
-      padding: 0 6px;
+      min-width: 26px;
+      height: 26px;
+      padding: 0 7px;
       background: var(--warning);
-      color: #000;
+      color: #000000;
       border-radius: var(--radius-full);
-      font-size: 0.75rem;
-      font-weight: 800;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 900;
     }
 
     /* Floating Toolbar inside Power Apps Tab */
     .process-control-bar {
       position: absolute;
-      bottom: 14px;
+      bottom: 16px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 14px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(10px);
+      padding: 6px 16px;
+      background: rgba(0, 17, 34, 0.94);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-full);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
       z-index: 20;
     }
 
@@ -545,70 +712,74 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      height: 32px;
-      padding: 0 14px;
+      height: 34px;
+      padding: 0 16px;
       border-radius: var(--radius-full);
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 700;
       border: none;
       cursor: pointer;
       transition: var(--transition);
     }
 
     .process-btn-print {
-      background: var(--accent);
-      color: #000;
+      background: var(--tech-cyan);
+      color: #001122;
+      box-shadow: 0 0 12px var(--tech-cyan-glow);
     }
     .process-btn-print:hover { background: var(--accent-hover); }
 
     .process-btn-open-tab {
-      background: rgba(59, 130, 246, 0.25);
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      color: #93c5fd;
+      background: rgba(0, 102, 204, 0.4);
+      border: 1px solid rgba(0, 210, 255, 0.5);
+      color: var(--tech-cyan);
     }
-    .process-btn-open-tab:hover { background: rgba(59, 130, 246, 0.4); color: #fff; }
+    .process-btn-open-tab:hover { background: rgba(0, 102, 204, 0.65); color: #ffffff; }
 
     .process-btn-cancel {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
     }
-    .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
+    .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.22); }
 
     /* ========================================================= */
-    /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn) */
+    /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn sau khi in)         */
     /* ========================================================= */
     .thankyou-screen {
-      background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
-      padding: 40px;
+      background: radial-gradient(circle at 50% 40%, #002855 0%, #001226 70%, #000914 100%);
+      padding: 30px;
       text-align: center;
       color: #ffffff;
     }
 
     .thankyou-card {
-      max-width: 580px;
+      max-width: 620px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      padding: 45px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 2px solid rgba(168, 85, 247, 0.5);
-      border-radius: 28px;
-      box-shadow: 0 25px 60px -15px rgba(168, 85, 247, 0.4);
-      backdrop-filter: blur(14px);
+      gap: 18px;
+      padding: 40px 36px;
+      background: rgba(0, 24, 51, 0.85);
+      border: 2px solid rgba(0, 210, 255, 0.5);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 210, 255, 0.2);
+      backdrop-filter: blur(16px);
+      position: relative;
     }
 
     .thankyou-icon-box {
       width: 90px;
       height: 90px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #10b981, #3b82f6);
+      background: linear-gradient(135deg, #0052D4, var(--tech-cyan));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
-      color: #fff;
-      box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+      font-size: 3.2rem;
+      color: #ffffff;
+      box-shadow: 0 0 40px rgba(0, 210, 255, 0.6);
       animation: popCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
@@ -618,37 +789,113 @@
     }
 
     .thankyou-title {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff, #e2e8f0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-family: var(--font-heading);
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
     }
 
     .thankyou-subtitle {
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       color: #cbd5e1;
-      line-height: 1.5;
+      line-height: 1.6;
+      max-width: 500px;
     }
 
     .print-status-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: var(--radius-full);
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--accent);
-      color: var(--accent);
+      background: rgba(0, 210, 255, 0.15);
+      border: 1px solid var(--tech-cyan);
+      color: var(--tech-cyan);
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
+      font-family: var(--font-mono);
     }
 
     .auto-reset-counter {
       font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 6px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ========================================================= */
+    /* 4. ERROR SCREEN (Trang Báo Lỗi Không Nhận Được Lệnh In)   */
+    /* ========================================================= */
+    .error-screen {
+      background: radial-gradient(circle at 50% 40%, #3b0707 0%, #1a0404 70%, #080000 100%);
+      padding: 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .error-card {
+      max-width: 620px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 40px 36px;
+      background: rgba(30, 10, 15, 0.92);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 60px -15px rgba(239, 68, 68, 0.5);
+      backdrop-filter: blur(16px);
+    }
+
+    .error-icon-box {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ef4444, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #ffffff;
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.7);
+      animation: shakeAlert 0.8s ease-in-out;
+    }
+
+    @keyframes shakeAlert {
+      0%, 100% { transform: rotate(0deg); }
+      20%, 60% { transform: rotate(-8deg); }
+      40%, 80% { transform: rotate(8deg); }
+    }
+
+    .error-title {
+      font-family: var(--font-heading);
+      font-size: 1.95rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      color: #fca5a5;
+    }
+
+    .error-subtitle {
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
+    .error-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--danger);
+      color: #f87171;
+      font-size: 0.84rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
     }
 
     /* Scanner Panel (Right Side 30%) */
@@ -656,9 +903,9 @@
       display: flex;
       flex-direction: column;
       width: 30%;
-      min-width: 320px;
+      min-width: 330px;
       height: 100%;
-      background: linear-gradient(180deg, var(--bg-surface) 0%, #080c18 100%);
+      background: linear-gradient(180deg, #001933 0%, #000e1f 100%);
       border-left: 1px solid var(--border-strong);
       padding: 12px;
       gap: 10px;
@@ -673,32 +920,30 @@
       border-right: 1px solid var(--border-strong);
     }
 
-    /* ========================================================= */
-    /* INPUT MODE SELECTOR WIDGET (Tùy chọn: Camera / Súng / Cả hai) */
-    /* ========================================================= */
+    /* Input Mode Selector */
     .mode-selector-card {
       display: flex;
       flex-direction: column;
       gap: 6px;
       padding: 8px 10px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 15, 30, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
     }
 
     .mode-selector-title {
       font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-weight: 800;
+      color: var(--tech-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .mode-buttons-group {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 4px;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(0, 24, 48, 0.8);
       padding: 3px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
@@ -711,7 +956,7 @@
       gap: 4px;
       height: 28px;
       font-size: 0.74rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-secondary);
       background: transparent;
       border: 1px solid transparent;
@@ -722,15 +967,15 @@
     }
 
     .mode-btn:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      background: rgba(0, 210, 255, 0.1);
     }
 
     .mode-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
-      box-shadow: 0 0 10px var(--primary-glow);
+      background: var(--tech-cyan);
+      color: #001122;
+      border-color: var(--tech-cyan);
+      box-shadow: 0 0 10px var(--tech-cyan-glow);
     }
 
     /* Scanner Header Card */
@@ -739,7 +984,7 @@
       flex-direction: column;
       gap: 8px;
       padding: 10px 12px;
-      background: var(--bg-card);
+      background: var(--dark-card);
       border-radius: var(--radius-md);
       border: 1px solid var(--border-subtle);
     }
@@ -755,17 +1000,19 @@
       align-items: center;
       gap: 8px;
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       padding: 4px 10px;
       border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 210, 255, 0.08);
       border: 1px solid var(--border-subtle);
       transition: var(--transition);
+      color: #ffffff;
     }
 
     .scanner-status-pill:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 210, 255, 0.16);
+      border-color: var(--tech-cyan);
     }
 
     .status-dot {
@@ -773,14 +1020,14 @@
       height: 10px;
       border-radius: 50%;
       background: var(--warning);
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
       animation: pulse 2s infinite;
       flex-shrink: 0;
     }
 
     .status-dot.ready {
-      background: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: var(--tech-cyan);
+      box-shadow: 0 0 0 3px var(--tech-cyan-glow);
     }
 
     .status-dot.paused {
@@ -790,18 +1037,18 @@
 
     .status-dot.error {
       background: var(--danger);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 0 3px var(--danger-glow);
     }
 
     .last-scan-box {
       font-size: 0.75rem;
-      color: var(--text-secondary);
+      color: #e2e8f0;
       font-family: var(--font-mono);
       word-break: break-all;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 5px 8px;
+      background: rgba(0, 10, 20, 0.6);
+      padding: 6px 10px;
       border-radius: var(--radius-sm);
-      border-left: 3px solid var(--accent);
+      border-left: 3px solid var(--tech-cyan);
     }
 
     /* Dedicated USB Gun / Manual Barcode Input Card */
@@ -810,17 +1057,17 @@
       flex-direction: column;
       gap: 8px;
       padding: 10px 12px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(16, 185, 129, 0.12));
-      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      background: linear-gradient(135deg, rgba(0, 64, 128, 0.35), rgba(0, 210, 255, 0.1));
+      border: 1.5px solid rgba(0, 210, 255, 0.4);
       border-radius: var(--radius-md);
       position: relative;
       transition: var(--transition);
     }
 
     .barcode-gun-card.gun-only-expanded {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      background: linear-gradient(135deg, rgba(0, 64, 128, 0.5), rgba(0, 210, 255, 0.2));
+      border-color: var(--tech-cyan);
+      box-shadow: var(--border-cyan-glow);
     }
 
     .gun-card-header {
@@ -828,10 +1075,10 @@
       align-items: center;
       justify-content: space-between;
       font-size: 0.76rem;
-      font-weight: 700;
-      color: #93c5fd;
+      font-weight: 800;
+      color: var(--tech-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
     }
 
     .gun-input-group {
@@ -844,25 +1091,25 @@
       flex: 1;
       height: 38px;
       padding: 0 12px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      background: rgba(0, 12, 24, 0.8);
+      border: 1.5px solid rgba(0, 210, 255, 0.35);
       border-radius: var(--radius-sm);
       color: #ffffff;
       font-family: var(--font-mono);
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
       transition: var(--transition);
     }
 
     .gun-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
-      background: rgba(0, 0, 0, 0.7);
+      border-color: var(--tech-cyan);
+      box-shadow: 0 0 0 2px var(--tech-cyan-glow);
+      background: rgba(0, 18, 36, 0.95);
     }
 
     .gun-input::placeholder {
-      color: #64748b;
+      color: var(--text-muted);
       font-family: var(--font-main);
       font-size: 0.78rem;
       font-weight: 400;
@@ -871,20 +1118,21 @@
     .gun-submit-btn {
       height: 38px;
       padding: 0 14px;
-      background: var(--primary);
-      color: #ffffff;
+      background: var(--tech-cyan);
+      color: #001122;
       border: none;
       border-radius: var(--radius-sm);
+      font-family: var(--font-heading);
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 800;
       cursor: pointer;
       transition: var(--transition);
       flex-shrink: 0;
     }
 
     .gun-submit-btn:hover {
-      background: #2563eb;
-      box-shadow: 0 0 10px var(--primary-glow);
+      background: var(--accent-hover);
+      box-shadow: 0 0 12px var(--tech-cyan-glow);
     }
 
     .gun-buffering-indicator {
@@ -893,7 +1141,7 @@
       gap: 6px;
       font-size: 0.72rem;
       color: #fbbf24;
-      font-weight: 600;
+      font-weight: 700;
       animation: pulse 1s infinite;
     }
 
@@ -901,21 +1149,38 @@
       display: flex;
     }
 
+    .inline-gun-icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .barcode-scanner-illustration {
+      filter: drop-shadow(0 8px 24px rgba(0, 210, 255, 0.3));
+      animation: floatGun 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGun {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-6px) rotate(-2deg); }
+    }
+
     /* Scanner Viewport */
     .scanner-viewport-wrapper {
       position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
-      max-height: 38vh;
+      max-height: 36vh;
       background: #000000;
       border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid var(--border-strong);
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 210, 255, 0.1);
       transition: var(--transition);
     }
 
-    /* Special Gun-Only Viewport Graphic */
     .gun-mode-graphic {
       display: none;
       flex-direction: column;
@@ -923,33 +1188,25 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #1e293b 0%, #030712 100%);
+      background: radial-gradient(circle at center, #002855 0%, #000e1f 100%);
       padding: 20px;
       text-align: center;
       gap: 12px;
     }
 
-    .gun-mode-icon {
-      font-size: 3.5rem;
-      animation: pulseGun 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseGun {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
-      50% { transform: scale(1.08); filter: drop-shadow(0 0 20px var(--accent-glow)); }
-    }
-
     .gun-mode-title {
+      font-family: var(--font-heading);
       font-size: 0.95rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #ffffff;
+      letter-spacing: 0.02em;
     }
 
     .gun-mode-sub {
       font-size: 0.75rem;
       color: var(--text-secondary);
       line-height: 1.4;
-      max-width: 220px;
+      max-width: 230px;
     }
 
     #reader {
@@ -967,7 +1224,7 @@
       display: block;
     }
 
-    /* Overlay Target Frame & Laser */
+    /* Overlay Target Frame & Cyan Laser */
     .overlay-frame {
       position: absolute;
       inset: 0;
@@ -982,16 +1239,16 @@
       position: relative;
       width: 72%;
       height: 72%;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 1.5px solid rgba(0, 210, 255, 0.35);
       border-radius: 14px;
-      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.45);
+      box-shadow: 0 0 0 9999px rgba(0, 10, 20, 0.55);
     }
 
     .reticle-corner {
       position: absolute;
       width: 24px;
       height: 24px;
-      border-color: var(--accent);
+      border-color: var(--tech-cyan);
       border-style: solid;
       border-width: 0;
     }
@@ -1006,28 +1263,27 @@
       left: 2%;
       right: 2%;
       height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), #fff, var(--accent), transparent);
-      box-shadow: 0 0 14px var(--accent), 0 0 6px #fff;
+      background: linear-gradient(90deg, transparent, var(--tech-cyan), #ffffff, var(--tech-cyan), transparent);
+      box-shadow: 0 0 14px var(--tech-cyan), 0 0 6px #ffffff;
       animation: laserSweep 2s ease-in-out infinite alternate;
     }
 
     @keyframes laserSweep {
-      0% { top: 6%; opacity: 0.3; }
-      50% { opacity: 1; }
-      100% { top: 94%; opacity: 0.3; }
+      0% { top: 6%; opacity: 0.85; }
+      100% { top: 92%; opacity: 0.85; }
     }
 
     .scan-flash {
       position: absolute;
       inset: 0;
+      background: rgba(0, 210, 255, 0.5);
+      backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(16, 185, 129, 0.25);
-      backdrop-filter: blur(2px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 180ms ease;
+      transition: opacity 0.15s ease-out;
       z-index: 10;
     }
 
@@ -1036,25 +1292,27 @@
     }
 
     .scan-flash-icon {
-      font-size: 3rem;
-      color: #ffffff;
-      text-shadow: 0 0 20px var(--accent);
-      transform: scale(0.8);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--tech-cyan);
+      color: #001122;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 900;
+      box-shadow: 0 0 30px var(--tech-cyan);
     }
 
-    .scan-flash.active .scan-flash-icon {
-      transform: scale(1.1);
-    }
-
-    /* Camera Controls Card */
+    /* Camera Controls */
     .controls-card {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 10px 12px;
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(0, 17, 34, 0.6);
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
     }
 
@@ -1066,53 +1324,47 @@
 
     .select-input {
       flex: 1;
-      height: 32px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-strong);
+      height: 28px;
+      padding: 0 8px;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-family: var(--font-main);
-      font-size: 0.78rem;
-      padding: 0 10px;
+      color: #ffffff;
+      font-size: 0.75rem;
       outline: none;
-      cursor: pointer;
     }
 
     .select-input:focus {
-      border-color: var(--accent);
+      border-color: var(--tech-cyan);
     }
 
     .icon-btn {
-      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(0, 34, 68, 0.6);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
+      color: #ffffff;
+      font-size: 0.75rem;
       cursor: pointer;
       transition: var(--transition);
-      flex-shrink: 0;
     }
 
     .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--border-strong);
+      background: var(--tech-cyan);
+      color: #001122;
+      border-color: var(--tech-cyan);
     }
 
-    .icon-btn.active {
-      background: var(--accent);
-      color: #000;
-      border-color: var(--accent);
-    }
-
-    /* Quick Action Mini Bar inside scanner panel */
+    /* Quick Action Grid */
     .scanner-quick-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
+      margin-top: auto;
     }
 
     .quick-action-btn {
@@ -1121,96 +1373,93 @@
       justify-content: center;
       gap: 6px;
       height: 32px;
-      background: rgba(255, 255, 255, 0.04);
+      padding: 0 10px;
+      background: rgba(0, 40, 80, 0.5);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      color: var(--text-secondary);
+      color: #e2e8f0;
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
     }
 
     .quick-action-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-primary);
+      background: rgba(0, 64, 128, 0.8);
+      border-color: var(--tech-cyan);
+      color: var(--tech-cyan);
     }
 
-    /* Modals & Drawer Overlays */
+    /* ========================================================= */
+    /* MODALS & POPUPS                                           */
+    /* ========================================================= */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(5px);
-      display: flex;
+      background: rgba(0, 8, 16, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-      padding: 16px;
+      z-index: 999;
+      padding: 20px;
     }
 
     .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
+      display: flex;
+      animation: fadeInView 0.2s ease;
     }
 
     .modal-card {
       width: 100%;
-      max-width: 580px;
+      max-width: 600px;
       max-height: 88vh;
-      background: var(--bg-surface);
+      background: #001933;
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), var(--border-cyan-glow);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       overflow: hidden;
-    }
-
-    .modal-backdrop.open .modal-card {
-      transform: scale(1);
     }
 
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid var(--border-subtle);
-      background: var(--bg-card);
+      background: rgba(0, 24, 48, 0.95);
     }
 
     .modal-title {
+      font-family: var(--font-heading);
       font-size: 1.05rem;
-      font-weight: 700;
+      font-weight: 800;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .modal-close-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.3rem;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #ffffff;
+      font-size: 1.2rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
       transition: var(--transition);
     }
 
     .modal-close-btn:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--danger);
+      border-color: var(--danger);
     }
 
     .modal-body {
@@ -1228,7 +1477,7 @@
       gap: 10px;
       padding: 14px 20px;
       border-top: 1px solid var(--border-subtle);
-      background: var(--bg-card);
+      background: rgba(0, 15, 30, 0.9);
     }
 
     /* Form Elements */
@@ -1240,7 +1489,7 @@
 
     .form-label {
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-secondary);
     }
 
@@ -1253,10 +1502,10 @@
       width: 100%;
       height: 38px;
       padding: 0 12px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-strong);
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
+      color: #ffffff;
       font-family: var(--font-main);
       font-size: 0.85rem;
       outline: none;
@@ -1264,21 +1513,22 @@
     }
 
     .form-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
+      border-color: var(--tech-cyan);
+      box-shadow: 0 0 0 2px var(--tech-cyan-glow);
     }
 
     .form-switch-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 10px 0;
       border-bottom: 1px solid var(--border-subtle);
     }
 
     .form-switch-label {
       font-size: 0.85rem;
-      font-weight: 500;
+      font-weight: 700;
+      color: #ffffff;
     }
 
     .switch-toggle {
@@ -1316,23 +1566,24 @@
     }
 
     input:checked + .slider {
-      background-color: var(--accent);
+      background-color: var(--tech-cyan);
     }
 
     input:checked + .slider:before {
       transform: translateX(20px);
+      background-color: #001122;
     }
 
     .btn-primary {
-      height: 36px;
-      padding: 0 16px;
-      background: var(--accent);
-      color: #000000;
+      height: 38px;
+      padding: 0 18px;
+      background: var(--tech-cyan);
+      color: #001122;
       border: none;
       border-radius: var(--radius-sm);
-      font-family: var(--font-main);
+      font-family: var(--font-heading);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 800;
       cursor: pointer;
       transition: var(--transition);
       display: inline-flex;
@@ -1342,19 +1593,19 @@
 
     .btn-primary:hover {
       background: var(--accent-hover);
-      box-shadow: 0 0 12px var(--accent-glow);
+      box-shadow: var(--border-cyan-glow);
     }
 
     .btn-secondary {
-      height: 36px;
+      height: 38px;
       padding: 0 14px;
       background: rgba(255, 255, 255, 0.08);
-      color: var(--text-primary);
-      border: 1px solid var(--border-strong);
+      color: #ffffff;
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      font-family: var(--font-main);
+      font-family: var(--font-heading);
       font-size: 0.85rem;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
       display: inline-flex;
@@ -1363,19 +1614,20 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.16);
+      border-color: var(--tech-cyan);
     }
 
     .btn-danger {
-      height: 36px;
+      height: 38px;
       padding: 0 14px;
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--danger);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
       border-radius: var(--radius-sm);
-      font-family: var(--font-main);
+      font-family: var(--font-heading);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 800;
       cursor: pointer;
       transition: var(--transition);
       display: inline-flex;
@@ -1385,7 +1637,7 @@
 
     .btn-danger:hover {
       background: var(--danger);
-      color: #fff;
+      color: #ffffff;
     }
 
     /* History Modal Styles */
@@ -1410,15 +1662,15 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 12px;
-      background: var(--bg-card);
+      background: rgba(0, 24, 48, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       transition: var(--transition);
     }
 
     .history-item:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-strong);
+      background: rgba(0, 36, 72, 0.9);
+      border-color: var(--tech-cyan);
     }
 
     .history-item-content {
@@ -1431,14 +1683,14 @@
     .history-item-value {
       font-family: var(--font-mono);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #ffffff;
       word-break: break-all;
     }
 
     .history-item-meta {
       font-size: 0.72rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
     .history-item-actions {
@@ -1458,7 +1710,7 @@
     /* Toast Notifications */
     .toast-container {
       position: fixed;
-      top: 60px;
+      top: 68px;
       right: 20px;
       z-index: 9999;
       display: flex;
@@ -1471,19 +1723,20 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
-      background: var(--bg-surface);
+      padding: 10px 18px;
+      background: rgba(0, 24, 48, 0.96);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-md);
-      color: var(--text-primary);
-      font-size: 0.82rem;
-      font-weight: 500;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), var(--border-cyan-glow);
       animation: slideInRight 0.3s ease;
       pointer-events: auto;
     }
 
-    .toast-pill.success { border-left: 4px solid var(--accent); }
+    .toast-pill.success { border-left: 4px solid var(--tech-cyan); }
     .toast-pill.error { border-left: 4px solid var(--danger); }
     .toast-pill.info { border-left: 4px solid var(--primary); }
 
@@ -1499,9 +1752,9 @@
       left: 0;
       right: 0;
       max-height: 220px;
-      background: rgba(3, 7, 18, 0.96);
-      border-top: 2px solid var(--accent);
-      color: var(--accent);
+      background: rgba(0, 10, 20, 0.96);
+      border-top: 2px solid var(--tech-cyan);
+      color: var(--tech-cyan);
       font-family: var(--font-mono);
       font-size: 0.72rem;
       overflow-y: auto;
@@ -1510,8 +1763,6 @@
       display: none;
     }
 
-    .debug-console.show { display: block; }
-
     .debug-line {
       margin: 2px 0;
       padding: 2px 4px;
@@ -1519,11 +1770,15 @@
       line-height: 1.4;
     }
 
-    .debug-line.log { color: #94a3b8; border-left-color: var(--primary); }
+    .debug-line.log { color: #94b8db; border-left-color: var(--primary); }
     .debug-line.error { color: #f87171; border-left-color: var(--danger); }
     .debug-line.warn { color: #fbbf24; border-left-color: var(--warning); }
 
-    /* Responsive adjustments */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+
     @media (max-width: 900px) {
       .kiosk-container {
         flex-direction: column !important;
@@ -1545,11 +1800,16 @@
 </head>
 <body>
   <div class="app-wrapper">
-    <!-- Top Global Toolbar -->
+    <!-- Top Corporate Header / Toolbar (HPT D-DAY 2026 Style) -->
     <header class="top-toolbar">
       <div class="brand-section">
-        <div class="brand-logo">⚡</div>
-        <div class="brand-title">Kiosk Scanner Pro</div>
+        <div class="hpt-logo-text">hpt</div>
+        <div class="brand-title-box">
+          <div class="brand-title">
+            HPT D-DAY 2026 <span class="badge-r3">R³</span>
+          </div>
+          <div class="brand-subtitle">Kiosk Check-in & Printing Terminal</div>
+        </div>
       </div>
 
       <!-- 3 Clickable Interactive Navigation Tabs -->
@@ -1559,11 +1819,11 @@
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-process" id="tabBtnProcess" title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
-          <span>⚡</span> 2. Đang in (5s)
+          <span id="tab2Icon">⚡</span> <span id="tab2Title">2. Đang in (10s)</span>
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou" title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
-          <span>🎉</span> 3. Cảm ơn (5s)
+          <span>🎉</span> 3. Cảm ơn
         </button>
       </nav>
 
@@ -1599,25 +1859,60 @@
       </div>
     </header>
 
+    <!-- Live Ticker Bar from layout.html -->
+    <div class="ticker-bar">
+      <span class="ticker-pulse"></span>
+      📢 Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 - R³: Hội tụ • Sáng tạo • Phát triển</strong> | Vui lòng quét mã QR để in thẻ check-in tự động!
+    </div>
+
     <!-- Main Split Screen Container -->
     <main class="kiosk-container" id="kioskContainer">
       
-      <!-- Main Display Area (Left Side 70%): 3 Tabs / Process Stages -->
+      <!-- Main Display Area (Left Side 70%): 4 Views (Start, Process, ThankYou, Error) -->
       <section class="main-display-container">
         <div id="iframeLoadingBar" class="iframe-loading-bar"></div>
 
         <!-- ========================================================= -->
-        <!-- TAB 1: START (Hướng dẫn quét QR Code & Bắn mã) -->
+        <!-- TAB 1: START (HPT D-DAY 2026 Welcome & Quick Guide)       -->
         <!-- ========================================================= -->
         <div class="stage-view active start-screen" id="viewStageStart">
           <div class="start-card">
-            <div class="start-hero-icon" id="startHeroIcon">⚡</div>
-            <h1 class="start-title" id="startHeroTitle">HỆ THỐNG KIOSK TỰ ĐỘNG</h1>
-            <p class="start-subtitle" id="startHeroSubtitle">Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.</p>
+            <span class="hero-badge-tag">HPT Corporation Event</span>
             
+            <div class="start-hero-box">
+              <h1 class="start-title" id="startHeroTitle">HPT D-DAY 2026</h1>
+              <div class="start-hero-r3" id="startHeroIcon">R³</div>
+              <div class="start-slogan">Hội tụ — Sáng tạo — Phát triển</div>
+            </div>
+
+            <p class="start-subtitle" id="startHeroSubtitle">Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.</p>
+            
+            <!-- Event Statistics Bar from layout.html -->
+            <div class="kiosk-stats-row">
+              <div class="kiosk-stat-item">
+                <h3>650+</h3>
+                <p>Khách tham dự</p>
+              </div>
+              <div class="kiosk-stat-item">
+                <h3>20+</h3>
+                <p>Gian hàng Tech</p>
+              </div>
+              <div class="kiosk-stat-item">
+                <h3>20+</h3>
+                <p>Đối tác chiến lược</p>
+              </div>
+              <div class="kiosk-stat-item">
+                <h3>100%</h3>
+                <p>Auto Check-in</p>
+              </div>
+            </div>
+
             <div class="dual-methods-row">
-              <div class="method-chip active" id="chipCameraIndicator">📷 Camera tự động quét</div>
-              <div class="method-chip active" id="chipGunIndicator">🔫 Súng bắn mã Barcode/QR</div>
+              <div class="method-chip active" id="chipCameraIndicator">📷 Camera AI tự động quét</div>
+              <div class="method-chip active" id="chipGunIndicator">
+                <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+                Súng bắn mã Barcode/QR
+              </div>
             </div>
 
             <div class="scan-steps-grid">
@@ -1627,31 +1922,32 @@
               </div>
               <div class="step-item">
                 <div class="step-num">2</div>
-                <div class="step-desc">Đang in phiếu (chờ 5 giây)</div>
+                <div class="step-desc">Xác thực App & Đợi lệnh in (10s)</div>
               </div>
               <div class="step-item">
                 <div class="step-num">3</div>
-                <div class="step-desc">Nhận phiếu & Hoàn tất</div>
+                <div class="step-desc">Nhận thẻ đeo sự kiện & Hoàn tất</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- ========================================================= -->
-        <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang in) -->
+        <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang Chờ Lệnh In 10s) -->
         <!-- ========================================================= -->
         <div class="stage-view process-screen" id="viewStageProcess">
           <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
           
+          <!-- Dynamic Overlay: Tải Iframe -> Chờ Lệnh In (10s) -->
           <div class="printing-status-overlay" id="printingStatusOverlay">
-            <span class="printer-anim-icon">🖨️</span>
-            <span>Đang tiến hành in phiếu...</span>
-            <span class="print-countdown-badge" id="printCountdownBadge">5s</span>
+            <span class="printer-anim-icon" id="printOverlayIcon">⏳</span>
+            <span id="printOverlayText">Đang kết nối Power Apps HPT D-DAY...</span>
+            <span class="print-countdown-badge" id="printCountdownBadge" style="display: none;">10s</span>
           </div>
 
           <div class="process-control-bar">
             <button class="process-btn process-btn-print" id="btnTriggerPrint" title="Gọi lệnh in trên Kiosk">
-              🖨️ In Phiếu
+              🖨️ In Thẻ Ngay
             </button>
             <button class="process-btn process-btn-open-tab" id="btnOpenPowerAppsInTab" title="Mở Power Apps ra Tab mới để đăng nhập tài khoản Microsoft nếu bị chặn">
               🌐 Mở Tab mới (Đăng nhập MFA)
@@ -1663,25 +1959,57 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- TAB 3: THANK YOU (Trang Cảm ơn sau khi in) -->
+        <!-- TAB 3: THANK YOU (Trang Cảm ơn sau khi ĐÃ GỬI LỆNH IN)   -->
         <!-- ========================================================= -->
         <div class="stage-view thankyou-screen" id="viewStageThankYou">
           <div class="thankyou-card">
             <div class="thankyou-icon-box">✓</div>
-            <h2 class="thankyou-title">CẢM ƠN QUÝ KHÁCH!</h2>
-            <p class="thankyou-subtitle">Lệnh in đã được gửi đến máy in thành công. Vui lòng nhận phiếu tại khay in bên dưới.</p>
+            <h2 class="thankyou-title">CHECK-IN THÀNH CÔNG!</h2>
+            <p class="thankyou-subtitle">Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 (R³)</strong>. Lệnh in thẻ đã được gửi đến máy in. Vui lòng nhận thẻ tại khay in bên dưới.</p>
             
             <div class="print-status-pill">
               <span>🖨️</span> Trạng thái: <strong>DISPATCHED_TO_SPOOLER</strong>
             </div>
 
             <div class="auto-reset-counter" id="autoResetTimerText">
-              Tự động quay về màn hình đầu sau <strong id="resetCountdownNumber" style="color: #ffffff; font-size: 1.05rem;">5</strong> giây...
+              Tự động quay về màn hình đầu sau <strong id="resetCountdownNumber" style="color: var(--tech-cyan); font-size: 1.15rem;">5</strong> giây...
             </div>
 
-            <button class="btn-primary" id="btnImmediateReset" style="margin-top: 10px; height: 40px; padding: 0 24px; border-radius: 9999px;">
-              Quét mã tiếp theo ngay
+            <button class="btn-primary" id="btnImmediateReset" style="margin-top: 6px; height: 42px; padding: 0 28px; border-radius: 9999px;">
+              Quét người tiếp theo ngay
             </button>
+          </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 4: ERROR SCREEN (Trang Báo Lỗi Hết 10s Không Nhận Được Lệnh In) -->
+        <!-- ========================================================= -->
+        <div class="stage-view error-screen" id="viewStageError">
+          <div class="error-card">
+            <div class="error-icon-box">⚠️</div>
+            <h2 class="error-title">KHÔNG NHẬN ĐƯỢC LỆNH IN!</h2>
+            <p class="error-subtitle">
+              Đã nạp xong ứng dụng Power Apps nhưng quá thời gian chờ (10 giây) không nhận được lệnh in từ hệ thống.
+              <br />
+              Vui lòng kiểm tra lại kết nối máy in hoặc thực hiện quét lại mã QR của bạn.
+            </p>
+            
+            <div class="error-status-pill">
+              <span>⚠️</span> Lỗi: <strong>PRINT_TIMEOUT_NOT_DISPATCHED (10s)</strong>
+            </div>
+
+            <div class="auto-reset-counter" id="errorResetTimerText" style="color: #fca5a5;">
+              Tự động quay về trang đầu sau <strong id="errorCountdownNumber" style="color: #ffffff; font-size: 1.1rem;">10</strong> giây...
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+              <button class="btn-primary" id="btnErrorRetry" style="background: var(--warning); color: #000; height: 40px; padding: 0 22px; border-radius: 9999px;">
+                🔄 Thử lại ngay
+              </button>
+              <button class="btn-secondary" id="btnErrorBackHome" style="height: 40px; padding: 0 22px; border-radius: 9999px;">
+                Quay về trang đầu
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1690,19 +2018,18 @@
       <!-- Scanner Panel (Right Side 30%) -->
       <section class="scanner-banner">
         
-        <!-- ========================================================= -->
-        <!-- INPUT MODE SWITCHER: Chọn Chế Độ (Camera / Máy bắn / Cả hai) -->
-        <!-- ========================================================= -->
+        <!-- Mode Selector -->
         <div class="mode-selector-card">
-          <div class="mode-selector-title">🎯 Chế độ nạp mã:</div>
+          <div class="mode-selector-title">🎯 Thiết bị quét:</div>
           <div class="mode-buttons-group">
             <button class="mode-btn" data-mode="camera" id="btnModeCamera" title="Chỉ sử dụng Camera quét">
               📷 Camera
             </button>
             <button class="mode-btn" data-mode="gun" id="btnModeGun" title="Chỉ sử dụng Súng/Máy bắn mã">
-              🔫 Máy bắn
+              <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+              Súng bắn
             </button>
-            <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Máy bắn">
+            <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Súng bắn">
               ⚡ Cả hai
             </button>
           </div>
@@ -1715,7 +2042,7 @@
               <span id="statusDot" class="status-dot"></span>
               <span id="statusText">Khởi tạo camera...</span>
             </div>
-            <button class="tool-btn" id="btnResumeEarly" style="padding: 2px 8px; height: 24px; font-size: 0.7rem;">
+            <button class="tool-btn" id="btnResumeEarly" style="padding: 2px 10px; height: 26px; font-size: 0.72rem;">
               ▶ Tiếp tục
             </button>
           </div>
@@ -1725,8 +2052,8 @@
         <!-- Dedicated Barcode Gun / Manual Input Card -->
         <div class="barcode-gun-card" id="barcodeGunCard">
           <div class="gun-card-header">
-            <span>🔫 Máy bắn QR / Nhập mã:</span>
-            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--accent); font-weight: 600;">HID Sẵn sàng</span>
+            <span><svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg> Súng bắn QR / Nhập mã:</span>
+            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--tech-cyan); font-weight: 700;">HID Sẵn sàng</span>
           </div>
           <div class="gun-input-group">
             <input 
@@ -1741,19 +2068,53 @@
             <button class="gun-submit-btn" id="btnGunSubmit" title="Xác nhận mã">Gửi</button>
           </div>
           <div class="gun-buffering-indicator" id="gunBufferingIndicator">
-            <span>⏳</span> <span>Đang nhận chuỗi mã từ máy bắn (chờ 1s hoàn tất)...</span>
+            <span>⏳</span> <span>Đang nhận chuỗi mã từ súng bắn (chờ 1s hoàn tất)...</span>
           </div>
         </div>
 
-        <!-- Scanner Viewport Frame (Holds Video or Gun Graphic) -->
+        <!-- Scanner Viewport Frame -->
         <div class="scanner-viewport-wrapper" id="scannerViewportWrapper">
           <div id="reader" aria-label="Camera Barcode Preview"></div>
           
           <!-- Gun-only Mode Visual Display -->
           <div class="gun-mode-graphic" id="gunModeGraphic">
-            <div class="gun-mode-icon">🔫</div>
-            <div class="gun-mode-title">CHẾ ĐỘ SÚNG BẮN MÃ</div>
-            <div class="gun-mode-sub">Cầm súng bắn trực tiếp vào mã QR hoặc mã vạch bất kỳ lúc nào.</div>
+            <div class="gun-svg-wrapper">
+              <svg viewBox="0 0 160 160" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg" class="barcode-scanner-illustration">
+                <!-- Glowing Laser Beam -->
+                <polygon points="105,42 155,20 155,75 105,52" fill="url(#laserGradient)" opacity="0.85">
+                  <animate attributeName="opacity" values="0.4;0.95;0.4" dur="1.6s" repeatCount="indefinite" />
+                </polygon>
+                <!-- Target QR / Barcode Pattern -->
+                <g transform="translate(138, 26)">
+                  <rect x="0" y="0" width="18" height="18" rx="2" fill="#00d2ff" opacity="0.85" />
+                  <rect x="3" y="3" width="12" height="12" fill="#001122" />
+                  <rect x="6" y="6" width="6" height="6" fill="#00d2ff" />
+                </g>
+                <!-- Scanner Body Head -->
+                <path d="M42 35 C42 28, 50 24, 65 24 L102 30 C108 31, 112 36, 112 42 L110 54 C110 60, 105 65, 98 66 L68 64 C56 63, 44 56, 42 45 Z" fill="#002855" stroke="#00d2ff" stroke-width="2.5" />
+                <!-- Front Optical Lens Glass -->
+                <path d="M102 31 L111 42 L109 54 L100 62" stroke="#00d2ff" stroke-width="3" stroke-linecap="round" />
+                <!-- Grip Handle -->
+                <path d="M58 64 L40 120 C38 126, 42 132, 48 133 L62 135 C68 136, 74 131, 75 125 L86 65 Z" fill="#00142b" stroke="#0059b3" stroke-width="2.5" />
+                <!-- Trigger Button -->
+                <path d="M55 74 C50 75, 48 82, 54 86 L62 86" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <!-- Ergonomic Rubber Cushions -->
+                <rect x="44" y="98" width="22" height="4" rx="2" fill="#003366" />
+                <rect x="42" y="108" width="22" height="4" rx="2" fill="#003366" />
+                <!-- Status LED on top of Scanner -->
+                <circle cx="70" cy="30" r="3.5" fill="#00d2ff">
+                  <animate attributeName="fill" values="#00d2ff;#38e1ff;#00d2ff" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <defs>
+                  <linearGradient id="laserGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00d2ff" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#0052d4" stop-opacity="0.15" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="gun-mode-title">SÚNG BẮN MÃ QR SẴN SÀNG</div>
+            <div class="gun-mode-sub">Cầm súng bắn và bóp cò trực tiếp vào mã bất kỳ lúc nào để in thẻ tự động.</div>
           </div>
 
           <div class="overlay-frame" id="cameraReticleOverlay" aria-hidden="true">
@@ -1770,10 +2131,10 @@
           </div>
         </div>
 
-        <!-- Camera Controls (Hidden in Gun-Only Mode) -->
+        <!-- Camera Controls -->
         <div class="controls-card" id="cameraControlsCard">
           <div class="control-row">
-            <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">Camera:</label>
+            <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Camera:</label>
             <select id="cameraSelect" class="select-input">
               <option value="">Đang tải danh sách camera...</option>
             </select>
@@ -1801,15 +2162,15 @@
   <div class="modal-backdrop" id="modalHistory">
     <div class="modal-card">
       <div class="modal-header">
-        <div class="modal-title">📋 Lịch sử quét mã (<span id="historyModalCount">0</span>)</div>
+        <div class="modal-title">📋 Lịch sử quét mã HPT D-DAY (<span id="historyModalCount">0</span>)</div>
         <button class="modal-close-btn" data-close="modalHistory">&times;</button>
       </div>
       <div class="modal-body">
         <div class="history-stats-bar">
           <input type="text" id="historySearchInput" class="form-input" placeholder="🔍 Tìm kiếm mã..." style="max-width: 260px;" />
           <div style="display: flex; gap: 6px;">
-            <button class="btn-secondary" id="btnExportCSV" style="font-size: 0.78rem; height: 32px;">📥 Xuất CSV</button>
-            <button class="btn-secondary" id="btnCopyAllHistory" style="font-size: 0.78rem; height: 32px;">📑 Copy tất cả</button>
+            <button class="btn-secondary" id="btnExportCSV" style="font-size: 0.78rem; height: 34px;">📥 Xuất CSV</button>
+            <button class="btn-secondary" id="btnCopyAllHistory" style="font-size: 0.78rem; height: 34px;">📑 Copy tất cả</button>
           </div>
         </div>
         <div class="history-list" id="historyListContainer">
@@ -1827,7 +2188,7 @@
   <div class="modal-backdrop" id="modalSettings">
     <div class="modal-card">
       <div class="modal-header">
-        <div class="modal-title">⚙️ Cài đặt Kiosk Scanner & In ấn</div>
+        <div class="modal-title">⚙️ Cài đặt Kiosk Check-in HPT D-DAY 2026</div>
         <button class="modal-close-btn" data-close="modalSettings">&times;</button>
       </div>
       <div class="modal-body">
@@ -1835,11 +2196,11 @@
         <div class="form-group">
           <label class="form-label" for="cfgInputMode">Chế độ nạp mã mặc định:</label>
           <select id="cfgInputMode" class="form-input">
-            <option value="both">⚡ Cả hai (Camera + Máy bắn QR)</option>
+            <option value="both">⚡ Cả hai (Camera + Súng bắn QR)</option>
             <option value="camera">📷 Chỉ sử dụng Camera</option>
-            <option value="gun">🔫 Chỉ sử dụng Máy bắn QR (Tắt camera)</option>
+            <option value="gun">🔫 Chỉ sử dụng Súng bắn QR (Tắt camera)</option>
           </select>
-          <div class="form-help">Chọn thiết bị quét hoạt động cho máy Kiosk.</div>
+          <div class="form-help">Chọn thiết bị quét hoạt động cho Kiosk.</div>
         </div>
 
         <!-- Power Apps Base URL -->
@@ -1849,18 +2210,25 @@
           <div class="form-help">Mã quét sẽ được gắn vào URL dạng <code>?barcode=[VALUE]&timestamp=[TIME]</code></div>
         </div>
 
-        <!-- Gun Scanner Inactivity Delay (1s default) -->
+        <!-- Print Wait Timeout (10s default) -->
         <div class="form-group">
-          <label class="form-label" for="cfgGunDelayMs">Thời gian chờ máy bắn nhận đủ dữ liệu (mili-giây):</label>
-          <input type="number" id="cfgGunDelayMs" class="form-input" min="300" max="3000" step="100" value="1000" />
-          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để đảm bảo máy bắn gửi xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1 giây).</div>
+          <label class="form-label" for="cfgPrintTimeoutSeconds">Thời gian chờ lệnh in sau khi nạp Power Apps (giây):</label>
+          <input type="number" id="cfgPrintTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
+          <div class="form-help">Sau khi Power Apps load xong, nếu trong khoảng thời gian này có lệnh in ➔ Chuyển trang Cảm ơn. Nếu hết thời gian mà chưa nhận lệnh in ➔ Chuyển trang Báo lỗi (mặc định: 10s).</div>
         </div>
 
-        <!-- Printing Delay Duration -->
+        <!-- Error Screen Reset Countdown (10s default) -->
         <div class="form-group">
-          <label class="form-label" for="cfgPrintDelaySeconds">Thời gian hiển thị trang "Đang in" khi quét tự động (giây):</label>
-          <input type="number" id="cfgPrintDelaySeconds" class="form-input" min="1" max="60" value="5" />
-          <div class="form-help">Thời gian hiển thị trang đang in trước khi chuyển sang trang Cảm ơn (mặc định: 5s).</div>
+          <label class="form-label" for="cfgErrorTimeoutSeconds">Thời gian hiển thị trang "Báo lỗi" (giây):</label>
+          <input type="number" id="cfgErrorTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
+          <div class="form-help">Thời gian hiển thị trang lỗi trước khi tự động quay về trang đầu tiên (mặc định: 10s).</div>
+        </div>
+
+        <!-- Gun Scanner Inactivity Delay (1s default) -->
+        <div class="form-group">
+          <label class="form-label" for="cfgGunDelayMs">Thời gian chờ súng bắn nhận đủ dữ liệu (mili-giây):</label>
+          <input type="number" id="cfgGunDelayMs" class="form-input" min="300" max="3000" step="100" value="1000" />
+          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để gom xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1s).</div>
         </div>
 
         <!-- Thank you screen reset countdown duration -->
@@ -1880,8 +2248,8 @@
         <!-- Toggle switches -->
         <div class="form-switch-row">
           <div>
-            <div class="form-switch-label">🔊 Âm thanh Beep khi quét / bắn mã</div>
-            <div class="form-help">Phát tiếng kêu bíp báo hiệu thành công</div>
+            <div class="form-switch-label">🔊 Âm thanh Beep & Cảnh báo</div>
+            <div class="form-help">Phát tiếng kêu bíp khi quét và âm cảnh báo</div>
           </div>
           <label class="switch-toggle">
             <input type="checkbox" id="cfgSoundEnabled" checked />
@@ -1914,7 +2282,7 @@
         <div class="form-switch-row">
           <div>
             <div class="form-switch-label">🔄 Tự động Reload Iframe với Param</div>
-            <div class="form-help">Kích hoạt phương án Solution 2 truyền qua <code>Param("barcode")</code></div>
+            <div class="form-help">Kích hoạt truyền qua <code>Param("barcode")</code></div>
           </div>
           <label class="switch-toggle">
             <input type="checkbox" id="cfgUrlReloadEnabled" checked />
@@ -1940,16 +2308,18 @@
 
   <script>
     /**
-     * KIOSK SCANNER PRO
-     * Input Modes: 'both' | 'camera' | 'gun'
+     * HPT D-DAY 2026 KIOSK SCANNER PRO (V3)
+     * Inspired by layout.html Design System (Navy, Tech-Cyan, R3 Branding)
+     * Smart 10s Print Timeout & Error Handling Engine
      */
     const DEFAULT_CONFIG = {
-      inputMode: "both", // 'both' | 'camera' | 'gun'
+      inputMode: "both",
       powerAppsUrl: "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/e8ad3a34-b6a3-452b-a984-01eb262236a5",
       gunDelayMs: 1000,
-      pauseSeconds: 30,
-      printDelaySeconds: 5,
+      printTimeoutSeconds: 10,  // Đợi 10s sau khi load xong Power Apps
+      errorTimeoutSeconds: 10,  // Đợi 10s trang báo lỗi trước khi reset
       thankYouSeconds: 5,
+      pauseSeconds: 30,
       soundEnabled: true,
       vibrateEnabled: true,
       clipboardEnabled: true,
@@ -2013,15 +2383,39 @@
             osc.stop(now + i * 0.08 + 0.25);
           });
         } catch (e) {}
+      },
+      playErrorSound() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + 0.35);
+
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } catch (e) {}
       }
     };
 
     // ==========================================
-    // 2. Storage & State Management
+    // 2. Storage & State Management (V3 Isolated)
     // ==========================================
     const AppStorage = {
-      CONFIG_KEY: 'kiosk_scanner_config_v2',
-      HISTORY_KEY: 'kiosk_scanner_history_v2',
+      CONFIG_KEY: 'kiosk_scanner_config_v3',
+      HISTORY_KEY: 'kiosk_scanner_history_v3',
 
       getConfig() {
         try {
@@ -2106,15 +2500,18 @@
       let isPaused = false;
       let countdownTimer = null;
       
-      let printingTimer = null;
+      // Timers
+      let printWaitingTimer = null;
       let thankYouTimer = null;
+      let errorTimer = null;
       
       let availableCameras = [];
       let isTorchOn = false;
       let lastScannedValue = "";
       let isCameraActive = false;
+      let hasPrintDispatched = false;
       
-      // STAGES: 'START' | 'PROCESS' | 'THANKYOU'
+      // STAGES: 'START' | 'PROCESS' | 'THANKYOU' | 'ERROR'
       let currentStage = 'START';
 
       // Barcode Gun Global Buffer & Debounce Timer
@@ -2128,14 +2525,21 @@
       const viewStageStart = document.getElementById('viewStageStart');
       const viewStageProcess = document.getElementById('viewStageProcess');
       const viewStageThankYou = document.getElementById('viewStageThankYou');
+      const viewStageError = document.getElementById('viewStageError');
 
       const tabBtnStart = document.getElementById('tabBtnStart');
       const tabBtnProcess = document.getElementById('tabBtnProcess');
       const tabBtnThankYou = document.getElementById('tabBtnThankYou');
+      const tab2Title = document.getElementById('tab2Title');
+      const tab2Icon = document.getElementById('tab2Icon');
 
       const printingStatusOverlay = document.getElementById('printingStatusOverlay');
+      const printOverlayIcon = document.getElementById('printOverlayIcon');
+      const printOverlayText = document.getElementById('printOverlayText');
       const printCountdownBadge = document.getElementById('printCountdownBadge');
+      
       const resetCountdownNumber = document.getElementById('resetCountdownNumber');
+      const errorCountdownNumber = document.getElementById('errorCountdownNumber');
 
       const barcodeGunCard = document.getElementById('barcodeGunCard');
       const barcodeGunInput = document.getElementById('barcodeGunInput');
@@ -2208,26 +2612,22 @@
         }
         console.log(`🎯 [INPUT MODE] Chuyển chế độ: ${mode}`);
 
-        // Update UI Button Group
         btnModeCamera.classList.toggle('active', mode === 'camera');
         btnModeGun.classList.toggle('active', mode === 'gun');
         btnModeBoth.classList.toggle('active', mode === 'both');
 
-        // Update Home chips
         chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
         chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
 
         if (mode === 'gun') {
-          startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in phiếu.';
+          startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in thẻ.';
         } else if (mode === 'camera') {
-          startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in phiếu.';
+          startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in thẻ.';
         } else {
-          startHeroSubtitle.textContent = 'Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.';
+          startHeroSubtitle.textContent = 'Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.';
         }
 
-        // Handle Gun-Only mode vs Camera Modes
         if (mode === 'gun') {
-          // Stop camera stream to save power/CPU
           await stopCameraScanner();
           readerElem.style.display = 'none';
           cameraReticleOverlay.style.display = 'none';
@@ -2236,13 +2636,12 @@
           barcodeGunCard.style.display = 'flex';
           barcodeGunCard.classList.add('gun-only-expanded');
           gunStatusBadge.textContent = 'Chế độ Súng đang BẬT';
-          gunStatusBadge.style.color = 'var(--accent)';
-          setStatus('Sẵn sàng nhận máy bắn', 'ready');
-          showToast('Chế độ: Chỉ dùng Máy bắn mã (Đã tắt Camera)', 'info');
+          gunStatusBadge.style.color = 'var(--tech-cyan)';
+          setStatus('Sẵn sàng nhận súng bắn', 'ready');
+          showToast('Chế độ: Chỉ dùng Súng bắn mã (Đã tắt Camera)', 'info');
           
           if (barcodeGunInput) barcodeGunInput.focus();
         } else {
-          // 'camera' or 'both'
           gunModeGraphic.style.display = 'none';
           readerElem.style.display = 'flex';
           cameraReticleOverlay.style.display = 'flex';
@@ -2255,11 +2654,10 @@
             gunStatusBadge.style.color = 'var(--text-muted)';
             showToast('Chế độ: Chỉ dùng Camera', 'info');
           } else {
-            // 'both'
             barcodeGunCard.style.display = 'flex';
             gunStatusBadge.textContent = 'HID Sẵn sàng';
-            gunStatusBadge.style.color = 'var(--accent)';
-            showToast('Chế độ: Sử dụng cả Camera & Máy bắn', 'info');
+            gunStatusBadge.style.color = 'var(--tech-cyan)';
+            showToast('Chế độ: Sử dụng cả Camera & Súng bắn', 'info');
           }
 
           if (!isCameraActive) {
@@ -2269,16 +2667,20 @@
       }
 
       // -------------------------------------------------------------
-      // 3-Tab Switcher Logic
+      // Workflow State Controller (START, PROCESS, THANKYOU, ERROR)
       // -------------------------------------------------------------
       function clearAllWorkflowTimers() {
-        if (printingTimer) {
-          clearInterval(printingTimer);
-          printingTimer = null;
+        if (printWaitingTimer) {
+          clearInterval(printWaitingTimer);
+          printWaitingTimer = null;
         }
         if (thankYouTimer) {
           clearInterval(thankYouTimer);
           thankYouTimer = null;
+        }
+        if (errorTimer) {
+          clearInterval(errorTimer);
+          errorTimer = null;
         }
         if (gunDebounceTimer) {
           clearTimeout(gunDebounceTimer);
@@ -2289,20 +2691,34 @@
       function switchTab(stage, isAutoScanTrigger = false) {
         currentStage = stage;
         clearAllWorkflowTimers();
-        console.log(`🔀 [TAB SWITCH] Chuyển đổi Tab: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
+        console.log(`🔀 [STAGE SWITCH] Chuyển đổi trạng thái: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
 
         // 1. Update Active Views
         viewStageStart.classList.toggle('active', stage === 'START');
         viewStageProcess.classList.toggle('active', stage === 'PROCESS');
         viewStageThankYou.classList.toggle('active', stage === 'THANKYOU');
+        viewStageError.classList.toggle('active', stage === 'ERROR');
 
         // 2. Update Top Tab Buttons Active States
         tabBtnStart.classList.toggle('active', stage === 'START');
         tabBtnProcess.classList.toggle('active', stage === 'PROCESS');
         tabBtnThankYou.classList.toggle('active', stage === 'THANKYOU');
 
-        // TAB 1: START
+        tabBtnProcess.classList.remove('tab-error');
+        if (stage === 'ERROR') {
+          tabBtnProcess.classList.add('active', 'tab-error');
+          tab2Title.textContent = '2. Lỗi in (10s)';
+          tab2Icon.textContent = '⚠️';
+        } else {
+          tab2Title.textContent = '2. Đang in (10s)';
+          tab2Icon.textContent = '⚡';
+        }
+
+        // ==========================================
+        // TAB 1: START (Hướng dẫn quét)
+        // ==========================================
         if (stage === 'START') {
+          hasPrintDispatched = false;
           if (config.inputMode !== 'gun') {
             resumeScanner();
           }
@@ -2313,36 +2729,72 @@
             }
           }, 100);
         } 
-        // TAB 2: PROCESS
+        // ==========================================
+        // TAB 2: PROCESS (Nạp Power Apps & Chờ lệnh in 10s)
+        // ==========================================
         else if (stage === 'PROCESS') {
-          if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
-            loadPowerApps();
-          }
+          hasPrintDispatched = false;
 
           if (isAutoScanTrigger) {
+            // Hiển thị trạng thái đang tải Iframe
             printingStatusOverlay.style.display = 'flex';
-            let printRemaining = parseInt(config.printDelaySeconds, 10) || 5;
-            printCountdownBadge.textContent = `${printRemaining}s`;
+            printOverlayIcon.textContent = '⏳';
+            printOverlayText.textContent = 'Đang tải ứng dụng HPT D-DAY...';
+            printCountdownBadge.style.display = 'none';
 
-            triggerKioskPrint();
+            // Khi Iframe đã tải xong hoàn toàn -> Bắt đầu đếm ngược 10 giây chờ lệnh in
+            powerAppsFrame.onload = () => {
+              iframeLoadingBar.classList.remove('active');
+              console.log('✅ Power Apps Iframe đã tải xong hoàn toàn! Bắt đầu đếm 10s chờ lệnh in...');
 
-            printingTimer = setInterval(() => {
-              printRemaining--;
-              if (printRemaining <= 0) {
-                clearInterval(printingTimer);
-                printingTimer = null;
-                console.log('⏱️ Đã xong 5s Tab Đang in -> Tự động chuyển Tab Cảm ơn');
-                switchTab('THANKYOU', true);
-              } else {
-                printCountdownBadge.textContent = `${printRemaining}s`;
-              }
-            }, 1000);
+              if (currentStage !== 'PROCESS') return; // nếu đã chuyển tab khác thì bỏ qua
+
+              printOverlayIcon.textContent = '🖨️';
+              printOverlayText.textContent = 'Đã tải xong app. Đang chờ lệnh in thẻ...';
+              printCountdownBadge.style.display = 'inline-flex';
+
+              let waitRemaining = parseInt(config.printTimeoutSeconds, 10) || 10;
+              printCountdownBadge.textContent = `${waitRemaining}s`;
+
+              // Kích hoạt lệnh in kiosk
+              triggerKioskPrint();
+
+              // Bắt đầu đếm ngược 10 giây
+              printWaitingTimer = setInterval(() => {
+                waitRemaining--;
+                printCountdownBadge.textContent = `${waitRemaining}s`;
+
+                // Nếu trong 10s có lệnh in thành công được xác nhận
+                if (hasPrintDispatched) {
+                  clearInterval(printWaitingTimer);
+                  printWaitingTimer = null;
+                  console.log('🎉 Đã xác nhận lệnh in trong thời gian chờ -> Chuyển trang CẢM ƠN!');
+                  switchTab('THANKYOU', true);
+                  return;
+                }
+
+                // Nếu HẾT 10s mà KHÔNG nhận được lệnh in
+                if (waitRemaining <= 0) {
+                  clearInterval(printWaitingTimer);
+                  printWaitingTimer = null;
+                  console.warn('⚠️ HẾT 10 GIÂY: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
+                  switchTab('ERROR', true);
+                }
+              }, 1000);
+            };
+
           } else {
+            // Khi bấm thủ công bằng tay vào Tab 2
             printingStatusOverlay.style.display = 'none';
+            if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
+              loadPowerApps();
+            }
             showToast('Đang ở Tab Power Apps. Bạn có thể đăng nhập hoặc kiểm tra ứng dụng.', 'info', 3500);
           }
         } 
-        // TAB 3: THANK YOU
+        // ==========================================
+        // TAB 3: THANK YOU (In thành công -> Cảm ơn 5s -> Về trang đầu)
+        // ==========================================
         else if (stage === 'THANKYOU') {
           if (config.soundEnabled) {
             AudioEngine.playChime();
@@ -2356,10 +2808,33 @@
             if (thankRemaining <= 0) {
               clearInterval(thankYouTimer);
               thankYouTimer = null;
-              console.log('⏱️ Đã xong 5s Tab Cảm ơn -> Tự động quay về Tab 1 (Start)');
+              console.log('⏱️ Đã xong trang Cảm ơn -> Tự động quay về Trang 1 (Start)');
               switchTab('START', false);
             } else {
               resetCountdownNumber.textContent = thankRemaining;
+            }
+          }, 1000);
+        }
+        // ==========================================
+        // TAB 4: ERROR (Lỗi không nhận được lệnh in -> Hiện lỗi 10s -> Về trang đầu)
+        // ==========================================
+        else if (stage === 'ERROR') {
+          if (config.soundEnabled) {
+            AudioEngine.playErrorSound();
+          }
+
+          let errorRemaining = parseInt(config.errorTimeoutSeconds, 10) || 10;
+          errorCountdownNumber.textContent = errorRemaining;
+
+          errorTimer = setInterval(() => {
+            errorRemaining--;
+            if (errorRemaining <= 0) {
+              clearInterval(errorTimer);
+              errorTimer = null;
+              console.log('⏱️ Đã xong 10s trang Báo lỗi -> Tự động quay về Trang 1 (Start)');
+              switchTab('START', false);
+            } else {
+              errorCountdownNumber.textContent = errorRemaining;
             }
           }, 1000);
         }
@@ -2377,20 +2852,17 @@
           const handleAfterPrint = () => {
             if (hasResolved) return;
             hasResolved = true;
+            hasPrintDispatched = true; // Mark print as dispatched
             window.removeEventListener('afterprint', handleAfterPrint);
             console.log('✅ [AFTERPRINT] Trình duyệt đã gửi lệnh in vào hàng đợi (SPOOLER).');
+            
+            if (currentStage === 'PROCESS') {
+              switchTab('THANKYOU', true);
+            }
             resolve({ status: 'DISPATCHED_TO_SPOOLER', timestamp: Date.now() });
           };
 
           window.addEventListener('afterprint', handleAfterPrint);
-
-          setTimeout(() => {
-            if (!hasResolved) {
-              hasResolved = true;
-              window.removeEventListener('afterprint', handleAfterPrint);
-              resolve({ status: 'DISPATCHED_TO_SPOOLER_TIMEOUT_FALLBACK', timestamp: Date.now() });
-            }
-          }, 4000);
 
           try {
             if (powerAppsFrame && powerAppsFrame.contentWindow && typeof powerAppsFrame.contentWindow.print === 'function') {
@@ -2403,8 +2875,7 @@
               window.print();
             }
           } catch (err) {
-            console.warn('Direct print invoke error:', err);
-            handleAfterPrint();
+            console.warn('Direct print invoke notice:', err);
           }
         });
       }
@@ -2419,10 +2890,14 @@
           event.data.event === 'PRINT_DONE' ||
           event.data.type === 'PRINT_DONE' ||
           event.data.event === 'AFTER_PRINT' ||
-          event.data.event === 'TASK_COMPLETED'
+          event.data.event === 'TASK_COMPLETED' ||
+          event.data.event === 'PRINT_DISPATCHED'
         ) {
-          console.log('🎯 Power Apps đã xác nhận in xong!');
-          switchTab('THANKYOU', true);
+          console.log('🎯 Power Apps đã xác nhận in xong qua postMessage!');
+          hasPrintDispatched = true;
+          if (currentStage === 'PROCESS') {
+            switchTab('THANKYOU', true);
+          }
         }
       });
 
@@ -2476,11 +2951,6 @@
 
         console.log('🔄 Đang nạp Power Apps Iframe:', targetUrl);
         powerAppsFrame.src = targetUrl;
-
-        powerAppsFrame.onload = () => {
-          iframeLoadingBar.classList.remove('active');
-          console.log('✅ Power Apps Iframe đã tải xong.');
-        };
       }
 
       // Transmit Scanned / Shot Code to Power Apps & Systems
@@ -2518,7 +2988,7 @@
         AppStorage.addHistoryItem(cleanVal, source);
         updateHistoryBadge();
 
-        // 4. Switch to TAB 2: PROCESS with Auto Print Workflow (5s)
+        // 4. Switch to TAB 2: PROCESS with 10s Timeout Logic
         switchTab('PROCESS', true);
 
         // 5. Load Power Apps with barcode param
@@ -2599,7 +3069,7 @@
         console.log('▶️ Máy quét camera đã sẵn sàng tiếp tục');
       }
 
-      // Torch / Flashlight Control
+      // Torch Control
       async function toggleTorch() {
         if (!html5Scanner) return;
         try {
@@ -2809,7 +3279,7 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `kiosk_scan_history_${new Date().toISOString().slice(0,10)}.csv`);
+        link.setAttribute("download", `kiosk_hpt_history_${new Date().toISOString().slice(0,10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -2817,9 +3287,7 @@
         showToast('Đã xuất file CSV thành công!', 'success');
       }
 
-      // -------------------------------------------------------------
       // USB Barcode Gun Engine
-      // -------------------------------------------------------------
       function setupBarcodeGunListener() {
         const delayMs = parseInt(config.gunDelayMs, 10) || 1000;
 
@@ -2919,7 +3387,7 @@
         btnModeGun.addEventListener('click', () => setInputMode('gun'));
         btnModeBoth.addEventListener('click', () => setInputMode('both'));
 
-        // 3 Navigation Tabs
+        // Navigation Tabs
         tabBtnStart.addEventListener('click', () => {
           switchTab('START', false);
         });
@@ -2950,6 +3418,19 @@
 
         // Tab 3 Immediate Reset Button
         document.getElementById('btnImmediateReset').addEventListener('click', () => {
+          switchTab('START', false);
+        });
+
+        // Tab 4 (Error Screen) Buttons
+        document.getElementById('btnErrorRetry').addEventListener('click', () => {
+          if (lastScannedValue) {
+            transmitBarcode(lastScannedValue, 'Thử lại');
+          } else {
+            switchTab('START', false);
+          }
+        });
+
+        document.getElementById('btnErrorBackHome').addEventListener('click', () => {
           switchTab('START', false);
         });
 
@@ -3018,7 +3499,7 @@
 
         // Quick Test Scan
         document.getElementById('btnQuickTestScan').addEventListener('click', () => {
-          const testCode = 'DEMO-QR-' + Math.floor(100000 + Math.random() * 900000);
+          const testCode = 'HPT-DDAY-' + Math.floor(100000 + Math.random() * 900000);
           console.log('🧪 Kích hoạt Test Scan:', testCode);
           transmitBarcode(testCode, 'Test Nút Bấm');
         });
@@ -3043,9 +3524,10 @@
           document.getElementById('cfgInputMode').value = config.inputMode || 'both';
           document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
           document.getElementById('cfgGunDelayMs').value = config.gunDelayMs || 1000;
-          document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
-          document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds || 5;
+          document.getElementById('cfgPrintTimeoutSeconds').value = config.printTimeoutSeconds || 10;
+          document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds || 10;
           document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds || 5;
+          document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
           document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
           document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
           document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
@@ -3088,15 +3570,17 @@
           const newMode = document.getElementById('cfgInputMode').value;
           const newUrl = document.getElementById('cfgPowerAppsUrl').value.trim();
           const newGunDelay = parseInt(document.getElementById('cfgGunDelayMs').value, 10) || 1000;
-          const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
-          const newPrintDelay = parseInt(document.getElementById('cfgPrintDelaySeconds').value, 10) || 5;
+          const newPrintTimeout = parseInt(document.getElementById('cfgPrintTimeoutSeconds').value, 10) || 10;
+          const newErrorTimeout = parseInt(document.getElementById('cfgErrorTimeoutSeconds').value, 10) || 10;
           const newThankYou = parseInt(document.getElementById('cfgThankYouSeconds').value, 10) || 5;
+          const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
 
           config.powerAppsUrl = newUrl;
           config.gunDelayMs = newGunDelay;
-          config.pauseSeconds = newPause;
-          config.printDelaySeconds = newPrintDelay;
+          config.printTimeoutSeconds = newPrintTimeout;
+          config.errorTimeoutSeconds = newErrorTimeout;
           config.thankYouSeconds = newThankYou;
+          config.pauseSeconds = newPause;
           config.soundEnabled = document.getElementById('cfgSoundEnabled').checked;
           config.vibrateEnabled = document.getElementById('cfgVibrateEnabled').checked;
           config.clipboardEnabled = document.getElementById('cfgClipboardEnabled').checked;
@@ -3117,9 +3601,10 @@
             document.getElementById('cfgInputMode').value = config.inputMode;
             document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
             document.getElementById('cfgGunDelayMs').value = config.gunDelayMs;
-            document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
-            document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds;
+            document.getElementById('cfgPrintTimeoutSeconds').value = config.printTimeoutSeconds;
+            document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds;
             document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds;
+            document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
             document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
             document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
             document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
@@ -3131,7 +3616,7 @@
         });
 
         // Global test helper
-        window.testFakeScan = function(val = "PRO-TEST-9999") {
+        window.testFakeScan = function(val = "HPT-DDAY-9999") {
           console.log('🧪 Manual Test Scan via window.testFakeScan:', val);
           transmitBarcode(val, 'Manual Test');
         };
@@ -3140,7 +3625,7 @@
       // Initialize Application
       async function initApp() {
         setupDebugLogger();
-        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Input Mode Selector)...');
+        console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V3 (R³ Design System)...');
         
         updateNetStatus();
         updateHistoryBadge();
@@ -3156,7 +3641,7 @@
         await enumerateCameras();
         await setInputMode(config.inputMode || 'both', false);
 
-        console.log('🎉 Kiosk Scanner Pro đã sẵn sàng phục vụ!');
+        console.log('🎉 HPT D-DAY 2026 Kiosk Scanner Pro V3 đã sẵn sàng phục vụ!');
       }
 
       window.addEventListener('load', initApp);

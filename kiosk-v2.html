@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#090d16" />
-  <title>Kiosk Scanner Pro - Input Mode Selector (Camera / Barcode Gun / Dual)</title>
+  <title>Kiosk Scanner Pro - Smart Print Timeout & Error Handling</title>
   
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,6 +28,7 @@
       --primary-glow: rgba(59, 130, 246, 0.3);
       --warning: #f59e0b;
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.35);
       
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
@@ -174,6 +175,14 @@
       box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
     }
 
+    /* Tab Error State */
+    .workflow-tab-btn.active.tab-error {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: var(--danger);
+      color: #f87171;
+      box-shadow: 0 0 12px var(--danger-glow);
+    }
+
     .tab-arrow {
       font-size: 0.7rem;
       color: var(--text-muted);
@@ -252,7 +261,7 @@
     /* Kiosk Split-Screen Container */
     .kiosk-container {
       display: flex;
-      flex: 1;
+      flex-1;
       width: 100%;
       height: calc(100vh - 52px);
       overflow: hidden;
@@ -473,6 +482,7 @@
       background: #ffffff;
     }
 
+    /* Dynamic Print Status Overlay */
     .printing-status-overlay {
       position: absolute;
       top: 16px;
@@ -481,7 +491,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 20px;
+      padding: 10px 22px;
       background: rgba(15, 23, 42, 0.94);
       backdrop-filter: blur(12px);
       border: 2px solid var(--warning);
@@ -513,13 +523,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 22px;
-      height: 22px;
+      min-width: 24px;
+      height: 24px;
       padding: 0 6px;
       background: var(--warning);
       color: #000;
       border-radius: var(--radius-full);
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 800;
     }
 
@@ -575,7 +585,7 @@
     .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
 
     /* ========================================================= */
-    /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn) */
+    /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn sau khi in) */
     /* ========================================================= */
     .thankyou-screen {
       background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
@@ -651,6 +661,77 @@
       margin-top: 6px;
     }
 
+    /* ========================================================= */
+    /* 4. ERROR SCREEN (Trang Báo Lỗi Không Nhận Được Lệnh In) */
+    /* ========================================================= */
+    .error-screen {
+      background: radial-gradient(circle at center, #3b0707 0%, #030712 100%);
+      padding: 40px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .error-card {
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 40px;
+      background: rgba(24, 12, 18, 0.9);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      border-radius: 28px;
+      box-shadow: 0 25px 60px -15px rgba(239, 68, 68, 0.5);
+      backdrop-filter: blur(14px);
+    }
+
+    .error-icon-box {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ef4444, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #fff;
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.7);
+      animation: shakeAlert 0.8s ease-in-out;
+    }
+
+    @keyframes shakeAlert {
+      0%, 100% { transform: rotate(0deg); }
+      20%, 60% { transform: rotate(-8deg); }
+      40%, 80% { transform: rotate(8deg); }
+    }
+
+    .error-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fca5a5;
+    }
+
+    .error-subtitle {
+      font-size: 0.98rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .error-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid var(--danger);
+      color: #f87171;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
     /* Scanner Panel (Right Side 30%) */
     .scanner-banner {
       display: flex;
@@ -673,9 +754,7 @@
       border-right: 1px solid var(--border-strong);
     }
 
-    /* ========================================================= */
-    /* INPUT MODE SELECTOR WIDGET (Tùy chọn: Camera / Súng / Cả hai) */
-    /* ========================================================= */
+    /* Input Mode Selector */
     .mode-selector-card {
       display: flex;
       flex-direction: column;
@@ -901,6 +980,24 @@
       display: flex;
     }
 
+    .inline-gun-icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .barcode-scanner-illustration {
+      filter: drop-shadow(0 8px 24px rgba(56, 189, 248, 0.25));
+      animation: floatGun 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatGun {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-6px) rotate(-2deg); }
+    }
+
     /* Scanner Viewport */
     .scanner-viewport-wrapper {
       position: relative;
@@ -915,7 +1012,6 @@
       transition: var(--transition);
     }
 
-    /* Special Gun-Only Viewport Graphic */
     .gun-mode-graphic {
       display: none;
       flex-direction: column;
@@ -929,18 +1025,8 @@
       gap: 12px;
     }
 
-    .gun-mode-icon {
-      font-size: 3.5rem;
-      animation: pulseGun 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseGun {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); }
-      50% { transform: scale(1.08); filter: drop-shadow(0 0 20px var(--accent-glow)); }
-    }
-
     .gun-mode-title {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #ffffff;
     }
@@ -1510,8 +1596,6 @@
       display: none;
     }
 
-    .debug-console.show { display: block; }
-
     .debug-line {
       margin: 2px 0;
       padding: 2px 4px;
@@ -1523,7 +1607,6 @@
     .debug-line.error { color: #f87171; border-left-color: var(--danger); }
     .debug-line.warn { color: #fbbf24; border-left-color: var(--warning); }
 
-    /* Responsive adjustments */
     @media (max-width: 900px) {
       .kiosk-container {
         flex-direction: column !important;
@@ -1559,11 +1642,11 @@
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-process" id="tabBtnProcess" title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
-          <span>⚡</span> 2. Đang in (5s)
+          <span id="tab2Icon">⚡</span> <span id="tab2Title">2. Đang in (10s)</span>
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou" title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
-          <span>🎉</span> 3. Cảm ơn (5s)
+          <span>🎉</span> 3. Cảm ơn
         </button>
       </nav>
 
@@ -1602,7 +1685,7 @@
     <!-- Main Split Screen Container -->
     <main class="kiosk-container" id="kioskContainer">
       
-      <!-- Main Display Area (Left Side 70%): 3 Tabs / Process Stages -->
+      <!-- Main Display Area (Left Side 70%): 4 Views (Start, Process, ThankYou, Error) -->
       <section class="main-display-container">
         <div id="iframeLoadingBar" class="iframe-loading-bar"></div>
 
@@ -1617,7 +1700,10 @@
             
             <div class="dual-methods-row">
               <div class="method-chip active" id="chipCameraIndicator">📷 Camera tự động quét</div>
-              <div class="method-chip active" id="chipGunIndicator">🔫 Súng bắn mã Barcode/QR</div>
+              <div class="method-chip active" id="chipGunIndicator">
+                <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+                Máy bắn mã Barcode/QR
+              </div>
             </div>
 
             <div class="scan-steps-grid">
@@ -1627,26 +1713,27 @@
               </div>
               <div class="step-item">
                 <div class="step-num">2</div>
-                <div class="step-desc">Đang in phiếu (chờ 5 giây)</div>
+                <div class="step-desc">Tải App & Đợi lệnh in (10s)</div>
               </div>
               <div class="step-item">
                 <div class="step-num">3</div>
-                <div class="step-desc">Nhận phiếu & Hoàn tất</div>
+                <div class="step-desc">Nhận phiếu in & Hoàn tất</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- ========================================================= -->
-        <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang in) -->
+        <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang Chờ Lệnh In 10s) -->
         <!-- ========================================================= -->
         <div class="stage-view process-screen" id="viewStageProcess">
           <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
           
+          <!-- Dynamic Overlay: Tải Iframe -> Chờ Lệnh In (10s) -->
           <div class="printing-status-overlay" id="printingStatusOverlay">
-            <span class="printer-anim-icon">🖨️</span>
-            <span>Đang tiến hành in phiếu...</span>
-            <span class="print-countdown-badge" id="printCountdownBadge">5s</span>
+            <span class="printer-anim-icon" id="printOverlayIcon">⏳</span>
+            <span id="printOverlayText">Đang tải ứng dụng Power Apps...</span>
+            <span class="print-countdown-badge" id="printCountdownBadge" style="display: none;">10s</span>
           </div>
 
           <div class="process-control-bar">
@@ -1663,7 +1750,7 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- TAB 3: THANK YOU (Trang Cảm ơn sau khi in) -->
+        <!-- TAB 3: THANK YOU (Trang Cảm ơn sau khi ĐÃ GỬI LỆNH IN) -->
         <!-- ========================================================= -->
         <div class="stage-view thankyou-screen" id="viewStageThankYou">
           <div class="thankyou-card">
@@ -1685,14 +1772,44 @@
           </div>
         </div>
 
+        <!-- ========================================================= -->
+        <!-- TAB 4: ERROR SCREEN (Trang Báo Lỗi Hết 10s Không Nhận Được Lệnh In) -->
+        <!-- ========================================================= -->
+        <div class="stage-view error-screen" id="viewStageError">
+          <div class="error-card">
+            <div class="error-icon-box">⚠️</div>
+            <h2 class="error-title">KHÔNG NHẬN ĐƯỢC LỆNH IN!</h2>
+            <p class="error-subtitle">
+              Đã tải xong ứng dụng Power Apps nhưng quá thời gian chờ (10 giây) không nhận được lệnh in từ hệ thống.
+              <br />
+              Vui lòng kiểm tra lại kết nối máy in hoặc thực hiện quét lại mã.
+            </p>
+            
+            <div class="error-status-pill">
+              <span>⚠️</span> Lỗi: <strong>PRINT_TIMEOUT_NOT_DISPATCHED (10s)</strong>
+            </div>
+
+            <div class="auto-reset-counter" id="errorResetTimerText" style="color: #fca5a5;">
+              Tự động quay về trang đầu sau <strong id="errorCountdownNumber" style="color: #ffffff; font-size: 1.1rem;">10</strong> giây...
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+              <button class="btn-primary" id="btnErrorRetry" style="background: var(--warning); color: #000; height: 40px; padding: 0 20px; border-radius: 9999px;">
+                🔄 Thử lại ngay
+              </button>
+              <button class="btn-secondary" id="btnErrorBackHome" style="height: 40px; padding: 0 20px; border-radius: 9999px;">
+                Quay về trang đầu
+              </button>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- Scanner Panel (Right Side 30%) -->
       <section class="scanner-banner">
         
-        <!-- ========================================================= -->
-        <!-- INPUT MODE SWITCHER: Chọn Chế Độ (Camera / Máy bắn / Cả hai) -->
-        <!-- ========================================================= -->
+        <!-- Mode Selector -->
         <div class="mode-selector-card">
           <div class="mode-selector-title">🎯 Chế độ nạp mã:</div>
           <div class="mode-buttons-group">
@@ -1700,7 +1817,8 @@
               📷 Camera
             </button>
             <button class="mode-btn" data-mode="gun" id="btnModeGun" title="Chỉ sử dụng Súng/Máy bắn mã">
-              🔫 Máy bắn
+              <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+              Máy bắn
             </button>
             <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Máy bắn">
               ⚡ Cả hai
@@ -1725,7 +1843,7 @@
         <!-- Dedicated Barcode Gun / Manual Input Card -->
         <div class="barcode-gun-card" id="barcodeGunCard">
           <div class="gun-card-header">
-            <span>🔫 Máy bắn QR / Nhập mã:</span>
+            <span><svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg> Máy bắn QR / Nhập mã:</span>
             <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--accent); font-weight: 600;">HID Sẵn sàng</span>
           </div>
           <div class="gun-input-group">
@@ -1745,15 +1863,49 @@
           </div>
         </div>
 
-        <!-- Scanner Viewport Frame (Holds Video or Gun Graphic) -->
+        <!-- Scanner Viewport Frame -->
         <div class="scanner-viewport-wrapper" id="scannerViewportWrapper">
           <div id="reader" aria-label="Camera Barcode Preview"></div>
           
           <!-- Gun-only Mode Visual Display -->
           <div class="gun-mode-graphic" id="gunModeGraphic">
-            <div class="gun-mode-icon">🔫</div>
-            <div class="gun-mode-title">CHẾ ĐỘ SÚNG BẮN MÃ</div>
-            <div class="gun-mode-sub">Cầm súng bắn trực tiếp vào mã QR hoặc mã vạch bất kỳ lúc nào.</div>
+            <div class="gun-svg-wrapper">
+              <svg viewBox="0 0 160 160" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg" class="barcode-scanner-illustration">
+                <!-- Glowing Laser Beam -->
+                <polygon points="105,42 155,20 155,75 105,52" fill="url(#laserGradient)" opacity="0.75">
+                  <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.6s" repeatCount="indefinite" />
+                </polygon>
+                <!-- Target QR / Barcode Pattern -->
+                <g transform="translate(138, 26)">
+                  <rect x="0" y="0" width="18" height="18" rx="2" fill="#10b981" opacity="0.8" />
+                  <rect x="3" y="3" width="12" height="12" fill="#060913" />
+                  <rect x="6" y="6" width="6" height="6" fill="#10b981" />
+                </g>
+                <!-- Scanner Body Head -->
+                <path d="M42 35 C42 28, 50 24, 65 24 L102 30 C108 31, 112 36, 112 42 L110 54 C110 60, 105 65, 98 66 L68 64 C56 63, 44 56, 42 45 Z" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" />
+                <!-- Front Optical Lens Glass -->
+                <path d="M102 31 L111 42 L109 54 L100 62" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                <!-- Grip Handle -->
+                <path d="M58 64 L40 120 C38 126, 42 132, 48 133 L62 135 C68 136, 74 131, 75 125 L86 65 Z" fill="#0f172a" stroke="#64748b" stroke-width="2.5" />
+                <!-- Trigger Button -->
+                <path d="M55 74 C50 75, 48 82, 54 86 L62 86" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <!-- Ergonomic Rubber Cushions -->
+                <rect x="44" y="98" width="22" height="4" rx="2" fill="#334155" />
+                <rect x="42" y="108" width="22" height="4" rx="2" fill="#334155" />
+                <!-- Status LED on top of Scanner -->
+                <circle cx="70" cy="30" r="3.5" fill="#10b981">
+                  <animate attributeName="fill" values="#10b981;#38bdf8;#10b981" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <defs>
+                  <linearGradient id="laserGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#10b981" stop-opacity="0.1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="gun-mode-title">MÁY BẮN MÃ QR / BARCODE SẴN SÀNG</div>
+            <div class="gun-mode-sub">Cầm súng bắn và bóp cò trực tiếp vào mã bất kỳ lúc nào để in phiếu tự động.</div>
           </div>
 
           <div class="overlay-frame" id="cameraReticleOverlay" aria-hidden="true">
@@ -1770,7 +1922,7 @@
           </div>
         </div>
 
-        <!-- Camera Controls (Hidden in Gun-Only Mode) -->
+        <!-- Camera Controls -->
         <div class="controls-card" id="cameraControlsCard">
           <div class="control-row">
             <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">Camera:</label>
@@ -1849,18 +2001,25 @@
           <div class="form-help">Mã quét sẽ được gắn vào URL dạng <code>?barcode=[VALUE]&timestamp=[TIME]</code></div>
         </div>
 
+        <!-- Print Wait Timeout (10s default) -->
+        <div class="form-group">
+          <label class="form-label" for="cfgPrintTimeoutSeconds">Thời gian chờ lệnh in sau khi nạp Power Apps (giây):</label>
+          <input type="number" id="cfgPrintTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
+          <div class="form-help">Sau khi Power Apps load xong, nếu trong khoảng thời gian này có lệnh in ➔ Chuyển trang Cảm ơn. Nếu hết thời gian mà chưa nhận lệnh in ➔ Chuyển trang Báo lỗi (mặc định: 10s).</div>
+        </div>
+
+        <!-- Error Screen Reset Countdown (10s default) -->
+        <div class="form-group">
+          <label class="form-label" for="cfgErrorTimeoutSeconds">Thời gian hiển thị trang "Báo lỗi" (giây):</label>
+          <input type="number" id="cfgErrorTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
+          <div class="form-help">Thời gian hiển thị trang lỗi trước khi tự động quay về trang đầu tiên (mặc định: 10s).</div>
+        </div>
+
         <!-- Gun Scanner Inactivity Delay (1s default) -->
         <div class="form-group">
           <label class="form-label" for="cfgGunDelayMs">Thời gian chờ máy bắn nhận đủ dữ liệu (mili-giây):</label>
           <input type="number" id="cfgGunDelayMs" class="form-input" min="300" max="3000" step="100" value="1000" />
-          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để đảm bảo máy bắn gửi xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1 giây).</div>
-        </div>
-
-        <!-- Printing Delay Duration -->
-        <div class="form-group">
-          <label class="form-label" for="cfgPrintDelaySeconds">Thời gian hiển thị trang "Đang in" khi quét tự động (giây):</label>
-          <input type="number" id="cfgPrintDelaySeconds" class="form-input" min="1" max="60" value="5" />
-          <div class="form-help">Thời gian hiển thị trang đang in trước khi chuyển sang trang Cảm ơn (mặc định: 5s).</div>
+          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để gom xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1s).</div>
         </div>
 
         <!-- Thank you screen reset countdown duration -->
@@ -1880,8 +2039,8 @@
         <!-- Toggle switches -->
         <div class="form-switch-row">
           <div>
-            <div class="form-switch-label">🔊 Âm thanh Beep khi quét / bắn mã</div>
-            <div class="form-help">Phát tiếng kêu bíp báo hiệu thành công</div>
+            <div class="form-switch-label">🔊 Âm thanh Beep & Cảnh báo</div>
+            <div class="form-help">Phát tiếng kêu bíp khi quét và âm cảnh báo</div>
           </div>
           <label class="switch-toggle">
             <input type="checkbox" id="cfgSoundEnabled" checked />
@@ -1941,15 +2100,16 @@
   <script>
     /**
      * KIOSK SCANNER PRO
-     * Input Modes: 'both' | 'camera' | 'gun'
+     * Smart 10s Print Timeout & Error Handling Engine
      */
     const DEFAULT_CONFIG = {
-      inputMode: "both", // 'both' | 'camera' | 'gun'
+      inputMode: "both",
       powerAppsUrl: "https://apps.powerapps.com/play/e/default-e16cf9e4-41d9-4ad2-8f58-dc3de9f67f3c/a/e8ad3a34-b6a3-452b-a984-01eb262236a5",
       gunDelayMs: 1000,
-      pauseSeconds: 30,
-      printDelaySeconds: 5,
+      printTimeoutSeconds: 10,  // Đợi 10s sau khi load xong Power Apps
+      errorTimeoutSeconds: 10,  // Đợi 10s trang báo lỗi trước khi reset
       thankYouSeconds: 5,
+      pauseSeconds: 30,
       soundEnabled: true,
       vibrateEnabled: true,
       clipboardEnabled: true,
@@ -2012,6 +2172,30 @@
             osc.start(now + i * 0.08);
             osc.stop(now + i * 0.08 + 0.25);
           });
+        } catch (e) {}
+      },
+      playErrorSound() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + 0.35);
+
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.4);
         } catch (e) {}
       }
     };
@@ -2106,15 +2290,18 @@
       let isPaused = false;
       let countdownTimer = null;
       
-      let printingTimer = null;
+      // Timers
+      let printWaitingTimer = null;
       let thankYouTimer = null;
+      let errorTimer = null;
       
       let availableCameras = [];
       let isTorchOn = false;
       let lastScannedValue = "";
       let isCameraActive = false;
+      let hasPrintDispatched = false; // Flag to check if print occurred
       
-      // STAGES: 'START' | 'PROCESS' | 'THANKYOU'
+      // STAGES: 'START' | 'PROCESS' | 'THANKYOU' | 'ERROR'
       let currentStage = 'START';
 
       // Barcode Gun Global Buffer & Debounce Timer
@@ -2128,14 +2315,21 @@
       const viewStageStart = document.getElementById('viewStageStart');
       const viewStageProcess = document.getElementById('viewStageProcess');
       const viewStageThankYou = document.getElementById('viewStageThankYou');
+      const viewStageError = document.getElementById('viewStageError');
 
       const tabBtnStart = document.getElementById('tabBtnStart');
       const tabBtnProcess = document.getElementById('tabBtnProcess');
       const tabBtnThankYou = document.getElementById('tabBtnThankYou');
+      const tab2Title = document.getElementById('tab2Title');
+      const tab2Icon = document.getElementById('tab2Icon');
 
       const printingStatusOverlay = document.getElementById('printingStatusOverlay');
+      const printOverlayIcon = document.getElementById('printOverlayIcon');
+      const printOverlayText = document.getElementById('printOverlayText');
       const printCountdownBadge = document.getElementById('printCountdownBadge');
+      
       const resetCountdownNumber = document.getElementById('resetCountdownNumber');
+      const errorCountdownNumber = document.getElementById('errorCountdownNumber');
 
       const barcodeGunCard = document.getElementById('barcodeGunCard');
       const barcodeGunInput = document.getElementById('barcodeGunInput');
@@ -2208,12 +2402,10 @@
         }
         console.log(`🎯 [INPUT MODE] Chuyển chế độ: ${mode}`);
 
-        // Update UI Button Group
         btnModeCamera.classList.toggle('active', mode === 'camera');
         btnModeGun.classList.toggle('active', mode === 'gun');
         btnModeBoth.classList.toggle('active', mode === 'both');
 
-        // Update Home chips
         chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
         chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
 
@@ -2225,9 +2417,7 @@
           startHeroSubtitle.textContent = 'Hỗ trợ quét qua Camera hoặc dùng Máy bắn mã vạch / QR Code cầm tay để tiến hành in phiếu.';
         }
 
-        // Handle Gun-Only mode vs Camera Modes
         if (mode === 'gun') {
-          // Stop camera stream to save power/CPU
           await stopCameraScanner();
           readerElem.style.display = 'none';
           cameraReticleOverlay.style.display = 'none';
@@ -2242,7 +2432,6 @@
           
           if (barcodeGunInput) barcodeGunInput.focus();
         } else {
-          // 'camera' or 'both'
           gunModeGraphic.style.display = 'none';
           readerElem.style.display = 'flex';
           cameraReticleOverlay.style.display = 'flex';
@@ -2255,7 +2444,6 @@
             gunStatusBadge.style.color = 'var(--text-muted)';
             showToast('Chế độ: Chỉ dùng Camera', 'info');
           } else {
-            // 'both'
             barcodeGunCard.style.display = 'flex';
             gunStatusBadge.textContent = 'HID Sẵn sàng';
             gunStatusBadge.style.color = 'var(--accent)';
@@ -2269,16 +2457,20 @@
       }
 
       // -------------------------------------------------------------
-      // 3-Tab Switcher Logic
+      // Workflow State Controller (START, PROCESS, THANKYOU, ERROR)
       // -------------------------------------------------------------
       function clearAllWorkflowTimers() {
-        if (printingTimer) {
-          clearInterval(printingTimer);
-          printingTimer = null;
+        if (printWaitingTimer) {
+          clearInterval(printWaitingTimer);
+          printWaitingTimer = null;
         }
         if (thankYouTimer) {
           clearInterval(thankYouTimer);
           thankYouTimer = null;
+        }
+        if (errorTimer) {
+          clearInterval(errorTimer);
+          errorTimer = null;
         }
         if (gunDebounceTimer) {
           clearTimeout(gunDebounceTimer);
@@ -2289,20 +2481,34 @@
       function switchTab(stage, isAutoScanTrigger = false) {
         currentStage = stage;
         clearAllWorkflowTimers();
-        console.log(`🔀 [TAB SWITCH] Chuyển đổi Tab: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
+        console.log(`🔀 [STAGE SWITCH] Chuyển đổi trạng thái: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
 
         // 1. Update Active Views
         viewStageStart.classList.toggle('active', stage === 'START');
         viewStageProcess.classList.toggle('active', stage === 'PROCESS');
         viewStageThankYou.classList.toggle('active', stage === 'THANKYOU');
+        viewStageError.classList.toggle('active', stage === 'ERROR');
 
         // 2. Update Top Tab Buttons Active States
         tabBtnStart.classList.toggle('active', stage === 'START');
         tabBtnProcess.classList.toggle('active', stage === 'PROCESS');
         tabBtnThankYou.classList.toggle('active', stage === 'THANKYOU');
 
-        // TAB 1: START
+        tabBtnProcess.classList.remove('tab-error');
+        if (stage === 'ERROR') {
+          tabBtnProcess.classList.add('active', 'tab-error');
+          tab2Title.textContent = '2. Lỗi in (10s)';
+          tab2Icon.textContent = '⚠️';
+        } else {
+          tab2Title.textContent = '2. Đang in (10s)';
+          tab2Icon.textContent = '⚡';
+        }
+
+        // ==========================================
+        // TAB 1: START (Hướng dẫn quét)
+        // ==========================================
         if (stage === 'START') {
+          hasPrintDispatched = false;
           if (config.inputMode !== 'gun') {
             resumeScanner();
           }
@@ -2313,36 +2519,72 @@
             }
           }, 100);
         } 
-        // TAB 2: PROCESS
+        // ==========================================
+        // TAB 2: PROCESS (Nạp Power Apps & Chờ lệnh in 10s)
+        // ==========================================
         else if (stage === 'PROCESS') {
-          if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
-            loadPowerApps();
-          }
+          hasPrintDispatched = false;
 
           if (isAutoScanTrigger) {
+            // Hiển thị trạng thái đang tải Iframe
             printingStatusOverlay.style.display = 'flex';
-            let printRemaining = parseInt(config.printDelaySeconds, 10) || 5;
-            printCountdownBadge.textContent = `${printRemaining}s`;
+            printOverlayIcon.textContent = '⏳';
+            printOverlayText.textContent = 'Đang tải ứng dụng Power Apps...';
+            printCountdownBadge.style.display = 'none';
 
-            triggerKioskPrint();
+            // Khi Iframe đã tải xong hoàn toàn -> Bắt đầu đếm ngược 10 giây chờ lệnh in
+            powerAppsFrame.onload = () => {
+              iframeLoadingBar.classList.remove('active');
+              console.log('✅ Power Apps Iframe đã tải xong hoàn toàn! Bắt đầu đếm 10s chờ lệnh in...');
 
-            printingTimer = setInterval(() => {
-              printRemaining--;
-              if (printRemaining <= 0) {
-                clearInterval(printingTimer);
-                printingTimer = null;
-                console.log('⏱️ Đã xong 5s Tab Đang in -> Tự động chuyển Tab Cảm ơn');
-                switchTab('THANKYOU', true);
-              } else {
-                printCountdownBadge.textContent = `${printRemaining}s`;
-              }
-            }, 1000);
+              if (currentStage !== 'PROCESS') return; // nếu đã chuyển tab khác thì bỏ qua
+
+              printOverlayIcon.textContent = '🖨️';
+              printOverlayText.textContent = 'Đã tải xong app. Đang chờ lệnh in...';
+              printCountdownBadge.style.display = 'inline-flex';
+
+              let waitRemaining = parseInt(config.printTimeoutSeconds, 10) || 10;
+              printCountdownBadge.textContent = `${waitRemaining}s`;
+
+              // Kích hoạt lệnh in kiosk
+              triggerKioskPrint();
+
+              // Bắt đầu đếm ngược 10 giây
+              printWaitingTimer = setInterval(() => {
+                waitRemaining--;
+                printCountdownBadge.textContent = `${waitRemaining}s`;
+
+                // Nếu trong 10s có lệnh in thành công được xác nhận
+                if (hasPrintDispatched) {
+                  clearInterval(printWaitingTimer);
+                  printWaitingTimer = null;
+                  console.log('🎉 Đã xác nhận lệnh in trong thời gian chờ -> Chuyển trang CẢM ƠN!');
+                  switchTab('THANKYOU', true);
+                  return;
+                }
+
+                // Nếu HẾT 10s mà KHÔNG nhận được lệnh in
+                if (waitRemaining <= 0) {
+                  clearInterval(printWaitingTimer);
+                  printWaitingTimer = null;
+                  console.warn('⚠️ HẾT 10 GIÂY: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
+                  switchTab('ERROR', true);
+                }
+              }, 1000);
+            };
+
           } else {
+            // Khi bấm thủ công bằng tay vào Tab 2
             printingStatusOverlay.style.display = 'none';
+            if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
+              loadPowerApps();
+            }
             showToast('Đang ở Tab Power Apps. Bạn có thể đăng nhập hoặc kiểm tra ứng dụng.', 'info', 3500);
           }
         } 
-        // TAB 3: THANK YOU
+        // ==========================================
+        // TAB 3: THANK YOU (In thành công -> Cảm ơn 5s -> Về trang đầu)
+        // ==========================================
         else if (stage === 'THANKYOU') {
           if (config.soundEnabled) {
             AudioEngine.playChime();
@@ -2356,10 +2598,33 @@
             if (thankRemaining <= 0) {
               clearInterval(thankYouTimer);
               thankYouTimer = null;
-              console.log('⏱️ Đã xong 5s Tab Cảm ơn -> Tự động quay về Tab 1 (Start)');
+              console.log('⏱️ Đã xong trang Cảm ơn -> Tự động quay về Trang 1 (Start)');
               switchTab('START', false);
             } else {
               resetCountdownNumber.textContent = thankRemaining;
+            }
+          }, 1000);
+        }
+        // ==========================================
+        // TAB 4: ERROR (Lỗi không nhận được lệnh in -> Hiện lỗi 10s -> Về trang đầu)
+        // ==========================================
+        else if (stage === 'ERROR') {
+          if (config.soundEnabled) {
+            AudioEngine.playErrorSound();
+          }
+
+          let errorRemaining = parseInt(config.errorTimeoutSeconds, 10) || 10;
+          errorCountdownNumber.textContent = errorRemaining;
+
+          errorTimer = setInterval(() => {
+            errorRemaining--;
+            if (errorRemaining <= 0) {
+              clearInterval(errorTimer);
+              errorTimer = null;
+              console.log('⏱️ Đã xong 10s trang Báo lỗi -> Tự động quay về Trang 1 (Start)');
+              switchTab('START', false);
+            } else {
+              errorCountdownNumber.textContent = errorRemaining;
             }
           }, 1000);
         }
@@ -2377,20 +2642,17 @@
           const handleAfterPrint = () => {
             if (hasResolved) return;
             hasResolved = true;
+            hasPrintDispatched = true; // Mark print as dispatched
             window.removeEventListener('afterprint', handleAfterPrint);
             console.log('✅ [AFTERPRINT] Trình duyệt đã gửi lệnh in vào hàng đợi (SPOOLER).');
+            
+            if (currentStage === 'PROCESS') {
+              switchTab('THANKYOU', true);
+            }
             resolve({ status: 'DISPATCHED_TO_SPOOLER', timestamp: Date.now() });
           };
 
           window.addEventListener('afterprint', handleAfterPrint);
-
-          setTimeout(() => {
-            if (!hasResolved) {
-              hasResolved = true;
-              window.removeEventListener('afterprint', handleAfterPrint);
-              resolve({ status: 'DISPATCHED_TO_SPOOLER_TIMEOUT_FALLBACK', timestamp: Date.now() });
-            }
-          }, 4000);
 
           try {
             if (powerAppsFrame && powerAppsFrame.contentWindow && typeof powerAppsFrame.contentWindow.print === 'function') {
@@ -2403,8 +2665,7 @@
               window.print();
             }
           } catch (err) {
-            console.warn('Direct print invoke error:', err);
-            handleAfterPrint();
+            console.warn('Direct print invoke notice:', err);
           }
         });
       }
@@ -2419,10 +2680,14 @@
           event.data.event === 'PRINT_DONE' ||
           event.data.type === 'PRINT_DONE' ||
           event.data.event === 'AFTER_PRINT' ||
-          event.data.event === 'TASK_COMPLETED'
+          event.data.event === 'TASK_COMPLETED' ||
+          event.data.event === 'PRINT_DISPATCHED'
         ) {
-          console.log('🎯 Power Apps đã xác nhận in xong!');
-          switchTab('THANKYOU', true);
+          console.log('🎯 Power Apps đã xác nhận in xong qua postMessage!');
+          hasPrintDispatched = true;
+          if (currentStage === 'PROCESS') {
+            switchTab('THANKYOU', true);
+          }
         }
       });
 
@@ -2476,11 +2741,6 @@
 
         console.log('🔄 Đang nạp Power Apps Iframe:', targetUrl);
         powerAppsFrame.src = targetUrl;
-
-        powerAppsFrame.onload = () => {
-          iframeLoadingBar.classList.remove('active');
-          console.log('✅ Power Apps Iframe đã tải xong.');
-        };
       }
 
       // Transmit Scanned / Shot Code to Power Apps & Systems
@@ -2518,7 +2778,7 @@
         AppStorage.addHistoryItem(cleanVal, source);
         updateHistoryBadge();
 
-        // 4. Switch to TAB 2: PROCESS with Auto Print Workflow (5s)
+        // 4. Switch to TAB 2: PROCESS with 10s Timeout Logic
         switchTab('PROCESS', true);
 
         // 5. Load Power Apps with barcode param
@@ -2599,7 +2859,7 @@
         console.log('▶️ Máy quét camera đã sẵn sàng tiếp tục');
       }
 
-      // Torch / Flashlight Control
+      // Torch Control
       async function toggleTorch() {
         if (!html5Scanner) return;
         try {
@@ -2707,7 +2967,7 @@
           isCameraActive = false;
           console.error('❌ Lỗi khởi động camera:', err);
           setStatus('Lỗi camera', 'error');
-          showToast('Không thể truy cập camera. Vui lòng cấp quyền hoặc chọn chế độ Súng bắn mã!', 'error', 5000);
+          showToast('Không thể truy cập camera. Vui lòng cấp quyền hoặc chọn chế độ Máy bắn mã!', 'error', 5000);
         });
       }
 
@@ -2817,9 +3077,7 @@
         showToast('Đã xuất file CSV thành công!', 'success');
       }
 
-      // -------------------------------------------------------------
       // USB Barcode Gun Engine
-      // -------------------------------------------------------------
       function setupBarcodeGunListener() {
         const delayMs = parseInt(config.gunDelayMs, 10) || 1000;
 
@@ -2919,7 +3177,7 @@
         btnModeGun.addEventListener('click', () => setInputMode('gun'));
         btnModeBoth.addEventListener('click', () => setInputMode('both'));
 
-        // 3 Navigation Tabs
+        // Navigation Tabs
         tabBtnStart.addEventListener('click', () => {
           switchTab('START', false);
         });
@@ -2950,6 +3208,19 @@
 
         // Tab 3 Immediate Reset Button
         document.getElementById('btnImmediateReset').addEventListener('click', () => {
+          switchTab('START', false);
+        });
+
+        // Tab 4 (Error Screen) Buttons
+        document.getElementById('btnErrorRetry').addEventListener('click', () => {
+          if (lastScannedValue) {
+            transmitBarcode(lastScannedValue, 'Thử lại');
+          } else {
+            switchTab('START', false);
+          }
+        });
+
+        document.getElementById('btnErrorBackHome').addEventListener('click', () => {
           switchTab('START', false);
         });
 
@@ -3043,9 +3314,10 @@
           document.getElementById('cfgInputMode').value = config.inputMode || 'both';
           document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
           document.getElementById('cfgGunDelayMs').value = config.gunDelayMs || 1000;
-          document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
-          document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds || 5;
+          document.getElementById('cfgPrintTimeoutSeconds').value = config.printTimeoutSeconds || 10;
+          document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds || 10;
           document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds || 5;
+          document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
           document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
           document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
           document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
@@ -3088,15 +3360,17 @@
           const newMode = document.getElementById('cfgInputMode').value;
           const newUrl = document.getElementById('cfgPowerAppsUrl').value.trim();
           const newGunDelay = parseInt(document.getElementById('cfgGunDelayMs').value, 10) || 1000;
-          const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
-          const newPrintDelay = parseInt(document.getElementById('cfgPrintDelaySeconds').value, 10) || 5;
+          const newPrintTimeout = parseInt(document.getElementById('cfgPrintTimeoutSeconds').value, 10) || 10;
+          const newErrorTimeout = parseInt(document.getElementById('cfgErrorTimeoutSeconds').value, 10) || 10;
           const newThankYou = parseInt(document.getElementById('cfgThankYouSeconds').value, 10) || 5;
+          const newPause = parseInt(document.getElementById('cfgPauseSeconds').value, 10) || 30;
 
           config.powerAppsUrl = newUrl;
           config.gunDelayMs = newGunDelay;
-          config.pauseSeconds = newPause;
-          config.printDelaySeconds = newPrintDelay;
+          config.printTimeoutSeconds = newPrintTimeout;
+          config.errorTimeoutSeconds = newErrorTimeout;
           config.thankYouSeconds = newThankYou;
+          config.pauseSeconds = newPause;
           config.soundEnabled = document.getElementById('cfgSoundEnabled').checked;
           config.vibrateEnabled = document.getElementById('cfgVibrateEnabled').checked;
           config.clipboardEnabled = document.getElementById('cfgClipboardEnabled').checked;
@@ -3117,9 +3391,10 @@
             document.getElementById('cfgInputMode').value = config.inputMode;
             document.getElementById('cfgPowerAppsUrl').value = config.powerAppsUrl;
             document.getElementById('cfgGunDelayMs').value = config.gunDelayMs;
-            document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
-            document.getElementById('cfgPrintDelaySeconds').value = config.printDelaySeconds;
+            document.getElementById('cfgPrintTimeoutSeconds').value = config.printTimeoutSeconds;
+            document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds;
             document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds;
+            document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
             document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
             document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
             document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
@@ -3140,7 +3415,7 @@
       // Initialize Application
       async function initApp() {
         setupDebugLogger();
-        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Input Mode Selector)...');
+        console.log('🚀 Khởi tạo Kiosk Scanner Pro (Smart 10s Print Timeout & Error Handling)...');
         
         updateNetStatus();
         updateHistoryBadge();
