@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#001122" />
   <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³</title>
-  
+
   <!-- Google Fonts: Inter, Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
 
   <style>
     :root {
       color-scheme: dark;
-      
+
       /* HPT D-DAY 2026 Brand Design System from layout.html */
       --primary-blue: #004080;
       --primary-blue-dark: #002b57;
@@ -27,17 +30,17 @@
       --dark-card: rgba(0, 28, 58, 0.85);
       --dark-card-hover: rgba(0, 42, 86, 0.95);
       --light-bg: #f4f8fb;
-      
+
       --hpt-red: #cc0000;
       --hpt-red-glow: rgba(204, 0, 0, 0.45);
       --accent-gradient: linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC);
       --hero-gradient: linear-gradient(180deg, #001122 0%, #003366 50%, #004080 100%);
       --stats-gradient: linear-gradient(135deg, #002b57 0%, #004b8f 50%, #0066b2 100%);
-      
+
       --border-subtle: rgba(0, 210, 255, 0.18);
       --border-strong: rgba(0, 210, 255, 0.4);
       --border-cyan-glow: 0 0 12px rgba(0, 210, 255, 0.35);
-      
+
       --accent: #00d2ff;
       --accent-hover: #38e1ff;
       --accent-glow: rgba(0, 210, 255, 0.4);
@@ -47,23 +50,23 @@
       --danger: #ef4444;
       --danger-glow: rgba(239, 68, 68, 0.4);
       --success: #10b981;
-      
+
       --text-main: #f8fafc;
       --text-primary: #ffffff;
       --text-secondary: #94b8db;
       --text-muted: #6282a5;
       --text-cyan: #00d2ff;
-      
+
       --font-main: 'Inter', system-ui, -apple-system, sans-serif;
       --font-heading: 'Outfit', 'Segoe UI', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
-      
+
       --radius-sm: 6px;
       --radius-md: 10px;
       --radius-lg: 16px;
       --radius-xl: 24px;
       --radius-full: 9999px;
-      
+
       --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
       --shadow-cyan: 0 8px 30px rgba(0, 210, 255, 0.25);
       --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -75,7 +78,8 @@
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -384,9 +388,17 @@
     }
 
     @keyframes loadingSlide {
-      0% { transform: translateX(-100%); }
-      50% { transform: translateX(0%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      50% {
+        transform: translateX(0%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
     }
 
     /* Stage Views inside Main Display */
@@ -408,8 +420,15 @@
     }
 
     @keyframes fadeInView {
-      from { opacity: 0; transform: scale(0.985); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.985);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     /* ========================================================= */
@@ -490,8 +509,15 @@
     }
 
     @keyframes pulseR3 {
-      0% { text-shadow: 0 0 20px var(--tech-cyan); transform: scale(1); }
-      100% { text-shadow: 0 0 35px var(--tech-cyan), 0 0 60px rgba(0, 210, 255, 0.6); transform: scale(1.02); }
+      0% {
+        text-shadow: 0 0 20px var(--tech-cyan);
+        transform: scale(1);
+      }
+
+      100% {
+        text-shadow: 0 0 35px var(--tech-cyan), 0 0 60px rgba(0, 210, 255, 0.6);
+        transform: scale(1.02);
+      }
     }
 
     .start-slogan {
@@ -661,8 +687,15 @@
     }
 
     @keyframes pulsePrinting {
-      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
-      50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.7); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.7);
+      }
     }
 
     .printer-anim-icon {
@@ -671,8 +704,13 @@
     }
 
     @keyframes bouncePrinter {
-      from { transform: translateY(0); }
-      to { transform: translateY(-3px); }
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(-3px);
+      }
     }
 
     .print-countdown-badge {
@@ -728,20 +766,30 @@
       color: #001122;
       box-shadow: 0 0 12px var(--tech-cyan-glow);
     }
-    .process-btn-print:hover { background: var(--accent-hover); }
+
+    .process-btn-print:hover {
+      background: var(--accent-hover);
+    }
 
     .process-btn-open-tab {
       background: rgba(0, 102, 204, 0.4);
       border: 1px solid rgba(0, 210, 255, 0.5);
       color: var(--tech-cyan);
     }
-    .process-btn-open-tab:hover { background: rgba(0, 102, 204, 0.65); color: #ffffff; }
+
+    .process-btn-open-tab:hover {
+      background: rgba(0, 102, 204, 0.65);
+      color: #ffffff;
+    }
 
     .process-btn-cancel {
       background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
     }
-    .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.22); }
+
+    .process-btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
 
     /* ========================================================= */
     /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn sau khi in)         */
@@ -784,8 +832,15 @@
     }
 
     @keyframes popCheck {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .thankyou-title {
@@ -864,9 +919,21 @@
     }
 
     @keyframes shakeAlert {
-      0%, 100% { transform: rotate(0deg); }
-      20%, 60% { transform: rotate(-8deg); }
-      40%, 80% { transform: rotate(8deg); }
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      20%,
+      60% {
+        transform: rotate(-8deg);
+      }
+
+      40%,
+      80% {
+        transform: rotate(8deg);
+      }
     }
 
     .error-title {
@@ -1163,8 +1230,13 @@
     }
 
     @keyframes floatGun {
-      0% { transform: translateY(0px) rotate(0deg); }
-      100% { transform: translateY(-6px) rotate(-2deg); }
+      0% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      100% {
+        transform: translateY(-6px) rotate(-2deg);
+      }
     }
 
     /* Scanner Viewport */
@@ -1253,10 +1325,37 @@
       border-width: 0;
     }
 
-    .reticle-tl { top: -2px; left: -2px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 12px; }
-    .reticle-tr { top: -2px; right: -2px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 12px; }
-    .reticle-bl { bottom: -2px; left: -2px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 12px; }
-    .reticle-br { bottom: -2px; right: -2px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 12px; }
+    .reticle-tl {
+      top: -2px;
+      left: -2px;
+      border-top-width: 3px;
+      border-left-width: 3px;
+      border-top-left-radius: 12px;
+    }
+
+    .reticle-tr {
+      top: -2px;
+      right: -2px;
+      border-top-width: 3px;
+      border-right-width: 3px;
+      border-top-right-radius: 12px;
+    }
+
+    .reticle-bl {
+      bottom: -2px;
+      left: -2px;
+      border-bottom-width: 3px;
+      border-left-width: 3px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .reticle-br {
+      bottom: -2px;
+      right: -2px;
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      border-bottom-right-radius: 12px;
+    }
 
     .scanner-laser {
       position: absolute;
@@ -1269,8 +1368,15 @@
     }
 
     @keyframes laserSweep {
-      0% { top: 6%; opacity: 0.85; }
-      100% { top: 92%; opacity: 0.85; }
+      0% {
+        top: 6%;
+        opacity: 0.85;
+      }
+
+      100% {
+        top: 92%;
+        opacity: 0.85;
+      }
     }
 
     .scan-flash {
@@ -1565,11 +1671,11 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
+    input:checked+.slider {
       background-color: var(--tech-cyan);
     }
 
-    input:checked + .slider:before {
+    input:checked+.slider:before {
       transform: translateX(20px);
       background-color: #001122;
     }
@@ -1736,13 +1842,28 @@
       pointer-events: auto;
     }
 
-    .toast-pill.success { border-left: 4px solid var(--tech-cyan); }
-    .toast-pill.error { border-left: 4px solid var(--danger); }
-    .toast-pill.info { border-left: 4px solid var(--primary); }
+    .toast-pill.success {
+      border-left: 4px solid var(--tech-cyan);
+    }
+
+    .toast-pill.error {
+      border-left: 4px solid var(--danger);
+    }
+
+    .toast-pill.info {
+      border-left: 4px solid var(--primary);
+    }
 
     @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
     /* Debug Console */
@@ -1770,19 +1891,40 @@
       line-height: 1.4;
     }
 
-    .debug-line.log { color: #94b8db; border-left-color: var(--primary); }
-    .debug-line.error { color: #f87171; border-left-color: var(--danger); }
-    .debug-line.warn { color: #fbbf24; border-left-color: var(--warning); }
+    .debug-line.log {
+      color: #94b8db;
+      border-left-color: var(--primary);
+    }
+
+    .debug-line.error {
+      color: #f87171;
+      border-left-color: var(--danger);
+    }
+
+    .debug-line.warn {
+      color: #fbbf24;
+      border-left-color: var(--warning);
+    }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.9); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.9);
+      }
     }
 
     @media (max-width: 900px) {
       .kiosk-container {
         flex-direction: column !important;
       }
+
       .scanner-banner {
         width: 100%;
         height: 340px;
@@ -1791,6 +1933,7 @@
         border-right: none !important;
         border-bottom: 2px solid var(--border-strong);
       }
+
       .main-display-container {
         width: 100%;
         height: calc(100% - 340px);
@@ -1798,6 +1941,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="app-wrapper">
     <!-- Top Corporate Header / Toolbar (HPT D-DAY 2026 Style) -->
@@ -1814,16 +1958,19 @@
 
       <!-- 3 Clickable Interactive Navigation Tabs -->
       <nav class="workflow-tab-bar" aria-label="Kiosk Stage Tabs">
-        <button class="workflow-tab-btn active tab-start" id="tabBtnStart" title="Bấm để chuyển về Trang 1: Hướng dẫn quét">
-          <span>📖</span> 1. Hướng dẫn
+        <button class="workflow-tab-btn active tab-start" id="tabBtnStart"
+          title="Bấm để chuyển về Trang 1: Hướng dẫn quét">
+          <span>📖</span> Hướng dẫn
         </button>
         <span class="tab-arrow">➔</span>
-        <button class="workflow-tab-btn tab-process" id="tabBtnProcess" title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
-          <span id="tab2Icon">⚡</span> <span id="tab2Title">2. Đang in (10s)</span>
+        <button class="workflow-tab-btn tab-process" id="tabBtnProcess"
+          title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
+          <span id="tab2Icon">⚡</span> <span id="tab2Title"> Đang in</span>
         </button>
         <span class="tab-arrow">➔</span>
-        <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou" title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
-          <span>🎉</span> 3. Cảm ơn
+        <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou"
+          title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
+          <span>🎉</span> Cảm ơn
         </button>
       </nav>
 
@@ -1862,12 +2009,13 @@
     <!-- Live Ticker Bar from layout.html -->
     <div class="ticker-bar">
       <span class="ticker-pulse"></span>
-      📢 Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 - R³: Hội tụ • Sáng tạo • Phát triển</strong> | Vui lòng quét mã QR để in thẻ check-in tự động!
+      📢 Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 - R³: Hội tụ • Sáng tạo • Phát triển</strong> | Vui lòng
+      quét mã QR để in thẻ check-in tự động!
     </div>
 
     <!-- Main Split Screen Container -->
     <main class="kiosk-container" id="kioskContainer">
-      
+
       <!-- Main Display Area (Left Side 70%): 4 Views (Start, Process, ThankYou, Error) -->
       <section class="main-display-container">
         <div id="iframeLoadingBar" class="iframe-loading-bar"></div>
@@ -1878,15 +2026,16 @@
         <div class="stage-view active start-screen" id="viewStageStart">
           <div class="start-card">
             <span class="hero-badge-tag">HPT Corporation Event</span>
-            
+
             <div class="start-hero-box">
               <h1 class="start-title" id="startHeroTitle">HPT D-DAY 2026</h1>
               <div class="start-hero-r3" id="startHeroIcon">R³</div>
               <div class="start-slogan">Hội tụ — Sáng tạo — Phát triển</div>
             </div>
 
-            <p class="start-subtitle" id="startHeroSubtitle">Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.</p>
-            
+            <p class="start-subtitle" id="startHeroSubtitle">Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ
+              trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.</p>
+
             <!-- Event Statistics Bar from layout.html -->
             <div class="kiosk-stats-row">
               <div class="kiosk-stat-item">
@@ -1910,7 +2059,10 @@
             <div class="dual-methods-row">
               <div class="method-chip active" id="chipCameraIndicator">📷 Camera AI tự động quét</div>
               <div class="method-chip active" id="chipGunIndicator">
-                <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+                <svg class="inline-gun-icon" viewBox="0 0 24 24">
+                  <path
+                    d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z" />
+                </svg>
                 Súng bắn mã Barcode/QR
               </div>
             </div>
@@ -1937,7 +2089,7 @@
         <!-- ========================================================= -->
         <div class="stage-view process-screen" id="viewStageProcess">
           <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
-          
+
           <!-- Dynamic Overlay: Tải Iframe -> Chờ Lệnh In (10s) -->
           <div class="printing-status-overlay" id="printingStatusOverlay">
             <span class="printer-anim-icon" id="printOverlayIcon">⏳</span>
@@ -1949,7 +2101,8 @@
             <button class="process-btn process-btn-print" id="btnTriggerPrint" title="Gọi lệnh in trên Kiosk">
               🖨️ In Thẻ Ngay
             </button>
-            <button class="process-btn process-btn-open-tab" id="btnOpenPowerAppsInTab" title="Mở Power Apps ra Tab mới để đăng nhập tài khoản Microsoft nếu bị chặn">
+            <button class="process-btn process-btn-open-tab" id="btnOpenPowerAppsInTab"
+              title="Mở Power Apps ra Tab mới để đăng nhập tài khoản Microsoft nếu bị chặn">
               🌐 Mở Tab mới (Đăng nhập MFA)
             </button>
             <button class="process-btn process-btn-cancel" id="btnCancelProcess" title="Hủy và quay lại màn hình chính">
@@ -1965,17 +2118,20 @@
           <div class="thankyou-card">
             <div class="thankyou-icon-box">✓</div>
             <h2 class="thankyou-title">CHECK-IN THÀNH CÔNG!</h2>
-            <p class="thankyou-subtitle">Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 (R³)</strong>. Lệnh in thẻ đã được gửi đến máy in. Vui lòng nhận thẻ tại khay in bên dưới.</p>
-            
+            <p class="thankyou-subtitle">Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 (R³)</strong>. Lệnh in thẻ
+              đã được gửi đến máy in. Vui lòng nhận thẻ tại khay in bên dưới.</p>
+
             <div class="print-status-pill">
               <span>🖨️</span> Trạng thái: <strong>DISPATCHED_TO_SPOOLER</strong>
             </div>
 
             <div class="auto-reset-counter" id="autoResetTimerText">
-              Tự động quay về màn hình đầu sau <strong id="resetCountdownNumber" style="color: var(--tech-cyan); font-size: 1.15rem;">5</strong> giây...
+              Tự động quay về màn hình đầu sau <strong id="resetCountdownNumber"
+                style="color: var(--tech-cyan); font-size: 1.15rem;">5</strong> giây...
             </div>
 
-            <button class="btn-primary" id="btnImmediateReset" style="margin-top: 6px; height: 42px; padding: 0 28px; border-radius: 9999px;">
+            <button class="btn-primary" id="btnImmediateReset"
+              style="margin-top: 6px; height: 42px; padding: 0 28px; border-radius: 9999px;">
               Quét người tiếp theo ngay
             </button>
           </div>
@@ -1993,20 +2149,23 @@
               <br />
               Vui lòng kiểm tra lại kết nối máy in hoặc thực hiện quét lại mã QR của bạn.
             </p>
-            
+
             <div class="error-status-pill">
               <span>⚠️</span> Lỗi: <strong>PRINT_TIMEOUT_NOT_DISPATCHED (10s)</strong>
             </div>
 
             <div class="auto-reset-counter" id="errorResetTimerText" style="color: #fca5a5;">
-              Tự động quay về trang đầu sau <strong id="errorCountdownNumber" style="color: #ffffff; font-size: 1.1rem;">10</strong> giây...
+              Tự động quay về trang đầu sau <strong id="errorCountdownNumber"
+                style="color: #ffffff; font-size: 1.1rem;">10</strong> giây...
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 6px;">
-              <button class="btn-primary" id="btnErrorRetry" style="background: var(--warning); color: #000; height: 40px; padding: 0 22px; border-radius: 9999px;">
+              <button class="btn-primary" id="btnErrorRetry"
+                style="background: var(--warning); color: #000; height: 40px; padding: 0 22px; border-radius: 9999px;">
                 🔄 Thử lại ngay
               </button>
-              <button class="btn-secondary" id="btnErrorBackHome" style="height: 40px; padding: 0 22px; border-radius: 9999px;">
+              <button class="btn-secondary" id="btnErrorBackHome"
+                style="height: 40px; padding: 0 22px; border-radius: 9999px;">
                 Quay về trang đầu
               </button>
             </div>
@@ -2017,7 +2176,7 @@
 
       <!-- Scanner Panel (Right Side 30%) -->
       <section class="scanner-banner">
-        
+
         <!-- Mode Selector -->
         <div class="mode-selector-card">
           <div class="mode-selector-title">🎯 Thiết bị quét:</div>
@@ -2026,10 +2185,14 @@
               📷 Camera
             </button>
             <button class="mode-btn" data-mode="gun" id="btnModeGun" title="Chỉ sử dụng Súng/Máy bắn mã">
-              <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
+              <svg class="inline-gun-icon" viewBox="0 0 24 24">
+                <path
+                  d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z" />
+              </svg>
               Súng bắn
             </button>
-            <button class="mode-btn active" data-mode="both" id="btnModeBoth" title="Sử dụng song song cả Camera & Súng bắn">
+            <button class="mode-btn active" data-mode="both" id="btnModeBoth"
+              title="Sử dụng song song cả Camera & Súng bắn">
               ⚡ Cả hai
             </button>
           </div>
@@ -2052,19 +2215,16 @@
         <!-- Dedicated Barcode Gun / Manual Input Card -->
         <div class="barcode-gun-card" id="barcodeGunCard">
           <div class="gun-card-header">
-            <span><svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg> Súng bắn QR / Nhập mã:</span>
-            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--tech-cyan); font-weight: 700;">HID Sẵn sàng</span>
+            <span><svg class="inline-gun-icon" viewBox="0 0 24 24">
+                <path
+                  d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z" />
+              </svg> Súng bắn QR / Nhập mã:</span>
+            <span id="gunStatusBadge" style="font-size: 0.68rem; color: var(--tech-cyan); font-weight: 700;">HID Sẵn
+              sàng</span>
           </div>
           <div class="gun-input-group">
-            <input 
-              type="text" 
-              id="barcodeGunInput" 
-              class="gun-input" 
-              placeholder="Bắn mã hoặc gõ mã..." 
-              autocomplete="off" 
-              autocapitalize="off" 
-              spellcheck="false"
-            />
+            <input type="text" id="barcodeGunInput" class="gun-input" placeholder="Bắn mã hoặc gõ mã..."
+              autocomplete="off" autocapitalize="off" spellcheck="false" />
             <button class="gun-submit-btn" id="btnGunSubmit" title="Xác nhận mã">Gửi</button>
           </div>
           <div class="gun-buffering-indicator" id="gunBufferingIndicator">
@@ -2075,11 +2235,12 @@
         <!-- Scanner Viewport Frame -->
         <div class="scanner-viewport-wrapper" id="scannerViewportWrapper">
           <div id="reader" aria-label="Camera Barcode Preview"></div>
-          
+
           <!-- Gun-only Mode Visual Display -->
           <div class="gun-mode-graphic" id="gunModeGraphic">
             <div class="gun-svg-wrapper">
-              <svg viewBox="0 0 160 160" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg" class="barcode-scanner-illustration">
+              <svg viewBox="0 0 160 160" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg"
+                class="barcode-scanner-illustration">
                 <!-- Glowing Laser Beam -->
                 <polygon points="105,42 155,20 155,75 105,52" fill="url(#laserGradient)" opacity="0.85">
                   <animate attributeName="opacity" values="0.4;0.95;0.4" dur="1.6s" repeatCount="indefinite" />
@@ -2091,13 +2252,17 @@
                   <rect x="6" y="6" width="6" height="6" fill="#00d2ff" />
                 </g>
                 <!-- Scanner Body Head -->
-                <path d="M42 35 C42 28, 50 24, 65 24 L102 30 C108 31, 112 36, 112 42 L110 54 C110 60, 105 65, 98 66 L68 64 C56 63, 44 56, 42 45 Z" fill="#002855" stroke="#00d2ff" stroke-width="2.5" />
+                <path
+                  d="M42 35 C42 28, 50 24, 65 24 L102 30 C108 31, 112 36, 112 42 L110 54 C110 60, 105 65, 98 66 L68 64 C56 63, 44 56, 42 45 Z"
+                  fill="#002855" stroke="#00d2ff" stroke-width="2.5" />
                 <!-- Front Optical Lens Glass -->
                 <path d="M102 31 L111 42 L109 54 L100 62" stroke="#00d2ff" stroke-width="3" stroke-linecap="round" />
                 <!-- Grip Handle -->
-                <path d="M58 64 L40 120 C38 126, 42 132, 48 133 L62 135 C68 136, 74 131, 75 125 L86 65 Z" fill="#00142b" stroke="#0059b3" stroke-width="2.5" />
+                <path d="M58 64 L40 120 C38 126, 42 132, 48 133 L62 135 C68 136, 74 131, 75 125 L86 65 Z" fill="#00142b"
+                  stroke="#0059b3" stroke-width="2.5" />
                 <!-- Trigger Button -->
-                <path d="M55 74 C50 75, 48 82, 54 86 L62 86" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M55 74 C50 75, 48 82, 54 86 L62 86" stroke="#f59e0b" stroke-width="3.5"
+                  stroke-linecap="round" />
                 <!-- Ergonomic Rubber Cushions -->
                 <rect x="44" y="98" width="22" height="4" rx="2" fill="#003366" />
                 <rect x="42" y="108" width="22" height="4" rx="2" fill="#003366" />
@@ -2134,7 +2299,8 @@
         <!-- Camera Controls -->
         <div class="controls-card" id="cameraControlsCard">
           <div class="control-row">
-            <label for="cameraSelect" style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Camera:</label>
+            <label for="cameraSelect"
+              style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Camera:</label>
             <select id="cameraSelect" class="select-input">
               <option value="">Đang tải danh sách camera...</option>
             </select>
@@ -2167,10 +2333,13 @@
       </div>
       <div class="modal-body">
         <div class="history-stats-bar">
-          <input type="text" id="historySearchInput" class="form-input" placeholder="🔍 Tìm kiếm mã..." style="max-width: 260px;" />
+          <input type="text" id="historySearchInput" class="form-input" placeholder="🔍 Tìm kiếm mã..."
+            style="max-width: 260px;" />
           <div style="display: flex; gap: 6px;">
-            <button class="btn-secondary" id="btnExportCSV" style="font-size: 0.78rem; height: 34px;">📥 Xuất CSV</button>
-            <button class="btn-secondary" id="btnCopyAllHistory" style="font-size: 0.78rem; height: 34px;">📑 Copy tất cả</button>
+            <button class="btn-secondary" id="btnExportCSV" style="font-size: 0.78rem; height: 34px;">📥 Xuất
+              CSV</button>
+            <button class="btn-secondary" id="btnCopyAllHistory" style="font-size: 0.78rem; height: 34px;">📑 Copy tất
+              cả</button>
           </div>
         </div>
         <div class="history-list" id="historyListContainer">
@@ -2206,36 +2375,42 @@
         <!-- Power Apps Base URL -->
         <div class="form-group">
           <label class="form-label" for="cfgPowerAppsUrl">URL Ứng dụng Power Apps:</label>
-          <input type="text" id="cfgPowerAppsUrl" class="form-input" placeholder="https://apps.powerapps.com/play/..." />
+          <input type="text" id="cfgPowerAppsUrl" class="form-input"
+            placeholder="https://apps.powerapps.com/play/..." />
           <div class="form-help">Mã quét sẽ được gắn vào URL dạng <code>?barcode=[VALUE]&timestamp=[TIME]</code></div>
         </div>
 
         <!-- Print Wait Timeout (10s default) -->
         <div class="form-group">
-          <label class="form-label" for="cfgPrintTimeoutSeconds">Thời gian chờ lệnh in sau khi nạp Power Apps (giây):</label>
+          <label class="form-label" for="cfgPrintTimeoutSeconds">Thời gian chờ lệnh in sau khi nạp Power Apps
+            (giây):</label>
           <input type="number" id="cfgPrintTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
-          <div class="form-help">Sau khi Power Apps load xong, nếu trong khoảng thời gian này có lệnh in ➔ Chuyển trang Cảm ơn. Nếu hết thời gian mà chưa nhận lệnh in ➔ Chuyển trang Báo lỗi (mặc định: 10s).</div>
+          <div class="form-help">Sau khi Power Apps load xong, nếu trong khoảng thời gian này có lệnh in ➔ Chuyển trang
+            Cảm ơn. Nếu hết thời gian mà chưa nhận lệnh in ➔ Chuyển trang Báo lỗi (mặc định: 10s).</div>
         </div>
 
         <!-- Error Screen Reset Countdown (10s default) -->
         <div class="form-group">
           <label class="form-label" for="cfgErrorTimeoutSeconds">Thời gian hiển thị trang "Báo lỗi" (giây):</label>
           <input type="number" id="cfgErrorTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
-          <div class="form-help">Thời gian hiển thị trang lỗi trước khi tự động quay về trang đầu tiên (mặc định: 10s).</div>
+          <div class="form-help">Thời gian hiển thị trang lỗi trước khi tự động quay về trang đầu tiên (mặc định: 10s).
+          </div>
         </div>
 
         <!-- Gun Scanner Inactivity Delay (1s default) -->
         <div class="form-group">
           <label class="form-label" for="cfgGunDelayMs">Thời gian chờ súng bắn nhận đủ dữ liệu (mili-giây):</label>
           <input type="number" id="cfgGunDelayMs" class="form-input" min="300" max="3000" step="100" value="1000" />
-          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để gom xong 100% chuỗi mã trước khi chuyển tab (mặc định: 1000ms = 1s).</div>
+          <div class="form-help">Khoảng thời gian chờ không có ký tự mới (inactive) để gom xong 100% chuỗi mã trước khi
+            chuyển tab (mặc định: 1000ms = 1s).</div>
         </div>
 
         <!-- Thank you screen reset countdown duration -->
         <div class="form-group">
           <label class="form-label" for="cfgThankYouSeconds">Thời gian hiển thị trang "Cảm ơn" (giây):</label>
           <input type="number" id="cfgThankYouSeconds" class="form-input" min="1" max="60" value="5" />
-          <div class="form-help">Thời gian hiển thị trang Cảm ơn trước khi tự động quay về trang đầu (mặc định: 5s).</div>
+          <div class="form-help">Thời gian hiển thị trang Cảm ơn trước khi tự động quay về trang đầu (mặc định: 5s).
+          </div>
         </div>
 
         <!-- Pause duration -->
@@ -2361,7 +2536,7 @@
 
           osc.start(now);
           osc.stop(now + 0.16);
-        } catch (e) {}
+        } catch (e) { }
       },
       playChime() {
         try {
@@ -2382,7 +2557,7 @@
             osc.start(now + i * 0.08);
             osc.stop(now + i * 0.08 + 0.25);
           });
-        } catch (e) {}
+        } catch (e) { }
       },
       playErrorSound() {
         try {
@@ -2406,7 +2581,7 @@
 
           osc.start(now);
           osc.stop(now + 0.4);
-        } catch (e) {}
+        } catch (e) { }
       }
     };
 
@@ -2429,7 +2604,7 @@
       saveConfig(cfg) {
         try {
           localStorage.setItem(this.CONFIG_KEY, JSON.stringify(cfg));
-        } catch (e) {}
+        } catch (e) { }
       },
 
       getHistory() {
@@ -2462,14 +2637,14 @@
       clearHistory() {
         try {
           localStorage.removeItem(this.HISTORY_KEY);
-        } catch (e) {}
+        } catch (e) { }
       },
 
       deleteHistoryItem(id) {
         try {
           const history = this.getHistory().filter(item => item.id !== id);
           localStorage.setItem(this.HISTORY_KEY, JSON.stringify(history));
-        } catch (e) {}
+        } catch (e) { }
       }
     };
 
@@ -2499,18 +2674,18 @@
       let html5Scanner = null;
       let isPaused = false;
       let countdownTimer = null;
-      
+
       // Timers
       let printWaitingTimer = null;
       let thankYouTimer = null;
       let errorTimer = null;
-      
+
       let availableCameras = [];
       let isTorchOn = false;
       let lastScannedValue = "";
       let isCameraActive = false;
       let hasPrintDispatched = false;
-      
+
       // STAGES: 'START' | 'PROCESS' | 'THANKYOU' | 'ERROR'
       let currentStage = 'START';
 
@@ -2521,7 +2696,7 @@
       // DOM Elements
       const powerAppsFrame = document.getElementById('powerAppsFrame');
       const iframeLoadingBar = document.getElementById('iframeLoadingBar');
-      
+
       const viewStageStart = document.getElementById('viewStageStart');
       const viewStageProcess = document.getElementById('viewStageProcess');
       const viewStageThankYou = document.getElementById('viewStageThankYou');
@@ -2537,7 +2712,7 @@
       const printOverlayIcon = document.getElementById('printOverlayIcon');
       const printOverlayText = document.getElementById('printOverlayText');
       const printCountdownBadge = document.getElementById('printCountdownBadge');
-      
+
       const resetCountdownNumber = document.getElementById('resetCountdownNumber');
       const errorCountdownNumber = document.getElementById('errorCountdownNumber');
 
@@ -2588,15 +2763,15 @@
         }
 
         const origLog = console.log, origErr = console.error, origWarn = console.warn;
-        console.log = function(...args) {
+        console.log = function (...args) {
           origLog.apply(console, args);
           appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'log');
         };
-        console.error = function(...args) {
+        console.error = function (...args) {
           origErr.apply(console, args);
           appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'error');
         };
-        console.warn = function(...args) {
+        console.warn = function (...args) {
           origWarn.apply(console, args);
           appendLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'warn');
         };
@@ -2639,7 +2814,7 @@
           gunStatusBadge.style.color = 'var(--tech-cyan)';
           setStatus('Sẵn sàng nhận súng bắn', 'ready');
           showToast('Chế độ: Chỉ dùng Súng bắn mã (Đã tắt Camera)', 'info');
-          
+
           if (barcodeGunInput) barcodeGunInput.focus();
         } else {
           gunModeGraphic.style.display = 'none';
@@ -2728,7 +2903,7 @@
               barcodeGunInput.focus();
             }
           }, 100);
-        } 
+        }
         // ==========================================
         // TAB 2: PROCESS (Nạp Power Apps & Chờ lệnh in 10s)
         // ==========================================
@@ -2791,7 +2966,7 @@
             }
             showToast('Đang ở Tab Power Apps. Bạn có thể đăng nhập hoặc kiểm tra ứng dụng.', 'info', 3500);
           }
-        } 
+        }
         // ==========================================
         // TAB 3: THANK YOU (In thành công -> Cảm ơn 5s -> Về trang đầu)
         // ==========================================
@@ -2845,7 +3020,7 @@
       // -------------------------------------------------------------
       function triggerKioskPrint() {
         console.log('🖨️ [KIOSK PRINT] Đang phát lệnh in window.print()...');
-        
+
         return new Promise((resolve) => {
           let hasResolved = false;
 
@@ -2855,7 +3030,7 @@
             hasPrintDispatched = true; // Mark print as dispatched
             window.removeEventListener('afterprint', handleAfterPrint);
             console.log('✅ [AFTERPRINT] Trình duyệt đã gửi lệnh in vào hàng đợi (SPOOLER).');
-            
+
             if (currentStage === 'PROCESS') {
               switchTab('THANKYOU', true);
             }
@@ -3005,7 +3180,7 @@
               barcode: cleanVal,
               value: cleanVal
             }, '*');
-          } catch (e) {}
+          } catch (e) { }
         }
 
         // 7. Fallback: Copy to Clipboard
@@ -3032,7 +3207,7 @@
           if (html5Scanner && typeof html5Scanner.pause === 'function') {
             html5Scanner.pause(true);
           }
-        } catch (e) {}
+        } catch (e) { }
 
         let remaining = parseInt(seconds, 10) || 30;
         if (countdownTimer) clearInterval(countdownTimer);
@@ -3063,7 +3238,7 @@
           if (html5Scanner && typeof html5Scanner.resume === 'function') {
             html5Scanner.resume();
           }
-        } catch (e) {}
+        } catch (e) { }
 
         setStatus('Sẵn sàng quét', 'ready');
         console.log('▶️ Máy quét camera đã sẵn sàng tiếp tục');
@@ -3134,7 +3309,7 @@
               await html5Scanner.stop();
             }
             await html5Scanner.clear();
-          } catch (e) {}
+          } catch (e) { }
           isCameraActive = false;
         }
       }
@@ -3168,7 +3343,7 @@
               transmitBarcode(decodedText, 'Camera');
             }
           },
-          () => {}
+          () => { }
         ).then(() => {
           isCameraActive = true;
           setStatus('Sẵn sàng quét', 'ready');
@@ -3202,7 +3377,7 @@
         const container = document.getElementById('historyListContainer');
         const countSpan = document.getElementById('historyModalCount');
         const history = AppStorage.getHistory();
-        
+
         let filtered = history;
         if (filterQuery.trim()) {
           const q = filterQuery.toLowerCase().trim();
@@ -3279,7 +3454,7 @@
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `kiosk_hpt_history_${new Date().toISOString().slice(0,10)}.csv`);
+        link.setAttribute("download", `kiosk_hpt_history_${new Date().toISOString().slice(0, 10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -3472,9 +3647,9 @@
         // Fullscreen Toggle
         document.getElementById('btnFullscreen').addEventListener('click', () => {
           if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(() => {});
+            document.documentElement.requestFullscreen().catch(() => { });
           } else {
-            document.exitFullscreen().catch(() => {});
+            document.exitFullscreen().catch(() => { });
           }
         });
 
@@ -3616,7 +3791,7 @@
         });
 
         // Global test helper
-        window.testFakeScan = function(val = "HPT-DDAY-9999") {
+        window.testFakeScan = function (val = "HPT-DDAY-9999") {
           console.log('🧪 Manual Test Scan via window.testFakeScan:', val);
           transmitBarcode(val, 'Manual Test');
         };
@@ -3626,7 +3801,7 @@
       async function initApp() {
         setupDebugLogger();
         console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V3 (R³ Design System)...');
-        
+
         updateNetStatus();
         updateHistoryBadge();
         updateAudioBtnUI();
@@ -3648,10 +3823,11 @@
 
       window.addEventListener('beforeunload', () => {
         if (html5Scanner && html5Scanner.isScanning) {
-          html5Scanner.stop().catch(() => {});
+          html5Scanner.stop().catch(() => { });
         }
       });
     })();
   </script>
 </body>
+
 </html>
