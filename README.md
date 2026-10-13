@@ -22,29 +22,38 @@ flowchart TD
 - **Bước 1:** Đợi trang Power Apps nạp xong 100% (`iframe.onload`).
 - **Bước 2:** Bắt đầu đồng hồ đếm ngược **10 giây (10s delay)**:
   - Nếu trong 10s có lệnh in được gửi (`afterprint` hoặc `postMessage`) ➔ Chuyển ngay sang **Trang Cảm ơn** (phát chuông Chime) ➔ Đếm 5s quay về trang đầu.
-  - Nếu hết 10s mà **không nhận được lệnh in** ➔ Chuyển sang **Trang Báo Lỗi** (phát âm cảnh báo, thông báo lỗi `PRINT_TIMEOUT_NOT_DISPATCHED (10s)`) ➔ Hiển thị 10s rồi tự động quay về trang đầu.
+  - Nếu hết 10s mà **không nhận được lệnh in**:
+    - **Nếu Bật Tab 4 (Mặc định):** Chuyển sang **Trang Báo Lỗi** (phát âm cảnh báo, thông báo lỗi `PRINT_TIMEOUT_NOT_DISPATCHED (10s)`) ➔ Hiển thị 10s rồi tự động quay về trang đầu.
+    - **Nếu Tắt Tab 4:** Bỏ qua màn hình báo lỗi, tự động chuyển thẳng sang **Trang Cảm ơn** (hữu ích khi máy in in chậm/nhanh hoặc không bắt được tín hiệu in do sandbox iframe).
 
 ---
 
-### 2. 🎯 Tùy Chọn Chế Độ Nạp Mã (Input Mode Selector):
+### 2. 🛡️ Tùy Chọn Bật / Tắt Màn Hình Báo Lỗi (Tab 4 Toggle):
+- **Nút bật/tắt nhanh trên thanh công cụ:** `⚠️ Lỗi: Bật` ⇄ `🛡️ Lỗi: Tắt` (1-chạm).
+- **Tùy chỉnh trong Cài đặt:** Switch `⚠️ Màn hình Báo lỗi in (Tab 4)` lưu cấu hình vào `localStorage`.
+- **Lợi ích:** Tránh tình trạng tín hiệu in quá nhanh/chậm hoặc hạn chế bảo mật trình duyệt khiến Kiosk nhảy sang màn hình báo lỗi gây hoang mang cho khách, dù thẻ sự kiện thực tế đã được in ra thành công.
+
+---
+
+### 3. 🎯 Tùy Chọn Chế Độ Nạp Mã (Input Mode Selector):
 - **`📷 Chỉ Camera`:** Dành cho Kiosk chỉ dùng camera quét tự động.
 - **`🔫 Chỉ Máy bắn`:** Tự động tắt luồng Camera (tiết kiệm CPU/RAM), hiển thị giao diện đồ họa súng bắn mã chuyên dụng và phóng to ô nhập mã.
 - **`⚡ Cả hai (Dual Mode - Mặc định)`:** Hoạt động song song cả Camera và Súng bắn mã cầm tay.
 
 ---
 
-### 3. 🔫 Hỗ Trợ Toàn Diện Máy Bắn Mã QR / Barcode (USB & Bluetooth):
+### 4. 🔫 Hỗ Trợ Toàn Diện Máy Bắn Mã QR / Barcode (USB & Bluetooth):
 - **Bắt phím toàn cục (Global Key Capture):** Bắt trọn vẹn luồng phím từ súng bắn mã dù người dùng có lỡ click chuột ra ngoài ô nhập liệu.
 - **Bộ đệm chờ 1 giây Inactive (Debounce 1000ms):** Đảm bảo máy bắn gửi hoàn tất 100% độ dài chuỗi mã trước khi chuyển tab nạp vào Power Apps.
 - **Auto-Refocus:** Tự động bắt lại con trỏ vào ô nhập liệu khi ở Tab 1.
 
 ---
 
-### 4. 🎛️ Điều Hướng 3 Tab & Màn Hình Báo Lỗi:
+### 5. 🎛️ Điều Hướng 3 Tab & Màn Hình Báo Lỗi:
 - **`📖 1. Hướng dẫn` (Start):** Màn hình chào mừng và hướng dẫn khách hàng quét mã hoặc bắn mã.
 - **`⚡ 2. Đang in (10s)` (Process / Power Apps):** Màn hình nạp app và giám sát in ấn.
 - **`🎉 3. Cảm ơn` (Thank You):** Thông báo trạng thái `DISPATCHED_TO_SPOOLER` sau khi in thành công.
-- **`⚠️ Màn hình Lỗi` (Error Screen):** Thông báo lỗi khi quá 10 giây không có lệnh in, kèm nút *Thử lại ngay* hoặc *Quay về trang đầu*.
+- **`⚠️ Màn hình Lỗi` (Error Screen):** Thông báo lỗi khi quá 10 giây không có lệnh in (có thể bật/tắt linh hoạt).
 
 ---
 
@@ -52,7 +61,7 @@ flowchart TD
 
 | Tệp tin | Mô tả |
 |---|---|
-| 🌟 **[`index.html`](file:///e:/Claude/HTML5-Scanner/index.html)** | **Phiên bản Kiosk chính thức:** Tùy chọn Camera/Súng bắn, 3 Tab điều hướng, kiểm soát lệnh in 10s & màn hình báo lỗi, âm thanh Web Audio và in Kiosk. |
+| 🌟 **[`index.html`](file:///e:/Claude/HTML5-Scanner/index.html)** | **Phiên bản Kiosk chính thức:** Tùy chọn Camera/Súng bắn, 3 Tab điều hướng, kiểm soát lệnh in 10s, Bật/Tắt Tab 4 linh hoạt, âm thanh Web Audio và in Kiosk. |
 | 🌟 **[`kiosk-v3.html`](file:///e:/Claude/HTML5-Scanner/kiosk-v3.html)** | **Phiên bản V3 (HPT D-DAY 2026 Theme):** Áp dụng toàn bộ hệ thống thiết kế từ `layout.html` (Deep Navy, Tech-Cyan, R³ Branding, Live Ticker Bar, Event Stats Box, Laser Reticle, Web Audio). |
 | 🌟 **[`kiosk-v2.html`](file:///e:/Claude/HTML5-Scanner/kiosk-v2.html)** | Bản sao Kiosk V2 (Dark Slate Theme). |
 | 🎨 **[`layout.html`](file:///e:/Claude/HTML5-Scanner/layout.html)** | Mẫu thiết kế layout sự kiện HPT D-DAY 2026 R³. |
@@ -63,6 +72,7 @@ flowchart TD
 
 ## 🛠️ Tùy Chỉnh Cấu Hình (Settings)
 Bấm vào nút **`⚙️ Cài đặt`** trên thanh công cụ để điều chỉnh:
+- **Bật/Tắt màn hình Báo lỗi in (Tab 4):** Mặc định BẬT (hoặc TẮT để chuyển thẳng sang Cảm ơn).
 - **Thời gian chờ lệnh in sau khi load Power Apps:** Mặc định `10s`.
 - **Thời gian hiển thị trang Báo lỗi:** Mặc định `10s`.
 - **Chế độ nạp mã mặc định:** `both` (Cả hai) / `camera` (Chỉ Camera) / `gun` (Chỉ Máy bắn).

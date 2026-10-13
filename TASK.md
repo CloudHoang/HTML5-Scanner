@@ -28,6 +28,10 @@
   - Đếm ngược 10 giây chờ lệnh in (`window.afterprint` hoặc `postMessage`).
   - Chuyển sang Trang Cảm ơn khi nhận lệnh in thành công.
   - Chuyển sang Màn hình Báo Lỗi (`PRINT_TIMEOUT_NOT_DISPATCHED (10s)`) khi hết 10 giây không có lệnh in, đếm 10 giây và tự động reset về Trang đầu.
+- [x] **Tùy chọn Bật / Tắt Màn Hình Báo Lỗi (Tab 4 Toggle):**
+  - Thêm nút chuyển đổi nhanh trên thanh công cụ: `⚠️ Lỗi: Bật` ⇄ `🛡️ Lỗi: Tắt` (1-chạm).
+  - Tích hợp công tắc trong Cài đặt (`cfgEnableErrorTab`) lưu trạng thái vào `localStorage`.
+  - Khắc phục sự cố tín hiệu in quá nhanh/chậm: Khi tắt Tab 4, hệ thống bỏ qua báo lỗi và tự động chuyển thẳng sang Trang Cảm ơn.
 - [x] **Tùy chọn Chế độ nạp mã (Input Mode Selector):**
   - Chuyển đổi 1-chạm: `📷 Camera` / `🔫 Máy bắn` / `⚡ Cả hai`.
   - Khi chọn `🔫 Chỉ Máy bắn`: Tự động tắt luồng camera (tiết kiệm CPU/pin) và hiển thị đồ họa vector chuyên dụng.

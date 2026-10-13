@@ -1521,21 +1521,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       padding: 10px 0;
       border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .form-switch-row > div:first-child {
+      flex: 1;
+      min-width: 0;
     }
 
     .form-switch-label {
       font-size: 0.85rem;
       font-weight: 700;
       color: #ffffff;
+      margin-bottom: 2px;
     }
 
     .switch-toggle {
       position: relative;
       display: inline-block;
       width: 44px;
+      min-width: 44px;
       height: 24px;
+      flex-shrink: 0;
     }
 
     .switch-toggle input {
@@ -1837,6 +1846,9 @@
         </button>
         <button class="tool-btn" id="btnTorchToggle" title="Bật/Tắt đèn Flash (Torch)">
           <span>🔦</span> Flash
+        </button>
+        <button class="tool-btn active" id="btnToggleErrorTab" title="Bật/Tắt màn hình Báo lỗi in (Tab 4)">
+          <span id="errorTabIcon">⚠️</span> <span id="errorTabLabel">Lỗi: Bật</span>
         </button>
         <button class="tool-btn" id="btnScanFile" title="Quét từ file ảnh">
           <span>🖼️</span> Ảnh
@@ -2218,7 +2230,7 @@
         </div>
 
         <!-- Error Screen Reset Countdown (10s default) -->
-        <div class="form-group">
+        <div class="form-group" id="groupErrorTimeout">
           <label class="form-label" for="cfgErrorTimeoutSeconds">Thời gian hiển thị trang "Báo lỗi" (giây):</label>
           <input type="number" id="cfgErrorTimeoutSeconds" class="form-input" min="3" max="60" value="10" />
           <div class="form-help">Thời gian hiển thị trang lỗi trước khi tự động quay về trang đầu tiên (mặc định: 10s).</div>
@@ -2246,6 +2258,17 @@
         </div>
 
         <!-- Toggle switches -->
+        <div class="form-switch-row">
+          <div>
+            <div class="form-switch-label">⚠️ Màn hình Báo lỗi in (Tab 4)</div>
+            <div class="form-help">Khi tắt: Bỏ qua màn hình báo lỗi khi hết giờ in, tự động chuyển thẳng sang trang Cảm ơn</div>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="cfgEnableErrorTab" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
         <div class="form-switch-row">
           <div>
             <div class="form-switch-label">🔊 Âm thanh Beep & Cảnh báo</div>
@@ -2318,6 +2341,7 @@
       gunDelayMs: 1000,
       printTimeoutSeconds: 10,  // Đợi 10s sau khi load xong Power Apps
       errorTimeoutSeconds: 10,  // Đợi 10s trang báo lỗi trước khi reset
+      enableErrorTab: true,     // Bật/Tắt màn hình Báo lỗi in (Tab 4)
       thankYouSeconds: 5,
       pauseSeconds: 30,
       soundEnabled: true,
@@ -2575,6 +2599,11 @@
       const btnTorchToggle = document.getElementById('btnTorchToggle');
       const btnAudioToggle = document.getElementById('btnAudioToggle');
       const audioIcon = document.getElementById('audioIcon');
+      const btnToggleErrorTab = document.getElementById('btnToggleErrorTab');
+      const errorTabIcon = document.getElementById('errorTabIcon');
+      const errorTabLabel = document.getElementById('errorTabLabel');
+      const groupErrorTimeout = document.getElementById('groupErrorTimeout');
+      const cfgEnableErrorTab = document.getElementById('cfgEnableErrorTab');
 
       // Setup Logger to Debug Console
       function setupDebugLogger() {
@@ -2689,6 +2718,11 @@
       }
 
       function switchTab(stage, isAutoScanTrigger = false) {
+        if (stage === 'ERROR' && config.enableErrorTab === false) {
+          console.log('🛡️ [TAB 4 DISABLED] Màn hình Báo lỗi in đã bị TẮT -> Tự động chuyển sang THANKYOU');
+          stage = 'THANKYOU';
+        }
+
         currentStage = stage;
         clearAllWorkflowTimers();
         console.log(`🔀 [STAGE SWITCH] Chuyển đổi trạng thái: ${stage} (Tự động quét: ${isAutoScanTrigger})`);
@@ -2750,7 +2784,9 @@
               if (currentStage !== 'PROCESS') return; // nếu đã chuyển tab khác thì bỏ qua
 
               printOverlayIcon.textContent = '🖨️';
-              printOverlayText.textContent = 'Đã tải xong app. Đang chờ lệnh in thẻ...';
+              printOverlayText.textContent = (config.enableErrorTab !== false)
+                ? 'Đã tải xong app. Đang chờ lệnh in thẻ...'
+                : 'Đã tải xong app. Đang tiến hành in thẻ...';
               printCountdownBadge.style.display = 'inline-flex';
 
               let waitRemaining = parseInt(config.printTimeoutSeconds, 10) || 10;
@@ -2777,8 +2813,13 @@
                 if (waitRemaining <= 0) {
                   clearInterval(printWaitingTimer);
                   printWaitingTimer = null;
-                  console.warn('⚠️ HẾT 10 GIÂY: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
-                  switchTab('ERROR', true);
+                  if (config.enableErrorTab !== false) {
+                    console.warn('⚠️ HẾT 10 GIÂY: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
+                    switchTab('ERROR', true);
+                  } else {
+                    console.log('🛡️ HẾT 10 GIÂY: Tab 4 (Báo lỗi) đang TẮT -> Bỏ qua báo lỗi, chuyển thẳng sang TRANG CẢM ƠN!');
+                    switchTab('THANKYOU', true);
+                  }
                 }
               }, 1000);
             };
@@ -2933,6 +2974,26 @@
         } else {
           audioIcon.textContent = '🔇';
           btnAudioToggle.classList.remove('active');
+        }
+      }
+
+      function updateErrorTabUI() {
+        const isEnabled = config.enableErrorTab !== false;
+        if (btnToggleErrorTab) {
+          btnToggleErrorTab.classList.toggle('active', isEnabled);
+        }
+        if (errorTabIcon) {
+          errorTabIcon.textContent = isEnabled ? '⚠️' : '🛡️';
+        }
+        if (errorTabLabel) {
+          errorTabLabel.textContent = isEnabled ? 'Lỗi: Bật' : 'Lỗi: Tắt';
+        }
+        if (cfgEnableErrorTab) {
+          cfgEnableErrorTab.checked = isEnabled;
+        }
+        if (groupErrorTimeout) {
+          groupErrorTimeout.style.opacity = isEnabled ? '1' : '0.45';
+          groupErrorTimeout.style.pointerEvents = isEnabled ? 'auto' : 'none';
         }
       }
 
@@ -3449,6 +3510,20 @@
           showToast(config.soundEnabled ? 'Đã bật âm thanh Beep' : 'Đã tắt âm thanh', 'info');
         });
 
+        // Error Tab (Tab 4) Quick Toggle
+        if (btnToggleErrorTab) {
+          btnToggleErrorTab.addEventListener('click', () => {
+            config.enableErrorTab = (config.enableErrorTab === false) ? true : false;
+            AppStorage.saveConfig(config);
+            updateErrorTabUI();
+            showToast(
+              config.enableErrorTab ? 'Đã BẬT màn hình Báo lỗi in (Tab 4)' : 'Đã TẮT màn hình Báo lỗi in (Tự động chuyển sang Cảm ơn)',
+              'info',
+              3000
+            );
+          });
+        }
+
         // Torch toggle
         btnTorchToggle.addEventListener('click', toggleTorch);
 
@@ -3528,6 +3603,7 @@
           document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds || 10;
           document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds || 5;
           document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
+          document.getElementById('cfgEnableErrorTab').checked = config.enableErrorTab !== false;
           document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
           document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
           document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
@@ -3581,6 +3657,7 @@
           config.errorTimeoutSeconds = newErrorTimeout;
           config.thankYouSeconds = newThankYou;
           config.pauseSeconds = newPause;
+          config.enableErrorTab = document.getElementById('cfgEnableErrorTab').checked;
           config.soundEnabled = document.getElementById('cfgSoundEnabled').checked;
           config.vibrateEnabled = document.getElementById('cfgVibrateEnabled').checked;
           config.clipboardEnabled = document.getElementById('cfgClipboardEnabled').checked;
@@ -3588,6 +3665,7 @@
 
           AppStorage.saveConfig(config);
           updateAudioBtnUI();
+          updateErrorTabUI();
           setInputMode(newMode);
           document.getElementById('modalSettings').classList.remove('open');
           showToast('Đã lưu cấu hình cài đặt thành công!', 'success');
@@ -3605,11 +3683,13 @@
             document.getElementById('cfgErrorTimeoutSeconds').value = config.errorTimeoutSeconds;
             document.getElementById('cfgThankYouSeconds').value = config.thankYouSeconds;
             document.getElementById('cfgPauseSeconds').value = config.pauseSeconds;
+            document.getElementById('cfgEnableErrorTab').checked = config.enableErrorTab !== false;
             document.getElementById('cfgSoundEnabled').checked = config.soundEnabled;
             document.getElementById('cfgVibrateEnabled').checked = config.vibrateEnabled;
             document.getElementById('cfgClipboardEnabled').checked = config.clipboardEnabled;
             document.getElementById('cfgUrlReloadEnabled').checked = config.urlReloadEnabled;
             updateAudioBtnUI();
+            updateErrorTabUI();
             setInputMode('both');
             showToast('Đã khôi phục cài đặt mặc định', 'info');
           }
@@ -3630,6 +3710,7 @@
         updateNetStatus();
         updateHistoryBadge();
         updateAudioBtnUI();
+        updateErrorTabUI();
         setupEventListeners();
 
         if (config.layoutReversed) {
