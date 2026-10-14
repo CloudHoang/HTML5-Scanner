@@ -2,7 +2,7 @@
 
 **Repository:** https://github.com/CloudHoang/HTML5-Scanner  
 **Live URL:** https://cloudhoang.github.io/HTML5-Scanner/  
-**Phiên bản phát triển:** `v2.1 - Smart Print Timeout & Error Handling`  
+**Phiên bản phát triển:** `v4.0 - Official Key Visual (KV DDAY 2026) Theme & Glassmorphic Kiosk System`  
 
 ---
 

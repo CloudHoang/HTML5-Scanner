@@ -61,9 +61,10 @@ flowchart TD
 
 | Tệp tin | Mô tả |
 |---|---|
-| 🌟 **[`index.html`](file:///e:/Claude/HTML5-Scanner/index.html)** | **Phiên bản Kiosk chính thức:** Tùy chọn Camera/Súng bắn, 3 Tab điều hướng, kiểm soát lệnh in 10s, Bật/Tắt Tab 4 linh hoạt, âm thanh Web Audio và in Kiosk. |
-| 🌟 **[`kiosk-v3.html`](file:///e:/Claude/HTML5-Scanner/kiosk-v3.html)** | **Phiên bản V3 (HPT D-DAY 2026 Theme):** Áp dụng toàn bộ hệ thống thiết kế từ `layout.html` (Deep Navy, Tech-Cyan, R³ Branding, Live Ticker Bar, Event Stats Box, Laser Reticle, Web Audio). |
-| 🌟 **[`kiosk-v2.html`](file:///e:/Claude/HTML5-Scanner/kiosk-v2.html)** | Bản sao Kiosk V2 (Dark Slate Theme). |
+| 🌟 **[`kiosk-v4.html`](file:///b:/workspace/HTML5-Scanner/kiosk-v4.html)** | **Phiên bản V4 (HPT D-DAY 2026 Key Visual Official Theme):** Tích hợp hình nền Key Visual chính thức `KV DDAY 2026 16_9 ENG.png`, giữ nguyên khung nội dung Kiosk check-in & thống kê sự kiện, giao diện glassmorphic cao cấp. |
+| 🌟 **[`index.html`](file:///b:/workspace/HTML5-Scanner/index.html)** | **Phiên bản Kiosk chính thức (V4):** Phiên bản triển khai GitHub Pages đồng bộ với V4 Key Visual, đầy đủ tùy chọn Camera/Súng bắn, kiểm soát in 10s, Bật/Tắt Tab 4, âm thanh Web Audio và in Kiosk. |
+| 🌟 **[`kiosk-v3.html`](file:///b:/workspace/HTML5-Scanner/kiosk-v3.html)** | **Phiên bản V3 (HPT D-DAY 2026 Theme):** Áp dụng toàn bộ hệ thống thiết kế từ `layout.html` (Deep Navy, Tech-Cyan, R³ Branding, Live Ticker Bar, Event Stats Box, Laser Reticle, Web Audio). |
+| 🌟 **[`kiosk-v2.html`](file:///b:/workspace/HTML5-Scanner/kiosk-v2.html)** | Bản sao Kiosk V2 (Dark Slate Theme). |
 | 🎨 **[`layout.html`](file:///e:/Claude/HTML5-Scanner/layout.html)** | Mẫu thiết kế layout sự kiện HPT D-DAY 2026 R³. |
 | 📋 **[`TASK.md`](file:///e:/Claude/HTML5-Scanner/TASK.md)** | Báo cáo tiến độ, checklist tính năng và tài liệu kỹ thuật. |
 | 📖 **[`README.md`](file:///e:/Claude/HTML5-Scanner/README.md)** | Tài liệu hướng dẫn sử dụng và kiến trúc hệ thống. |
