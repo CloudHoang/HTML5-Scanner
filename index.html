@@ -309,6 +309,26 @@
       font-weight: 800;
     }
 
+    .tool-btn.btn-exit {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .tool-btn.btn-exit:hover {
+      background: rgba(239, 68, 68, 0.28);
+      border-color: var(--danger);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+    }
+
+    .tool-btn.btn-reload:hover {
+      background: rgba(0, 210, 255, 0.2);
+      border-color: var(--tech-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+    }
+
     /* Live Ticker Bar from layout.html */
     .ticker-bar {
       background: #001f3f;
@@ -1862,11 +1882,17 @@
         <button class="tool-btn" id="btnSettings" title="Cài đặt hệ thống">
           <span>⚙️</span> Cài đặt
         </button>
+        <button class="tool-btn btn-reload" id="btnReloadApp" title="Tải lại ứng dụng Kiosk (F5 / Reload)">
+          <span>🔄</span> Tải lại
+        </button>
         <button class="tool-btn" id="btnFullscreen" title="Toàn màn hình (Kiosk Mode)">
           <span>⛶</span>
         </button>
         <button class="tool-btn" id="btnDebugToggle" title="Bật Debug Console">
           <span>🐛</span>
+        </button>
+        <button class="tool-btn btn-exit" id="btnExitKiosk" title="Đóng và Thoát khỏi Kiosk">
+          <span>❌</span> Thoát
         </button>
       </div>
     </header>
@@ -1960,6 +1986,9 @@
           <div class="process-control-bar">
             <button class="process-btn process-btn-print" id="btnTriggerPrint" title="Gọi lệnh in trên Kiosk">
               🖨️ In Thẻ Ngay
+            </button>
+            <button class="process-btn" id="btnReloadPowerApps" style="background: rgba(0, 80, 160, 0.45); border: 1px solid var(--border-strong); color: #ffffff;" title="Tải lại ứng dụng Power Apps trong khung">
+              🔄 Tải lại App
             </button>
             <button class="process-btn process-btn-open-tab" id="btnOpenPowerAppsInTab" title="Mở Power Apps ra Tab mới để đăng nhập tài khoản Microsoft nếu bị chặn">
               🌐 Mở Tab mới (Đăng nhập MFA)
@@ -3466,6 +3495,14 @@
           triggerKioskPrint();
         });
 
+        const btnReloadPowerApps = document.getElementById('btnReloadPowerApps');
+        if (btnReloadPowerApps) {
+          btnReloadPowerApps.addEventListener('click', () => {
+            loadPowerApps(lastScannedValue || null);
+            showToast('Đang nạp lại ứng dụng Power Apps...', 'info', 2000);
+          });
+        }
+
         document.getElementById('btnOpenPowerAppsInTab').addEventListener('click', () => {
           if (config.powerAppsUrl) {
             window.open(config.powerAppsUrl, '_blank');
@@ -3544,6 +3581,19 @@
           showToast(config.layoutReversed ? 'Máy quét bên TRÁI' : 'Máy quét bên PHẢI', 'info');
         });
 
+        // Reload Kiosk App
+        const btnReloadApp = document.getElementById('btnReloadApp');
+        if (btnReloadApp) {
+          btnReloadApp.addEventListener('click', () => {
+            if (confirm('Bạn có chắc chắn muốn tải lại toàn bộ ứng dụng Kiosk?')) {
+              showToast('Đang tải lại Kiosk...', 'info', 1500);
+              setTimeout(() => {
+                window.location.reload();
+              }, 300);
+            }
+          });
+        }
+
         // Fullscreen Toggle
         document.getElementById('btnFullscreen').addEventListener('click', () => {
           if (!document.fullscreenElement) {
@@ -3557,6 +3607,28 @@
         document.getElementById('btnDebugToggle').addEventListener('click', () => {
           debugConsole.classList.toggle('show');
         });
+
+        // Exit Kiosk
+        const btnExitKiosk = document.getElementById('btnExitKiosk');
+        if (btnExitKiosk) {
+          btnExitKiosk.addEventListener('click', () => {
+            if (confirm('Bạn có chắc chắn muốn đóng và thoát khỏi Kiosk?')) {
+              if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+              }
+              try {
+                window.open('', '_self', '');
+                window.close();
+              } catch (e) {}
+
+              setTimeout(() => {
+                if (!window.closed) {
+                  showToast('Trình duyệt chặn đóng cửa sổ tự động. Bạn có thể nhấn Alt + F4 hoặc Ctrl + W để đóng.', 'info', 5000);
+                }
+              }, 400);
+            }
+          });
+        }
 
         // Camera Switcher
         cameraSelect.addEventListener('change', (e) => {
