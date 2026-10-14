@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#001122" />
-  <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³</title>
+  <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³ (V4)</title>
   
   <!-- Google Fonts: Inter, Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -106,7 +106,8 @@
       background: rgba(0, 17, 34, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
-      z-index: 30;
+      position: relative;
+      z-index: 50;
       gap: 14px;
       flex-shrink: 0;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -415,7 +416,7 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      display: none;
+      display: none !important;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -424,7 +425,7 @@
     }
 
     .stage-view.active {
-      display: flex;
+      display: flex !important;
     }
 
     @keyframes fadeInView {
@@ -433,114 +434,243 @@
     }
 
     /* ========================================================= */
-    /* 1. TAB START SCREEN (HPT D-DAY 2026 Hero & Quick Guide)   */
+    /* Toolbar Dropdown & Compact Actions                        */
+    /* ========================================================= */
+    .workflow-tab-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 24, 48, 0.85);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-strong);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 210, 255, 0.1);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .workflow-tab-btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0 16px;
+    }
+
+    .menu-dropdown-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .menu-dropdown-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 40, 80, 0.7);
+      border: 1px solid var(--border-strong);
+      color: var(--tech-cyan);
+      font-weight: 700;
+      cursor: pointer;
+      height: 34px;
+      padding: 0 13px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+    }
+
+    .menu-dropdown-btn:hover,
+    .menu-dropdown-wrapper.open .menu-dropdown-btn {
+      background: rgba(0, 210, 255, 0.2);
+      border-color: var(--tech-cyan);
+      box-shadow: var(--border-cyan-glow);
+      color: #ffffff;
+    }
+
+    .dropdown-caret {
+      font-size: 0.68rem;
+      transition: transform 0.2s ease;
+    }
+
+    .menu-dropdown-wrapper.open .dropdown-caret {
+      transform: rotate(180deg);
+    }
+
+    .menu-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 260px;
+      background: rgba(0, 17, 36, 0.96);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 210, 255, 0.15);
+      backdrop-filter: blur(16px);
+      padding: 6px 0;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      animation: dropdownFadeIn 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu-dropdown-wrapper.open .menu-dropdown-menu {
+      display: flex !important;
+    }
+
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(0, 210, 255, 0.12);
+      color: #ffffff;
+      padding-left: 20px;
+    }
+
+    .dropdown-icon {
+      font-size: 0.95rem;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: rgba(0, 210, 255, 0.15);
+      margin: 5px 0;
+    }
+
+    .dropdown-item-danger {
+      color: #f87171;
+    }
+
+    .dropdown-item-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ffffff;
+    }
+
+    .btn-exit-quick {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .btn-exit-quick:hover {
+      background: rgba(239, 68, 68, 0.35);
+      border-color: var(--danger);
+      color: #ffffff;
+    }
+
+    /* ========================================================= */
+    /* 1. TAB START SCREEN (Full Responsive - dday.png KV Theme)  */
     /* ========================================================= */
     .start-screen {
-      background: radial-gradient(circle at 50% 30%, #002855 0%, #001226 65%, #000914 100%);
-      padding: 24px;
+      background: radial-gradient(circle at 50% 15%, #001a35 0%, #000c18 70%);
+      padding: clamp(8px, 1.4vh, 18px) clamp(10px, 1.8vw, 24px);
       text-align: center;
       color: var(--text-main);
       overflow-y: auto;
+      overflow-x: hidden;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 1.3vh, 16px);
+      box-sizing: border-box;
     }
 
-    .start-card {
-      max-width: 720px;
+    .start-screen::-webkit-scrollbar {
+      width: 5px;
+    }
+    .start-screen::-webkit-scrollbar-thumb {
+      background: rgba(0, 210, 255, 0.25);
+      border-radius: 4px;
+    }
+
+    /* Key Visual Responsive Box - scales to fill space without overflow */
+    .kv-showcase-box {
+      width: min(96%, 1160px, calc((100vh - 310px) * (16 / 9)));
+      max-width: 96%;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1.5px solid rgba(0, 210, 255, 0.48);
+      box-shadow: 0 0 25px rgba(0, 210, 255, 0.28), 0 8px 30px rgba(0, 0, 0, 0.7);
+      background: #000c18;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 1;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .kv-showcase-box:hover {
+      box-shadow: 0 0 35px rgba(0, 210, 255, 0.45), 0 12px 35px rgba(0, 0, 0, 0.8);
+      border-color: var(--tech-cyan);
+    }
+
+    .kv-showcase-img {
       width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* Bottom Guide & Stats Card - matches width of Key Visual box */
+    .start-card {
+      width: min(96%, 1160px, calc((100vh - 310px) * (16 / 9)));
+      max-width: 96%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      padding: 30px 32px;
-      background: rgba(0, 24, 51, 0.78);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-xl);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 210, 255, 0.12);
-      backdrop-filter: blur(16px);
+      gap: clamp(6px, 1vh, 11px);
+      padding: clamp(8px, 1.3vh, 15px) clamp(12px, 1.8vw, 24px);
+      background: rgba(0, 18, 38, 0.7);
+      border: 1px solid rgba(0, 210, 255, 0.28);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 210, 255, 0.1);
+      backdrop-filter: blur(14px);
       position: relative;
-    }
-
-    .start-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 15%;
-      right: 15%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent);
-    }
-
-    .hero-badge-tag {
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--tech-cyan);
-      background: rgba(0, 210, 255, 0.12);
-      padding: 4px 14px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(0, 210, 255, 0.3);
-    }
-
-    .start-hero-box {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .start-title {
-      font-family: var(--font-heading);
-      font-size: 2.2rem;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #ffffff;
-      line-height: 1.15;
-    }
-
-    .start-hero-r3 {
-      font-family: var(--font-heading);
-      font-size: 3.8rem;
-      font-weight: 900;
-      color: #ffffff;
-      text-shadow: 0 0 25px var(--tech-cyan), 0 0 50px rgba(0, 210, 255, 0.4);
-      line-height: 1;
-      margin: 4px 0;
-      animation: pulseR3 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulseR3 {
-      0% { text-shadow: 0 0 20px var(--tech-cyan); transform: scale(1); }
-      100% { text-shadow: 0 0 35px var(--tech-cyan), 0 0 60px rgba(0, 210, 255, 0.6); transform: scale(1.02); }
-    }
-
-    .start-slogan {
-      font-family: var(--font-heading);
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #b0d4f1;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .start-subtitle {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      max-width: 540px;
-      line-height: 1.5;
+      font-size: clamp(0.74rem, 1.15vh, 0.9rem);
+      color: #94b8db;
+      max-width: 720px;
+      line-height: 1.35;
+      font-weight: 500;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+      margin: 0;
     }
 
-    /* Event Statistics Row from layout.html */
     .kiosk-stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: clamp(6px, 1vw, 12px);
       width: 100%;
-      background: var(--stats-gradient);
-      padding: 12px 14px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(0, 210, 255, 0.25);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(180deg, #00509d 0%, #003c78 100%);
+      padding: clamp(6px, 1vh, 11px) clamp(8px, 1.5vw, 16px);
+      border-radius: 12px;
+      border: 1.5px solid rgba(0, 210, 255, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .kiosk-stat-item {
@@ -552,24 +682,25 @@
 
     .kiosk-stat-item h3 {
       font-family: var(--font-heading);
-      font-size: 1.45rem;
+      font-size: clamp(1.15rem, 2.1vh, 1.55rem);
       font-weight: 800;
-      color: var(--tech-cyan);
+      color: #00d2ff;
       line-height: 1;
+      text-shadow: 0 0 12px rgba(0, 210, 255, 0.45);
     }
 
     .kiosk-stat-item p {
-      font-size: 0.66rem;
+      font-size: clamp(0.58rem, 0.95vh, 0.7rem);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #e0f2fe;
-      font-weight: 600;
+      color: #ffffff;
+      font-weight: 700;
     }
 
     .dual-methods-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: clamp(8px, 1.5vw, 14px);
       width: 100%;
       justify-content: center;
     }
@@ -578,56 +709,58 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
+      padding: clamp(4px, 0.75vh, 7px) clamp(10px, 1.8vw, 18px);
       border-radius: var(--radius-full);
-      background: rgba(0, 34, 68, 0.7);
-      border: 1px solid var(--border-subtle);
-      font-size: 0.8rem;
+      background: rgba(0, 34, 68, 0.85);
+      border: 1.5px solid var(--border-subtle);
+      font-size: clamp(0.72rem, 1.1vh, 0.82rem);
       font-weight: 700;
       color: var(--text-secondary);
       transition: var(--transition);
     }
 
     .method-chip.active {
-      background: rgba(0, 210, 255, 0.18);
-      border-color: var(--tech-cyan);
-      color: var(--tech-cyan);
-      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+      background: rgba(0, 40, 80, 0.9);
+      border-color: #00d2ff;
+      color: #00d2ff;
+      box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
     }
 
     .scan-steps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+      gap: clamp(6px, 1vw, 12px);
       width: 100%;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .step-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      padding: 12px 10px;
-      background: rgba(0, 17, 34, 0.55);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+      gap: clamp(3px, 0.7vh, 7px);
+      padding: clamp(6px, 0.9vh, 11px) clamp(6px, 1vw, 10px);
+      background: rgba(0, 18, 38, 0.75);
+      border: 1.5px solid rgba(0, 160, 255, 0.28);
+      border-radius: 10px;
       transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     }
 
     .step-item:hover {
-      background: rgba(0, 34, 68, 0.7);
+      background: rgba(0, 30, 60, 0.85);
       border-color: var(--tech-cyan);
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.25);
       transform: translateY(-2px);
     }
 
     .step-num {
-      width: 24px;
-      height: 24px;
+      width: clamp(20px, 2.6vh, 26px);
+      height: clamp(20px, 2.6vh, 26px);
       border-radius: 50%;
       background: var(--tech-cyan);
-      color: #001122;
-      font-size: 0.75rem;
+      color: #001224;
+      font-size: clamp(0.68rem, 1vh, 0.8rem);
       font-weight: 900;
       display: flex;
       align-items: center;
@@ -636,9 +769,27 @@
     }
 
     .step-desc {
-      font-size: 0.76rem;
+      font-size: clamp(0.72rem, 1.1vh, 0.82rem);
       color: #cbd5e1;
       font-weight: 600;
+      text-align: center;
+    }
+
+    @media (max-height: 700px) {
+      .start-screen {
+        padding: 6px 10px;
+        gap: 6px;
+      }
+      .start-card {
+        padding: 6px 12px;
+        gap: 5px;
+      }
+      .kiosk-stats-row {
+        padding: 4px 8px;
+      }
+      .step-item {
+        padding: 4px 6px;
+      }
     }
 
     /* ========================================================= */
@@ -647,7 +798,11 @@
     .process-screen {
       background: #ffffff;
       padding: 0;
-      position: relative;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
     }
 
     .process-screen iframe {
@@ -713,34 +868,42 @@
     /* Floating Toolbar inside Power Apps Tab */
     .process-control-bar {
       position: absolute;
-      bottom: 16px;
+      bottom: 18px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 16px;
-      background: rgba(0, 17, 34, 0.94);
-      backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      background: rgba(0, 17, 34, 0.95);
+      backdrop-filter: blur(14px);
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-full);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-      z-index: 20;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 210, 255, 0.15);
+      z-index: 30;
+      white-space: nowrap;
+      max-width: calc(100% - 24px);
+      box-sizing: border-box;
+      pointer-events: auto;
     }
 
     .process-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      height: 34px;
+      height: 36px;
       padding: 0 16px;
       border-radius: var(--radius-full);
       font-family: var(--font-heading);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 700;
       border: none;
       cursor: pointer;
       transition: var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1;
     }
 
     .process-btn-print {
@@ -748,20 +911,45 @@
       color: #001122;
       box-shadow: 0 0 12px var(--tech-cyan-glow);
     }
-    .process-btn-print:hover { background: var(--accent-hover); }
+    .process-btn-print:hover { 
+      background: var(--accent-hover); 
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px var(--tech-cyan-glow);
+    }
 
     .process-btn-open-tab {
       background: rgba(0, 102, 204, 0.4);
       border: 1px solid rgba(0, 210, 255, 0.5);
       color: var(--tech-cyan);
     }
-    .process-btn-open-tab:hover { background: rgba(0, 102, 204, 0.65); color: #ffffff; }
+    .process-btn-open-tab:hover { 
+      background: rgba(0, 102, 204, 0.65); 
+      color: #ffffff; 
+      transform: translateY(-1px);
+    }
 
     .process-btn-cancel {
       background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
     }
-    .process-btn-cancel:hover { background: rgba(255, 255, 255, 0.22); }
+    .process-btn-cancel:hover { 
+      background: rgba(255, 255, 255, 0.22); 
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .process-control-bar {
+        gap: 6px;
+        padding: 5px 10px;
+        bottom: 12px;
+      }
+      .process-btn {
+        height: 32px;
+        padding: 0 12px;
+        font-size: 0.76rem;
+        gap: 4px;
+      }
+    }
 
     /* ========================================================= */
     /* 3. TAB THANK YOU SCREEN (Trang Cảm ơn sau khi in)         */
@@ -1848,7 +2036,7 @@
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-process" id="tabBtnProcess" title="Bấm để chuyển sang Trang 2: Mở Power Apps / Đăng nhập / In ấn">
-          <span id="tab2Icon">⚡</span> <span id="tab2Title">2. Đang in (10s)</span>
+          <span id="tab2Icon">⚡</span> <span id="tab2Title">2. In thẻ</span>
         </button>
         <span class="tab-arrow">➔</span>
         <button class="workflow-tab-btn tab-thankyou" id="tabBtnThankYou" title="Bấm để chuyển sang Trang 3: Cảm ơn quý khách">
@@ -1857,41 +2045,55 @@
       </nav>
 
       <div class="toolbar-actions">
-        <div id="netStatus" class="badge-status" style="margin-right: 4px;">
-          <span style="font-size: 8px;">●</span> Online
+        <div id="netStatus" class="badge-status">
+          <span class="status-dot">●</span> Online
         </div>
 
-        <button class="tool-btn" id="btnAudioToggle" title="Bật/Tắt âm thanh bíp khi quét">
-          <span id="audioIcon">🔊</span> Beep
-        </button>
-        <button class="tool-btn" id="btnTorchToggle" title="Bật/Tắt đèn Flash (Torch)">
-          <span>🔦</span> Flash
-        </button>
-        <button class="tool-btn active" id="btnToggleErrorTab" title="Bật/Tắt màn hình Báo lỗi in (Tab 4)">
-          <span id="errorTabIcon">⚠️</span> <span id="errorTabLabel">Lỗi: Bật</span>
-        </button>
-        <button class="tool-btn" id="btnScanFile" title="Quét từ file ảnh">
-          <span>🖼️</span> Ảnh
-        </button>
-        <button class="tool-btn" id="btnHistory" title="Lịch sử quét">
-          <span>📋</span> Lịch sử <span class="badge-count" id="historyBadge">0</span>
-        </button>
-        <button class="tool-btn" id="btnLayoutToggle" title="Đổi vị trí Máy quét / Màn hình chính">
-          <span>↔️</span> Đổi bên
-        </button>
-        <button class="tool-btn" id="btnSettings" title="Cài đặt hệ thống">
-          <span>⚙️</span> Cài đặt
-        </button>
-        <button class="tool-btn btn-reload" id="btnReloadApp" title="Tải lại ứng dụng Kiosk (F5 / Reload)">
-          <span>🔄</span> Tải lại
-        </button>
-        <button class="tool-btn" id="btnFullscreen" title="Toàn màn hình (Kiosk Mode)">
-          <span>⛶</span>
-        </button>
-        <button class="tool-btn" id="btnDebugToggle" title="Bật Debug Console">
-          <span>🐛</span>
-        </button>
-        <button class="tool-btn btn-exit" id="btnExitKiosk" title="Đóng và Thoát khỏi Kiosk">
+        <!-- Compact Menu Dropdown -->
+        <div class="menu-dropdown-wrapper" id="menuDropdownWrapper">
+          <button class="tool-btn menu-dropdown-btn" id="btnMenuDropdown" type="button" title="Menu công cụ & Cài đặt hệ thống">
+            <span>⚙️</span> Tiện ích <span class="dropdown-caret">▾</span>
+          </button>
+          <div class="menu-dropdown-menu" id="menuDropdownMenu">
+            <button class="dropdown-item" id="btnSettings" type="button">
+              <span class="dropdown-icon">⚙️</span> Cài đặt hệ thống
+            </button>
+            <button class="dropdown-item" id="btnToggleErrorTab" type="button">
+              <span class="dropdown-icon" id="errorTabIcon">⚠️</span>
+              <span id="errorTabLabel">Lỗi: Bật</span>
+            </button>
+            <button class="dropdown-item" id="btnLayoutToggle" type="button">
+              <span class="dropdown-icon">↔️</span> Đổi bên (Trái ⇄ Phải)
+            </button>
+            <button class="dropdown-item" id="btnHistory" type="button">
+              <span class="dropdown-icon">📋</span> Lịch sử quét <span class="badge-count" id="historyBadge">0</span>
+            </button>
+            <button class="dropdown-item" id="btnScanFile" type="button">
+              <span class="dropdown-icon">🖼️</span> Quét mã từ ảnh
+            </button>
+            <button class="dropdown-item" id="btnAudioToggle" type="button">
+              <span class="dropdown-icon" id="audioIcon">🔊</span> Âm thanh Beep
+            </button>
+            <button class="dropdown-item" id="btnTorchToggle" type="button">
+              <span class="dropdown-icon">🔦</span> Đèn Flash
+            </button>
+            <button class="dropdown-item btn-reload" id="btnReloadApp" type="button">
+              <span class="dropdown-icon">🔄</span> Tải lại trang (F5)
+            </button>
+            <button class="dropdown-item" id="btnFullscreen" type="button">
+              <span class="dropdown-icon">⛶</span> Toàn màn hình (F11)
+            </button>
+            <button class="dropdown-item" id="btnDebugToggle" type="button">
+              <span class="dropdown-icon">🐛</span> Debug Console
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item dropdown-item-danger btn-exit" id="btnExitKioskMenu" type="button">
+              <span class="dropdown-icon">❌</span> Thoát Kiosk
+            </button>
+          </div>
+        </div>
+
+        <button class="tool-btn btn-exit-quick" id="btnExitKiosk" type="button" title="Đóng và Thoát khỏi Kiosk">
           <span>❌</span> Thoát
         </button>
       </div>
@@ -1900,7 +2102,7 @@
     <!-- Live Ticker Bar from layout.html -->
     <div class="ticker-bar">
       <span class="ticker-pulse"></span>
-      📢 Chào mừng bạn đến với sự kiện <strong>HPT D-DAY 2026 - R³: Hội tụ • Sáng tạo • Phát triển</strong> | Vui lòng quét mã QR để in thẻ check-in tự động!
+      📢 Chào mừng bạn đến với sự kiện | Vui lòng quét mã QR để in thẻ check-in tự động!
     </div>
 
     <!-- Main Split Screen Container -->
@@ -1914,42 +2116,36 @@
         <!-- TAB 1: START (HPT D-DAY 2026 Welcome & Quick Guide)       -->
         <!-- ========================================================= -->
         <div class="stage-view active start-screen" id="viewStageStart">
-          <div class="start-card">
-            <span class="hero-badge-tag">HPT Corporation Event</span>
-            
-            <div class="start-hero-box">
-              <h1 class="start-title" id="startHeroTitle">HPT D-DAY 2026</h1>
-              <div class="start-hero-r3" id="startHeroIcon">R³</div>
-              <div class="start-slogan">Hội tụ — Sáng tạo — Phát triển</div>
-            </div>
+          <!-- 1. FULL KEY VISUAL SHOWCASE (Responsive & Crystal Clear) -->
+          <div class="kv-showcase-box">
+            <img src="dday.png" alt="HPT D-DAY 2026 R³ Key Visual" class="kv-showcase-img" />
+          </div>
 
-            <p class="start-subtitle" id="startHeroSubtitle">Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.</p>
-            
+          <!-- 2. KIOSK CHECK-IN & STATS CARD -->
+          <div class="start-card">
             <!-- Event Statistics Bar from layout.html -->
             <div class="kiosk-stats-row">
               <div class="kiosk-stat-item">
                 <h3>650+</h3>
-                <p>Khách tham dự</p>
+                <p>KHÁCH THAM DỰ</p>
               </div>
               <div class="kiosk-stat-item">
                 <h3>20+</h3>
-                <p>Gian hàng Tech</p>
+                <p>GIAN HÀNG TECH</p>
               </div>
               <div class="kiosk-stat-item">
                 <h3>20+</h3>
-                <p>Đối tác chiến lược</p>
+                <p>ĐỐI TÁC CHIẾN LƯỢC</p>
               </div>
               <div class="kiosk-stat-item">
                 <h3>100%</h3>
-                <p>Auto Check-in</p>
+                <p>AUTO CHECK-IN</p>
               </div>
             </div>
 
             <div class="dual-methods-row">
-              <div class="method-chip active" id="chipCameraIndicator">📷 Camera AI tự động quét</div>
-              <div class="method-chip active" id="chipGunIndicator">
-                <svg class="inline-gun-icon" viewBox="0 0 24 24"><path d="M3 4h8l3 3h6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3l-2 1v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2l1-5H7L3 4zm8 5v2h2l1-1v-1h-3z"/></svg>
-                Súng bắn mã Barcode/QR
+              <div class="method-chip active" id="chipProcessWorkflow">
+                Quy trình check-in và nhận thẻ đeo
               </div>
             </div>
 
@@ -2360,7 +2556,7 @@
 
   <script>
     /**
-     * HPT D-DAY 2026 KIOSK SCANNER PRO (V3)
+     * HPT D-DAY 2026 KIOSK SCANNER PRO (V4 - Key Visual Theme)
      * Inspired by layout.html Design System (Navy, Tech-Cyan, R3 Branding)
      * Smart 10s Print Timeout & Error Handling Engine
      */
@@ -2674,15 +2870,17 @@
         btnModeGun.classList.toggle('active', mode === 'gun');
         btnModeBoth.classList.toggle('active', mode === 'both');
 
-        chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
-        chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
+        if (chipCameraIndicator) chipCameraIndicator.style.display = (mode === 'gun') ? 'none' : 'inline-flex';
+        if (chipGunIndicator) chipGunIndicator.style.display = (mode === 'camera') ? 'none' : 'inline-flex';
 
-        if (mode === 'gun') {
-          startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in thẻ.';
-        } else if (mode === 'camera') {
-          startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in thẻ.';
-        } else {
-          startHeroSubtitle.textContent = 'Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.';
+        if (startHeroSubtitle) {
+          if (mode === 'gun') {
+            startHeroSubtitle.textContent = 'Vui lòng sử dụng Súng bắn mã Barcode / QR Code cầm tay để tiến hành in thẻ.';
+          } else if (mode === 'camera') {
+            startHeroSubtitle.textContent = 'Vui lòng đưa mã QR Code trước Camera quét để tiến hành in thẻ.';
+          } else {
+            startHeroSubtitle.textContent = 'Hệ thống Kiosk tự động check-in & in thẻ đeo sự kiện. Hỗ trợ quét qua Camera hoặc dùng Súng bắn mã Barcode / QR Code cầm tay.';
+          }
         }
 
         if (mode === 'gun') {
@@ -2773,7 +2971,7 @@
           tab2Title.textContent = '2. Lỗi in (10s)';
           tab2Icon.textContent = '⚠️';
         } else {
-          tab2Title.textContent = '2. Đang in (10s)';
+          tab2Title.textContent = '2. In thẻ';
           tab2Icon.textContent = '⚡';
         }
 
@@ -3470,6 +3668,48 @@
 
       // Event Listeners Setup
       function setupEventListeners() {
+        // Menu Dropdown Logic
+        const menuDropdownWrapper = document.getElementById('menuDropdownWrapper');
+        const btnMenuDropdown = document.getElementById('btnMenuDropdown');
+        const btnExitKioskMenu = document.getElementById('btnExitKioskMenu');
+
+        window.toggleMenuDropdown = function(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          if (menuDropdownWrapper) {
+            menuDropdownWrapper.classList.toggle('open');
+          }
+        };
+
+        if (btnMenuDropdown && menuDropdownWrapper) {
+          btnMenuDropdown.addEventListener('click', (e) => {
+            window.toggleMenuDropdown(e);
+          });
+
+          // Close dropdown when clicking outside
+          document.addEventListener('click', (e) => {
+            if (menuDropdownWrapper && !menuDropdownWrapper.contains(e.target)) {
+              menuDropdownWrapper.classList.remove('open');
+            }
+          });
+
+          // Close dropdown when any item inside is clicked
+          menuDropdownWrapper.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+              menuDropdownWrapper.classList.remove('open');
+            });
+          });
+        }
+
+        if (btnExitKioskMenu) {
+          btnExitKioskMenu.addEventListener('click', () => {
+            const btnExit = document.getElementById('btnExitKiosk');
+            if (btnExit) btnExit.click();
+          });
+        }
+
         setupBarcodeGunListener();
 
         // Mode Selector Buttons
@@ -3777,7 +4017,7 @@
       // Initialize Application
       async function initApp() {
         setupDebugLogger();
-        console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V3 (R³ Design System)...');
+        console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V4 (R³ Design System)...');
         
         updateNetStatus();
         updateHistoryBadge();
@@ -3794,7 +4034,7 @@
         await enumerateCameras();
         await setInputMode(config.inputMode || 'both', false);
 
-        console.log('🎉 HPT D-DAY 2026 Kiosk Scanner Pro V3 đã sẵn sàng phục vụ!');
+        console.log('🎉 HPT D-DAY 2026 Kiosk Scanner Pro V4 đã sẵn sàng phục vụ!');
       }
 
       window.addEventListener('load', initApp);
