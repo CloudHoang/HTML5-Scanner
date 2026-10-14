@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#001122" />
-  <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³ (V4)</title>
+  <title>HPT D-DAY 2026 • Kiosk Scanner & Check-in R³ (V5)</title>
   
   <!-- Google Fonts: Inter, Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -796,26 +796,23 @@
     /* 2. TAB PROCESS SCREEN (Power Apps Iframe & Đang in)       */
     /* ========================================================= */
     .process-screen {
-      background: #ffffff;
+      background: #000c19;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 89, 179, 0.28) 0%, transparent 70%),
+        linear-gradient(180deg, #000f22 0%, #001a35 100%);
       padding: 0;
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 20;
-    }
-
-    .process-screen iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: #ffffff;
+      overflow: hidden;
     }
 
     /* Dynamic Print Status Overlay */
     .printing-status-overlay {
       position: absolute;
-      top: 18px;
+      top: 34px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -826,13 +823,15 @@
       backdrop-filter: blur(14px);
       border: 2px solid var(--warning);
       border-radius: var(--radius-full);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
-      z-index: 30;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75);
+      z-index: 40;
       color: #ffffff;
       font-family: var(--font-heading);
       font-size: 0.92rem;
       font-weight: 700;
       animation: pulsePrinting 1.8s infinite;
+      transition: all 0.3s ease;
+      pointer-events: none;
     }
 
     @keyframes pulsePrinting {
@@ -863,6 +862,216 @@
       font-family: var(--font-mono);
       font-size: 0.82rem;
       font-weight: 900;
+    }
+
+    /* ========================================================= */
+    /* KIOSK PRINTER DISPENSER & WHOLE IFRAME FLY DOWN (V5)      */
+    /* ========================================================= */
+    .printer-slot-bezel {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(640px, 94vw);
+      height: 24px;
+      background: linear-gradient(180deg, #1e293b 0%, #0a111a 100%);
+      border: 1px solid rgba(0, 210, 255, 0.45);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 210, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 35;
+    }
+
+    .printer-slot-slit {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(560px, 88vw);
+      height: 4px;
+      background: #000408;
+      border-radius: 3px 3px 0 0;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.95);
+    }
+
+    .printer-slot-led {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .printer-led-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      transition: all 0.3s ease;
+    }
+
+    .printer-slot-led.active .printer-led-dot {
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981, 0 0 18px #10b981;
+      animation: ledPulseGreen 0.6s infinite alternate;
+    }
+
+    .printer-slot-led.active {
+      color: #10b981;
+    }
+
+    @keyframes ledPulseGreen {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    .printer-feed-guide {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--tech-cyan);
+      letter-spacing: 0.5px;
+    }
+
+    /* Iframe Paper Viewport: Container with overflow hidden to clip top feed */
+    .iframe-paper-viewport {
+      position: absolute;
+      top: 24px;
+      left: 0;
+      right: 0;
+      bottom: 68px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 6px 12px 2px;
+      z-index: 25;
+    }
+
+    /* The actual Frame wrapper that slides down */
+    .iframe-paper-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 210, 255, 0.25);
+      border: 2px solid rgba(0, 210, 255, 0.4);
+      overflow: hidden;
+      transform: translateY(0);
+      opacity: 1;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .iframe-paper-card iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+      display: block;
+    }
+
+    /* State 1: Hidden above slot slit before feed */
+    .iframe-paper-card.iframe-pre-feed {
+      transform: translateY(-115%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* State 2: Fly Down Animation */
+    .iframe-paper-card.iframe-flying-down {
+      animation: iframeFlyDown 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: auto;
+    }
+
+    /* State 3: Settled in place */
+    .iframe-paper-card.iframe-settled {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* State 4: Eject down towards bottom tray on print completion */
+    .iframe-paper-card.iframe-eject-down {
+      animation: iframeEjectDown 0.75s cubic-bezier(0.55, 0, 0.8, 0.5) forwards;
+    }
+
+    @keyframes iframeFlyDown {
+      0% {
+        transform: translateY(-115%) scale(0.96);
+        opacity: 0;
+      }
+      12% {
+        transform: translateY(-60%) scale(0.98);
+        opacity: 1;
+      }
+      50% {
+        transform: translateY(14px) scale(1.008);
+        opacity: 1;
+      }
+      75% {
+        transform: translateY(-4px) scale(0.998);
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes iframeEjectDown {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      30% {
+        transform: translateY(60px) scale(0.98);
+        opacity: 0.95;
+      }
+      100% {
+        transform: translateY(120vh) scale(0.9);
+        opacity: 0;
+      }
+    }
+
+    /* Laser Thermal Printing Scanline across the iframe */
+    .paper-laser-scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #00d2ff, #ffffff, #00d2ff, transparent);
+      box-shadow: 0 0 15px #00d2ff, 0 0 25px #00d2ff;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .iframe-paper-card.iframe-flying-down .paper-laser-scanline {
+      animation: iframeLaserScan 2.3s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+    }
+
+    @keyframes iframeLaserScan {
+      0% {
+        top: 0%;
+        opacity: 1;
+      }
+      88% {
+        top: 96%;
+        opacity: 1;
+      }
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
     }
 
     /* Floating Toolbar inside Power Apps Tab */
@@ -2023,7 +2232,7 @@
         <div class="hpt-logo-text">hpt</div>
         <div class="brand-title-box">
           <div class="brand-title">
-            HPT D-DAY 2026 <span class="badge-r3">R³</span>
+            HPT D-DAY 2026 <span class="badge-r3">R³</span> <span class="badge-r3" style="background: rgba(0, 210, 255, 0.22); border-color: var(--tech-cyan); color: var(--tech-cyan); margin-left: 4px;">V5</span>
           </div>
           <div class="brand-subtitle">Kiosk Check-in & Printing Terminal</div>
         </div>
@@ -2057,6 +2266,9 @@
           <div class="menu-dropdown-menu" id="menuDropdownMenu">
             <button class="dropdown-item" id="btnSettings" type="button">
               <span class="dropdown-icon">⚙️</span> Cài đặt hệ thống
+            </button>
+            <button class="dropdown-item" id="btnTestFlyDownPrint" type="button" style="color: var(--tech-cyan);">
+              <span class="dropdown-icon">🖨️</span> Xem thử in thẻ (Fly Down)
             </button>
             <button class="dropdown-item" id="btnToggleErrorTab" type="button">
               <span class="dropdown-icon" id="errorTabIcon">⚠️</span>
@@ -2170,13 +2382,29 @@
         <!-- TAB 2: PROCESS (Màn hình Power Apps & Đang Chờ Lệnh In 10s) -->
         <!-- ========================================================= -->
         <div class="stage-view process-screen" id="viewStageProcess">
-          <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
-          
+          <!-- KIOSK PRINTER TOP SLOT BEZEL -->
+          <div class="printer-slot-bezel" id="printerSlotBezel">
+            <div class="printer-slot-led" id="printerSlotLed">
+              <span class="printer-led-dot"></span>
+              <span>MÁY IN THẺ KIOSK</span>
+            </div>
+            <div class="printer-slot-slit"></div>
+            <div class="printer-feed-guide">⚡ FEED MÀN HÌNH TỰ ĐỘNG</div>
+          </div>
+
           <!-- Dynamic Overlay: Tải Iframe -> Chờ Lệnh In (10s) -->
           <div class="printing-status-overlay" id="printingStatusOverlay">
             <span class="printer-anim-icon" id="printOverlayIcon">⏳</span>
             <span id="printOverlayText">Đang kết nối Power Apps HPT D-DAY...</span>
             <span class="print-countdown-badge" id="printCountdownBadge" style="display: none;">10s</span>
+          </div>
+
+          <!-- VIEWPORT & TOÀN BỘ KHUNG IFRAME FLY DOWN -->
+          <div class="iframe-paper-viewport" id="iframePaperViewport">
+            <div class="iframe-paper-card" id="iframePaperCard">
+              <div class="paper-laser-scanline" id="paperLaserScanline"></div>
+              <iframe id="powerAppsFrame" title="Power Apps Application"></iframe>
+            </div>
           </div>
 
           <div class="process-control-bar">
@@ -2489,7 +2717,7 @@
             <div class="form-help">Khi tắt: Bỏ qua màn hình báo lỗi khi hết giờ in, tự động chuyển thẳng sang trang Cảm ơn</div>
           </div>
           <label class="switch-toggle">
-            <input type="checkbox" id="cfgEnableErrorTab" checked />
+            <input type="checkbox" id="cfgEnableErrorTab" />
             <span class="slider"></span>
           </label>
         </div>
@@ -2556,7 +2784,7 @@
 
   <script>
     /**
-     * HPT D-DAY 2026 KIOSK SCANNER PRO (V4 - Key Visual Theme)
+     * HPT D-DAY 2026 KIOSK SCANNER PRO (V5 - Fly Down Print Animation)
      * Inspired by layout.html Design System (Navy, Tech-Cyan, R3 Branding)
      * Smart 10s Print Timeout & Error Handling Engine
      */
@@ -2566,7 +2794,7 @@
       gunDelayMs: 1000,
       printTimeoutSeconds: 10,  // Đợi 10s sau khi load xong Power Apps
       errorTimeoutSeconds: 10,  // Đợi 10s trang báo lỗi trước khi reset
-      enableErrorTab: true,     // Bật/Tắt màn hình Báo lỗi in (Tab 4)
+      enableErrorTab: false,    // Bật/Tắt màn hình Báo lỗi in (Tab 4) - Mặc định tắt
       thankYouSeconds: 5,
       pauseSeconds: 30,
       soundEnabled: true,
@@ -2655,6 +2883,50 @@
 
           osc.start(now);
           osc.stop(now + 0.4);
+        } catch (e) {}
+      },
+      playPrintPaperSound() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          // Tạo chuỗi xung stepper motor mô phỏng đầu in nhiệt đẩy giấy ra màn hình
+          const steps = 10;
+          for (let i = 0; i < steps; i++) {
+            const stepTime = now + (i * 0.2);
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = (i % 2 === 0) ? 'sawtooth' : 'triangle';
+            const baseFreq = 420 + (i % 3) * 65;
+            osc.frequency.setValueAtTime(baseFreq, stepTime);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, stepTime + 0.11);
+
+            gain.gain.setValueAtTime(0.08, stepTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, stepTime + 0.13);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(stepTime);
+            osc.stop(stepTime + 0.14);
+          }
+
+          // Tiếng dao cắt / nhả giấy hoàn tất ở cuối
+          const cutTime = now + 2.15;
+          const cutOsc = this.ctx.createOscillator();
+          const cutGain = this.ctx.createGain();
+          cutOsc.type = 'sine';
+          cutOsc.frequency.setValueAtTime(880, cutTime);
+          cutOsc.frequency.exponentialRampToValueAtTime(220, cutTime + 0.08);
+          cutGain.gain.setValueAtTime(0.12, cutTime);
+          cutGain.gain.exponentialRampToValueAtTime(0.001, cutTime + 0.09);
+          cutOsc.connect(cutGain);
+          cutGain.connect(this.ctx.destination);
+          cutOsc.start(cutTime);
+          cutOsc.stop(cutTime + 0.1);
         } catch (e) {}
       }
     };
@@ -2753,6 +3025,8 @@
       let printWaitingTimer = null;
       let thankYouTimer = null;
       let errorTimer = null;
+      let printFlyDownTimer = null;
+      let isFlyDownTriggered = false;
       
       let availableCameras = [];
       let isTorchOn = false;
@@ -2930,6 +3204,10 @@
           clearInterval(printWaitingTimer);
           printWaitingTimer = null;
         }
+        if (printFlyDownTimer) {
+          clearTimeout(printFlyDownTimer);
+          printFlyDownTimer = null;
+        }
         if (thankYouTimer) {
           clearInterval(thankYouTimer);
           thankYouTimer = null;
@@ -2980,6 +3258,7 @@
         // ==========================================
         if (stage === 'START') {
           hasPrintDispatched = false;
+          resetIframeCard(false);
           if (config.inputMode !== 'gun') {
             resumeScanner();
           }
@@ -2995,69 +3274,40 @@
         // ==========================================
         else if (stage === 'PROCESS') {
           hasPrintDispatched = false;
+          isFlyDownTriggered = false;
 
           if (isAutoScanTrigger) {
-            // Hiển thị trạng thái đang tải Iframe
+            // Chuẩn bị khung iframe ở vị trí ẩn phía trên khe in để trượt xuống
+            resetIframeCard(true);
+
+            // Hiển thị trạng thái đang nạp / tải Iframe
             printingStatusOverlay.style.display = 'flex';
             printOverlayIcon.textContent = '⏳';
-            printOverlayText.textContent = 'Đang tải ứng dụng HPT D-DAY...';
+            printOverlayText.textContent = 'Đang kết nối Power Apps HPT D-DAY...';
             printCountdownBadge.style.display = 'none';
 
-            // Khi Iframe đã tải xong hoàn toàn -> Bắt đầu đếm ngược 10 giây chờ lệnh in
+            // 1. Chờ sau khoảng 3s (hoặc trang iframe đã load xong) cho hiệu ứng toàn bộ khung iframe fly down
+            if (printFlyDownTimer) clearTimeout(printFlyDownTimer);
+            printFlyDownTimer = setTimeout(() => {
+              console.log('⏰ [3S TIMEOUT] Đã đủ 3 giây chờ -> Kích hoạt toàn bộ khung Iframe Fly Down!');
+              triggerIframeFlyDown('timer_3s');
+            }, 3000);
+
+            // 2. Lắng nghe sự kiện iframe đã load xong
             powerAppsFrame.onload = () => {
-              iframeLoadingBar.classList.remove('active');
-              console.log('✅ Power Apps Iframe đã tải xong hoàn toàn! Bắt đầu đếm 10s chờ lệnh in...');
-
-              if (currentStage !== 'PROCESS') return; // nếu đã chuyển tab khác thì bỏ qua
-
-              printOverlayIcon.textContent = '🖨️';
-              printOverlayText.textContent = (config.enableErrorTab !== false)
-                ? 'Đã tải xong app. Đang chờ lệnh in thẻ...'
-                : 'Đã tải xong app. Đang tiến hành in thẻ...';
-              printCountdownBadge.style.display = 'inline-flex';
-
-              let waitRemaining = parseInt(config.printTimeoutSeconds, 10) || 10;
-              printCountdownBadge.textContent = `${waitRemaining}s`;
-
-              // Kích hoạt lệnh in kiosk
-              triggerKioskPrint();
-
-              // Bắt đầu đếm ngược 10 giây
-              printWaitingTimer = setInterval(() => {
-                waitRemaining--;
-                printCountdownBadge.textContent = `${waitRemaining}s`;
-
-                // Nếu trong 10s có lệnh in thành công được xác nhận
-                if (hasPrintDispatched) {
-                  clearInterval(printWaitingTimer);
-                  printWaitingTimer = null;
-                  console.log('🎉 Đã xác nhận lệnh in trong thời gian chờ -> Chuyển trang CẢM ƠN!');
-                  switchTab('THANKYOU', true);
-                  return;
-                }
-
-                // Nếu HẾT 10s mà KHÔNG nhận được lệnh in
-                if (waitRemaining <= 0) {
-                  clearInterval(printWaitingTimer);
-                  printWaitingTimer = null;
-                  if (config.enableErrorTab !== false) {
-                    console.warn('⚠️ HẾT 10 GIÂY: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
-                    switchTab('ERROR', true);
-                  } else {
-                    console.log('🛡️ HẾT 10 GIÂY: Tab 4 (Báo lỗi) đang TẮT -> Bỏ qua báo lỗi, chuyển thẳng sang TRANG CẢM ƠN!');
-                    switchTab('THANKYOU', true);
-                  }
-                }
-              }, 1000);
+              if (iframeLoadingBar) iframeLoadingBar.classList.remove('active');
+              console.log('✅ Power Apps Iframe đã tải xong hoàn toàn!');
+              triggerIframeFlyDown('iframe_onload');
             };
 
           } else {
             // Khi bấm thủ công bằng tay vào Tab 2
+            resetIframeCard(false);
             printingStatusOverlay.style.display = 'none';
             if (!powerAppsFrame.src || powerAppsFrame.src === 'about:blank') {
               loadPowerApps();
             }
-            showToast('Đang ở Tab Power Apps. Bạn có thể đăng nhập hoặc kiểm tra ứng dụng.', 'info', 3500);
+            showToast('Đang ở Tab Power Apps. Bạn có thể bấm "In Thẻ Ngay" để xem toàn bộ khung Iframe trượt xuống.', 'info', 3500);
           }
         } 
         // ==========================================
@@ -3109,6 +3359,123 @@
       }
 
       // -------------------------------------------------------------
+      // Kiosk Printer Simulation & Fly Down Paper Handler (V5)
+      // -------------------------------------------------------------
+      // -------------------------------------------------------------
+      // Kiosk Printer Simulation & Whole Iframe Fly Down Handler (V5)
+      // -------------------------------------------------------------
+      function resetIframeCard(isPreFeed = false) {
+        const card = document.getElementById('iframePaperCard');
+        if (card) {
+          card.classList.remove('iframe-flying-down', 'iframe-settled', 'iframe-eject-down');
+          if (isPreFeed) {
+            card.classList.add('iframe-pre-feed');
+          } else {
+            card.classList.remove('iframe-pre-feed');
+          }
+        }
+        const led = document.getElementById('printerSlotLed');
+        if (led) {
+          led.classList.remove('active');
+        }
+      }
+
+      function ejectIframeAndProceed(targetStage) {
+        const card = document.getElementById('iframePaperCard');
+        if (card && (card.classList.contains('iframe-settled') || card.classList.contains('iframe-flying-down'))) {
+          card.classList.remove('iframe-settled', 'iframe-flying-down');
+          card.classList.add('iframe-eject-down');
+          setTimeout(() => {
+            switchTab(targetStage, true);
+          }, 650);
+        } else {
+          switchTab(targetStage, true);
+        }
+      }
+
+      function triggerIframeFlyDown(source = 'auto') {
+        if (isFlyDownTriggered) return;
+        if (currentStage !== 'PROCESS') return;
+        isFlyDownTriggered = true;
+
+        if (printFlyDownTimer) {
+          clearTimeout(printFlyDownTimer);
+          printFlyDownTimer = null;
+        }
+
+        if (iframeLoadingBar) iframeLoadingBar.classList.remove('active');
+        console.log(`🖨️ [IFRAME FLY DOWN] Kích hoạt toàn bộ khung Iframe trượt xuống từ khe máy in (Nguồn: ${source})`);
+
+        // 1. Cập nhật thanh trạng thái
+        printingStatusOverlay.style.display = 'flex';
+        printOverlayIcon.textContent = '🖨️';
+        printOverlayText.textContent = 'Đang in... Khung ứng dụng đang chạy ra từ màn hình!';
+        printCountdownBadge.style.display = 'inline-flex';
+
+        let waitRemaining = parseInt(config.printTimeoutSeconds, 10) || 10;
+        printCountdownBadge.textContent = `${waitRemaining}s`;
+
+        // 2. Kích hoạt đèn LED trạng thái máy in Kiosk
+        const led = document.getElementById('printerSlotLed');
+        if (led) led.classList.add('active');
+
+        // 3. Phát âm thanh kéo giấy máy in nhiệt
+        if (config.soundEnabled) {
+          AudioEngine.playPrintPaperSound();
+        }
+
+        // 4. Kích hoạt hiệu ứng Fly Down cho toàn bộ khung Iframe
+        const card = document.getElementById('iframePaperCard');
+        if (card) {
+          card.classList.remove('iframe-pre-feed', 'iframe-settled', 'iframe-eject-down');
+          void card.offsetWidth; // Force reflow
+          card.classList.add('iframe-flying-down');
+
+          setTimeout(() => {
+            if (currentStage === 'PROCESS' && card.classList.contains('iframe-flying-down')) {
+              card.classList.remove('iframe-flying-down');
+              card.classList.add('iframe-settled');
+              printOverlayText.textContent = (config.enableErrorTab !== false)
+                ? 'Đã xuất màn hình in. Đang hoàn tất lệnh in...'
+                : 'Đã xuất màn hình in. Đang tiến hành in thẻ...';
+            }
+          }, 2400);
+        }
+
+        // 5. Phát lệnh in thực tế (window.print / kiosk spooler)
+        triggerKioskPrint();
+
+        // 6. Khởi động bộ đếm thời gian chờ in (10s)
+        if (printWaitingTimer) clearInterval(printWaitingTimer);
+        printWaitingTimer = setInterval(() => {
+          waitRemaining--;
+          printCountdownBadge.textContent = `${waitRemaining}s`;
+
+          // Nếu đã nhận tín hiệu in thành công
+          if (hasPrintDispatched) {
+            clearInterval(printWaitingTimer);
+            printWaitingTimer = null;
+            console.log('🎉 Đã xác nhận lệnh in trong thời gian chờ -> Eject khung Iframe và chuyển trang CẢM ƠN!');
+            ejectIframeAndProceed('THANKYOU');
+            return;
+          }
+
+          // Nếu hết thời gian
+          if (waitRemaining <= 0) {
+            clearInterval(printWaitingTimer);
+            printWaitingTimer = null;
+            if (config.enableErrorTab !== false) {
+              console.warn('⚠️ HẾT THỜI GIAN: Không nhận được lệnh in -> Chuyển sang TRANG BÁO LỖI!');
+              ejectIframeAndProceed('ERROR');
+            } else {
+              console.log('🛡️ HẾT THỜI GIAN: Tab 4 đang TẮT -> Chuyển thẳng sang TRANG CẢM ƠN!');
+              ejectIframeAndProceed('THANKYOU');
+            }
+          }
+        }, 1000);
+      }
+
+      // -------------------------------------------------------------
       // Kiosk Print Trigger & AfterPrint Listener
       // -------------------------------------------------------------
       function triggerKioskPrint() {
@@ -3125,7 +3492,7 @@
             console.log('✅ [AFTERPRINT] Trình duyệt đã gửi lệnh in vào hàng đợi (SPOOLER).');
             
             if (currentStage === 'PROCESS') {
-              switchTab('THANKYOU', true);
+              ejectIframeAndProceed('THANKYOU');
             }
             resolve({ status: 'DISPATCHED_TO_SPOOLER', timestamp: Date.now() });
           };
@@ -3164,7 +3531,7 @@
           console.log('🎯 Power Apps đã xác nhận in xong qua postMessage!');
           hasPrintDispatched = true;
           if (currentStage === 'PROCESS') {
-            switchTab('THANKYOU', true);
+            ejectIframeAndProceed('THANKYOU');
           }
         }
       });
@@ -3732,8 +4099,23 @@
 
         // Tab 2 Control Buttons
         document.getElementById('btnTriggerPrint').addEventListener('click', () => {
-          triggerKioskPrint();
+          isFlyDownTriggered = false;
+          resetIframeCard(true);
+          setTimeout(() => {
+            triggerIframeFlyDown('manual_btn');
+          }, 50);
         });
+
+        const btnTestFlyDownPrint = document.getElementById('btnTestFlyDownPrint');
+        if (btnTestFlyDownPrint) {
+          btnTestFlyDownPrint.addEventListener('click', () => {
+            const menuDropdownWrapper = document.getElementById('menuDropdownWrapper');
+            if (menuDropdownWrapper) menuDropdownWrapper.classList.remove('open');
+            lastScannedValue = lastScannedValue || 'HPT-DDAY-DEMO-2026';
+            switchTab('PROCESS', true);
+            showToast('Đang kích hoạt toàn bộ khung Iframe trượt xuống (Fly Down)...', 'info', 2500);
+          });
+        }
 
         const btnReloadPowerApps = document.getElementById('btnReloadPowerApps');
         if (btnReloadPowerApps) {
@@ -4017,7 +4399,7 @@
       // Initialize Application
       async function initApp() {
         setupDebugLogger();
-        console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V4 (R³ Design System)...');
+        console.log('🚀 Khởi tạo HPT D-DAY 2026 Kiosk Scanner Pro V5 (R³ Design System)...');
         
         updateNetStatus();
         updateHistoryBadge();
@@ -4034,7 +4416,7 @@
         await enumerateCameras();
         await setInputMode(config.inputMode || 'both', false);
 
-        console.log('🎉 HPT D-DAY 2026 Kiosk Scanner Pro V4 đã sẵn sàng phục vụ!');
+        console.log('🎉 HPT D-DAY 2026 Kiosk Scanner Pro V5 đã sẵn sàng phục vụ!');
       }
 
       window.addEventListener('load', initApp);

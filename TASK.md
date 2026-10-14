@@ -51,6 +51,14 @@
   - Lưu trữ `localStorage` lên đến 500 mã, tìm kiếm, copy và xuất file **CSV**.
 - [x] **Cài đặt & Tùy biến (Settings Modal):**
   - Cấu hình Thời gian chờ lệnh in (10s), Thời gian hiển thị trang lỗi (10s), Chế độ nạp mã mặc định, URL Power Apps.
+- [x] **Hiệu ứng toàn bộ khung Iframe trượt xuống (Kiosk V5 - Whole Iframe Fly Down Print Animation):**
+  - Khe xuất máy in Kiosk (`printer-slot-bezel`) tích hợp đèn LED trạng thái xanh hoạt động ở mép trên màn hình.
+  - Chờ 3 giây fallback hoặc kích hoạt ngay khi Power Apps Iframe tải xong hoàn toàn.
+  - **Toàn bộ khung Iframe chứa Power Apps** (`iframe-paper-card`) được bọc trong viewport và trượt xuống từ khe máy in (`fly down`) như một tờ giấy lớn đang được in ra từ màn hình.
+  - Tia quét laser nhiệt (`paper-laser-scanline`) quét sáng xanh cyan dọc theo chiều dài khung Iframe trong lúc trượt xuống.
+  - Âm thanh động cơ kéo giấy in nhiệt Web Audio API (`AudioEngine.playPrintPaperSound`).
+  - Sau khi in xong, toàn bộ khung Iframe giữ nguyên vị trí để tương tác hoặc trượt tiếp xuống khay in (`iframe-eject-down`) khi chuyển trang Cảm ơn.
+  - Nút bấm xem thử nhanh trong Tiện ích dropdown (`btnTestFlyDownPrint`) và nút In Thẻ Ngay (`btnTriggerPrint`).
 
 ---
 
@@ -63,10 +71,11 @@
 | Print Timeout Flow | `iframe.onload` ➔ 10s Wait Timer ➔ Success / Error Screen (10s) | ✅ Hoạt động chính xác |
 | Input Modes | Camera Only / Gun Only / Dual Mode | ✅ Hoạt động linh hoạt |
 | HID Scanner | Global Keystroke Interceptor + 1s Inactive Debounce | ✅ Hoạt động ổn định |
-| Audio Engine | Web Audio API Oscillator/Gain Synthesizer (Beep/Chime/Error) | ✅ Hoạt động tốt |
+| Audio Engine | Web Audio API Oscillator/Gain Synthesizer (Beep/Chime/Error/PaperFeed) | ✅ Hoạt động tốt |
+| Kiosk Print Animation | CSS3 Keyframes (Fly Down & Laser Scan) + Bezel LED + Virtual Badge | ✅ Hoạt động mượt mà |
 | Data Export | Client-side CSV Exporter | ✅ Hoạt động tốt |
 
 ---
 
-**Cập nhật lần cuối:** 18/08/2026  
+**Cập nhật lần cuối:** 15/10/2026 (Phiên bản V5 - Hiệu ứng Fly Down Print)  
 **Chủ sở hữu:** CloudHoang
